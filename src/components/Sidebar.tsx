@@ -1,7 +1,5 @@
 "use client";
 
-"use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
@@ -31,7 +29,7 @@ const telegramLinks = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const [platform, setPlatform] = useState<"discord" | "telegram">("discord");
+  const platform = pathname.includes("/telegram") ? "telegram" : "discord";
 
   const links = platform === "discord" ? discordLinks : telegramLinks;
 
@@ -47,22 +45,22 @@ export default function Sidebar() {
 
         {/* Platform Switcher */}
         <div className="flex w-full bg-sunset-100/50 p-1 rounded-xl mb-6">
-          <button
-            onClick={() => setPlatform("discord")}
-            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${
+          <Link
+            href="/dashboard/discord"
+            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all text-center ${
               platform === "discord" ? "bg-white text-indigo-600 shadow-sm" : "text-sunset-800/60"
             }`}
           >
             Discord
-          </button>
-          <button
-            onClick={() => setPlatform("telegram")}
-            className={`flex-1 flex items-center justify-center gap-1 py-2 text-sm font-bold rounded-lg transition-all ${
+          </Link>
+          <Link
+            href="/dashboard/telegram"
+            className={`flex-1 flex items-center justify-center gap-1 py-2 text-sm font-bold rounded-lg transition-all text-center ${
               platform === "telegram" ? "bg-white text-blue-500 shadow-sm" : "text-sunset-800/60"
             }`}
           >
             <Send size={14} /> Telegram
-          </button>
+          </Link>
         </div>
 
         <nav className="flex-1 space-y-2 w-full flex flex-col items-start">
