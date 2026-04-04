@@ -45,20 +45,18 @@ export default function TicketsPage() {
   };
 
   const resolveUsername = async (userId: string, retryCount = 0) => {
-    if (usernames[userId]) return;
+    if (usernames[userId] || !userId) return;
     
     try {
         const response = await fetch(`/api/discord/users/${userId}`);
+        if (!response.ok) throw new Error("API_REJECTED");
         const data = await response.json();
         if (data.username) {
             setUsernames(prev => ({ ...prev, [userId]: data.username }));
-        } else if (retryCount < 3) {
-            // Retry logic as requested
-            setTimeout(() => resolveUsername(userId, retryCount + 1), 2000);
         }
     } catch (err) {
-        if (retryCount < 3) {
-            setTimeout(() => resolveUsername(userId, retryCount + 1), 2000);
+        if (retryCount < 2) {
+            setTimeout(() => resolveUsername(userId, retryCount + 1), 1000);
         }
     }
   };
@@ -238,7 +236,7 @@ export default function TicketsPage() {
                                     <Shield size={16} className="text-zinc-400" />
                                     <div>
                                         <div className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.2em] leading-none mb-1">Administrative Node (ADMIN)</div>
-                                        <div className="text-sm font-black text-zinc-950 truncate tracking-tight">{usernames[activeTicket.admin_id] || activeTicket.admin_id || "UNASSIGNED"}</div>
+                                        <div className="text-sm font-black text-zinc-950 truncate tracking-tight">{usernames[activeTicket.admin_id] || activeTicket.admin_name || activeTicket.admin_id || "SYSTEM"}</div>
                                     </div>
                                 </div>
                             </div>
