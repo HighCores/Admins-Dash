@@ -6,10 +6,15 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-gradient-to-br from-sunset-100 via-[#fff8f5] to-sunset-200">
-      <Sidebar />
-      <main className="flex-1 overflow-y-auto p-4 md:p-8">
-        <div className="w-full max-w-7xl mx-auto h-full flex flex-col gap-6">
+    <div className="flex min-h-screen bg-sunset-50/30 overflow-x-hidden">
+      {/* Sidebar - Fixed width to prevent shrinking */}
+      <div className="w-80 shrink-0">
+         <Sidebar />
+      </div>
+      
+      {/* Main Content Area */}
+      <main className="flex-1 h-screen overflow-y-auto custom-scrollbar">
+        <div className="max-w-[1600px] mx-auto p-4 md:p-8 lg:p-12 min-h-full flex flex-col">
           {children}
         </div>
       </main>
