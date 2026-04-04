@@ -13,6 +13,7 @@ import DiscordSelect from "@/components/DiscordSelect";
 
 export default function PanelsPage() {
   const [menus, setMenus] = useState<any[]>([]);
+  const [buttons, setButtons] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeMenu, setActiveMenu] = useState<any | null>(null);
   const [isPreviewMobile, setIsPreviewMobile] = useState(false);
@@ -32,9 +33,14 @@ export default function PanelsPage() {
 
   const fetchMenus = async () => {
     setLoading(true);
-    const { data } = await supabase.from("dc_menus").select("*").eq("platform", "discord").order("position", { ascending: true });
+    const { data } = await supabase.from("dc_menus").select("*").eq("platform", "discord").order("created_at", { ascending: false });
     if (data) setMenus(data);
     setLoading(false);
+  };
+
+  const fetchButtons = async (mId: string) => {
+    const { data } = await supabase.from("dc_buttons").select("*").eq("menu_id", mId).order("position", { ascending: true });
+    if (data) setButtons(data);
   };
 
   const handleEdit = (menu: any) => {
@@ -45,6 +51,7 @@ export default function PanelsPage() {
     setImageUrl(menu.image_url || "");
     setChannelId(menu.channel_id || "");
     setTriggerCommand(menu.trigger_command || "");
+    fetchButtons(menu.menu_id);
   };
 
   const createNewMenu = () => {
@@ -57,9 +64,11 @@ export default function PanelsPage() {
     setImageUrl("");
     setChannelId("");
     setTriggerCommand("");
+    setButtons([]);
   };
 
   const handleSave = async () => {
+    if (!menuId || !title) return alert("ID and Title are mandatory nodes.");
     setSaving(true);
     try {
         const { error } = await supabase.from("dc_menus").upsert({
@@ -76,10 +85,17 @@ export default function PanelsPage() {
 
         if (error) throw error;
 
-        await supabase.from("dc_stats").insert({
-            event_type: "panel_updated",
-            details: `Panel ${title} was recalibrated.`
-        });
+        // Save buttons
+        for (let i = 0; i < buttons.length; i++) {
+            await supabase.from("dc_buttons").upsert({
+                id: buttons[i].id,
+                menu_id: menuId,
+                label: buttons[i].label,
+                action_id: buttons[i].action_id,
+                button_style: buttons[i].button_style || 'PRIMARY',
+                position: i
+            });
+        }
 
         alert("System Synchronized! ⚡");
         fetchMenus();
@@ -95,6 +111,19 @@ export default function PanelsPage() {
     await supabase.from("dc_menus").delete().eq("menu_id", id);
     if (activeMenu?.menu_id === id) setActiveMenu(null);
     fetchMenus();
+  };
+
+  const addButton = () => {
+    setButtons([...buttons, { label: 'New Action', action_id: 'open_ticket', button_style: 'PRIMARY' }]);
+  };
+
+  const removeButton = async (index: number, bId?: any) => {
+    if (bId) {
+        await supabase.from("dc_buttons").delete().eq("id", bId);
+    }
+    const nb = [...buttons];
+    nb.splice(index, 1);
+    setButtons(nb);
   };
 
   return (
@@ -124,7 +153,7 @@ export default function PanelsPage() {
             </button>
             <button 
                 onClick={createNewMenu}
-                className="flex items-center gap-4 px-8 py-4 bg-zinc-950 text-white font-black text-xs rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all group italic tracking-widest"
+                className="flex items-center gap-4 px-8 py-4 bg-zinc-950 text-white font-black text-xs rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all group italic tracking-widest uppercase"
             >
                 <Plus size={18} className="group-hover:rotate-90 transition-transform" />
                 INITIATE NEW NODE
@@ -139,8 +168,8 @@ export default function PanelsPage() {
         <div className="xl:col-span-3 flex flex-col min-h-0">
           <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden">
             <div className="p-6 border-b border-zinc-50 bg-zinc-50/20 flex items-center justify-between">
-                <h3 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest italic">Global Rack</h3>
-                <span className="text-[9px] font-black bg-zinc-950 text-white px-2.5 py-1 rounded-lg tracking-widest">{menus.length} ACTIVE</span>
+                <h3 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest italic leading-none">Global Rack</h3>
+                <span className="text-[9px] font-black bg-zinc-950 text-white px-2.5 py-1 rounded-lg tracking-widest leading-none">{menus.length} ACTIVE</span>
             </div>
 
             <div className="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-2">
@@ -190,7 +219,7 @@ export default function PanelsPage() {
                     >
                         <div className="p-6 border-b border-zinc-50 bg-zinc-50/20 flex items-center justify-between">
                             <h3 className="text-sm font-black text-zinc-950 italic flex items-center gap-3 tracking-tighter uppercase">
-                                <Sparkles size={18} className="text-zinc-400" /> Architect: <span className="text-zinc-400">{activeMenu.title}</span>
+                                <Sparkles size={18} className="text-zinc-400" /> Architect: <span className="text-zinc-400 truncate max-w-[200px]">{title}</span>
                             </h3>
                             <button 
                                 onClick={() => handleDelete(activeMenu.menu_id)}
@@ -205,7 +234,7 @@ export default function PanelsPage() {
                                         type="text" 
                                         value={menuId} 
                                         onChange={(e) => setMenuId(e.target.value)}
-                                        className="w-full px-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-black text-zinc-950 transition-all outline-none focus:bg-white"
+                                        className="w-full px-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-black text-zinc-950 transition-all outline-none focus:bg-white shadow-inner"
                                         placeholder="panel_unique_id"
                                     />
                                 </div>
@@ -217,7 +246,7 @@ export default function PanelsPage() {
                                             type="text" 
                                             value={triggerCommand} 
                                             onChange={(e) => setTriggerCommand(e.target.value)}
-                                            className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-black text-zinc-950 transition-all outline-none focus:bg-white"
+                                            className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-black text-zinc-950 transition-all outline-none focus:bg-white shadow-inner"
                                             placeholder="support"
                                         />
                                     </div>
@@ -238,7 +267,7 @@ export default function PanelsPage() {
                                     type="text" 
                                     value={title} 
                                     onChange={(e) => setTitle(e.target.value)}
-                                    className="w-full px-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-black text-zinc-950 transition-all outline-none focus:bg-white"
+                                    className="w-full px-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-black text-zinc-950 transition-all outline-none focus:bg-white shadow-inner"
                                     placeholder="Enter structural title..."
                                 />
                             </div>
@@ -249,7 +278,7 @@ export default function PanelsPage() {
                                     rows={3}
                                     value={content}
                                     onChange={(e) => setContent(e.target.value)}
-                                    className="w-full px-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-800 leading-relaxed transition-all outline-none focus:bg-white resize-none"
+                                    className="w-full px-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-800 leading-relaxed transition-all outline-none focus:bg-white resize-none shadow-inner"
                                     placeholder="Detailed payload data..."
                                 />
                             </div>
@@ -262,7 +291,7 @@ export default function PanelsPage() {
                                         type="text" 
                                         value={imageUrl}
                                         onChange={(e) => setImageUrl(e.target.value)}
-                                        className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-500 text-xs transition-all outline-none focus:bg-white"
+                                        className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-500 text-xs transition-all outline-none focus:bg-white shadow-inner"
                                         placeholder="https://assets.hc.agency/img.png"
                                     />
                                 </div>
@@ -274,16 +303,63 @@ export default function PanelsPage() {
                                     <h4 className="font-black text-[10px] italic tracking-widest flex items-center gap-2 uppercase">
                                         <Bot size={12} className="text-zinc-400" /> Action Nodes
                                     </h4>
-                                    <button className="px-3 py-1.5 bg-white text-zinc-950 text-[8px] font-black rounded-lg hover:scale-105 transition-all uppercase tracking-widest">
+                                    <button 
+                                        onClick={addButton}
+                                        className="px-3 py-1.5 bg-white text-zinc-950 text-[8px] font-black rounded-lg hover:scale-105 transition-all uppercase tracking-widest">
                                         ADD_LOGIC
                                     </button>
                                 </div>
-                                <div className="p-3 bg-white/5 rounded-xl border border-white/5 flex items-center justify-between group-hover:bg-white/10 transition-all cursor-default">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center font-black text-[9px]">1</div>
-                                        <span className="text-[10px] font-bold italic tracking-tight">Support Ticket Handshake</span>
-                                    </div>
-                                    <Trash2 size={12} className="opacity-20 hover:text-red-400 hover:opacity-100 transition-all cursor-pointer" />
+                                <div className="space-y-2">
+                                    {buttons.map((btn, idx) => (
+                                        <div key={idx} className="p-3 bg-white/5 rounded-xl border border-white/5 flex flex-col gap-3 group/btn hover:bg-white/10 transition-all">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center font-black text-[9px]">{idx + 1}</div>
+                                                    <input 
+                                                        type="text"
+                                                        value={btn.label}
+                                                        onChange={(e) => {
+                                                            const nb = [...buttons];
+                                                            nb[idx].label = e.target.value;
+                                                            setButtons(nb);
+                                                        }}
+                                                        className="bg-transparent border-none outline-none text-[10px] font-bold italic tracking-tight text-white placeholder:opacity-20"
+                                                        placeholder="Button Label..."
+                                                    />
+                                                </div>
+                                                <button onClick={() => removeButton(idx, btn.id)} className="p-1 hover:text-red-400 transition-colors">
+                                                    <Trash2 size={12} />
+                                                </button>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <input 
+                                                    type="text"
+                                                    value={btn.action_id}
+                                                    onChange={(e) => {
+                                                        const nb = [...buttons];
+                                                        nb[idx].action_id = e.target.value;
+                                                        setButtons(nb);
+                                                    }}
+                                                    className="bg-black/40 px-3 py-1.5 rounded-lg text-[8px] font-mono text-zinc-400 border border-white/5 outline-none"
+                                                    placeholder="action_id..."
+                                                />
+                                                <select 
+                                                    value={btn.button_style}
+                                                    onChange={(e) => {
+                                                        const nb = [...buttons];
+                                                        nb[idx].button_style = e.target.value;
+                                                        setButtons(nb);
+                                                    }}
+                                                    className="bg-black/40 px-3 py-1.5 rounded-lg text-[8px] font-mono text-zinc-400 border border-white/5 outline-none"
+                                                >
+                                                    <option value="PRIMARY">PRIMARY</option>
+                                                    <option value="SECONDARY">SECONDARY</option>
+                                                    <option value="SUCCESS">SUCCESS</option>
+                                                    <option value="DANGER">DANGER</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>
@@ -319,14 +395,14 @@ export default function PanelsPage() {
                     <Smartphone size={14} /> MOBILE
                  </button>
              </div>
-
+ 
              <div className="flex-1 overflow-hidden relative group">
                 <div className={`h-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${isPreviewMobile ? 'max-w-[340px] mx-auto' : 'w-full'}`}>
                     <div className="h-full bg-[#2b2d31] rounded-[2.5rem] shadow-2xl flex flex-col border border-white/5 overflow-hidden">
                         <div className="flex-1 overflow-y-auto p-8 border-l-[6px] border-zinc-400 custom-scrollbar-discord space-y-8">
                             <div className="space-y-4">
                                 <h4 className="text-white font-black text-2xl tracking-tighter leading-tight">{title || "Structural Headline"}</h4>
-                                <p className="text-[#dbdee1] text-sm leading-relaxed font-medium font-sans pr-4 opacity-90">
+                                <p className="text-[#dbdee1] text-sm leading-relaxed font-medium font-sans pr-4 opacity-90 whitespace-pre-wrap">
                                     {content || "Payload description will materialize here after network sync. Calibrate the editor logic to populate this view."}
                                 </p>
                             </div>
@@ -338,16 +414,30 @@ export default function PanelsPage() {
                             )}
 
                             <div className="flex flex-wrap gap-2 pt-4">
-                                <button className="px-5 py-2.5 bg-[#4e5058] text-white text-[10px] font-black rounded-lg shadow-lg hover:bg-[#6d6f78] transition-all italic border-b-2 border-black/20">Open Ticket Handshake</button>
+                                {buttons.length === 0 ? (
+                                    <button className="px-5 py-2.5 bg-[#4e5058] text-white text-[10px] font-black rounded-lg shadow-lg hover:bg-[#6d6f78] transition-all italic border-b-2 border-black/20 opacity-20">No Action Nodes</button>
+                                ) : buttons.map((btn, idx) => (
+                                    <button 
+                                        key={idx}
+                                        className={`px-5 py-2.5 text-white text-[10px] font-black rounded-lg shadow-lg transition-all italic border-b-2 border-black/20 ${
+                                            btn.button_style === 'SUCCESS' ? 'bg-[#248046] hover:bg-[#1a6334]' :
+                                            btn.button_style === 'DANGER' ? 'bg-[#da373c] hover:bg-[#a12829]' :
+                                            btn.button_style === 'SECONDARY' ? 'bg-[#4e5058] hover:bg-[#6d6f78]' :
+                                            'bg-[#5865f2] hover:bg-[#4752c4]'
+                                        }`}
+                                    >
+                                        {btn.label || "Action Label"}
+                                    </button>
+                                ))}
                             </div>
                         </div>
                         
                         <div className="px-8 py-4 bg-black/20 flex items-center justify-between border-t border-white/5 shrink-0">
                             <div className="flex items-center gap-3 opacity-30">
-                                <Bot size={14} className="text-zinc-400" />
+                                <Bot size={14} className="text-zinc-300" />
                                 <span className="text-[8px] font-black text-white uppercase tracking-[0.4em] italic leading-none">HC-PROTOCOL v2</span>
                             </div>
-                            <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
+                            <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse shadow-[0_0_8px_rgba(59,130,246,1)]"></div>
                         </div>
                     </div>
                 </div>
@@ -355,7 +445,7 @@ export default function PanelsPage() {
 
              <div className="mt-6 p-5 bg-zinc-950 text-white rounded-[2rem] text-[9px] font-black text-center uppercase tracking-[0.4em] shadow-2xl relative overflow-hidden group italic cursor-default shrink-0">
                 <div className="absolute inset-0 bg-white/5 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-                <span className="flex items-center justify-center gap-3"><Eye size={12} className="animate-pulse" /> DISCORD_CLOUD_SYNC_ACTIVE</span>
+                <span className="flex items-center justify-center gap-3"><Eye size={12} className="animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.5)]" /> DISCORD_CLOUD_SYNC_ACTIVE</span>
             </div>
         </div>
       </div>

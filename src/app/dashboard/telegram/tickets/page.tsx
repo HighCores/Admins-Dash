@@ -13,7 +13,9 @@ import { supabase } from "@/lib/supabase";
 
 export default function TelegramTicketsPage() {
   const [tickets, setTickets] = useState<any[]>([]);
+  const [messages, setMessages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [messagesLoading, setMessagesLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [activeTicket, setActiveTicket] = useState<any | null>(null);
@@ -35,9 +37,30 @@ export default function TelegramTicketsPage() {
     setLoading(false);
   };
 
+  const fetchMessages = async (ticketId: string) => {
+    setMessagesLoading(true);
+    const { data } = await supabase
+        .from("dc_ticket_messages")
+        .select("*")
+        .eq("ticket_id", ticketId)
+        .order("created_at", { ascending: true });
+    
+    if (data) setMessages(data);
+    setMessagesLoading(false);
+  };
+
+  useEffect(() => {
+    if (activeTicket) {
+        fetchMessages(activeTicket.ticket_id);
+    } else {
+        setMessages([]);
+    }
+  }, [activeTicket]);
+
   const filteredTickets = tickets.filter(t => 
     t.ticket_id.toLowerCase().includes(search.toLowerCase()) ||
-    t.user_id.toLowerCase().includes(search.toLowerCase())
+    t.user_id.toLowerCase().includes(search.toLowerCase()) ||
+    (t.user_name || "").toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -62,10 +85,10 @@ export default function TelegramTicketsPage() {
         
         <div className="flex items-center gap-4">
              <div className="relative group">
-                <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
+                <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-hover:text-blue-500 transition-colors" />
                 <input 
                     type="text" 
-                    placeholder="Search by ID or User..."
+                    placeholder="Search by ID, User or Name..."
                     className="pl-12 pr-6 py-4 bg-white border border-zinc-100 rounded-2xl shadow-sm outline-none focus:ring-8 ring-blue-500/5 transition-all font-bold text-sm w-80 italic"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
@@ -125,7 +148,7 @@ export default function TelegramTicketsPage() {
                                      <div className="min-w-0">
                                          <div className="font-black text-sm italic tracking-tight">{ticket.ticket_id}</div>
                                          <div className={`text-[10px] font-black uppercase tracking-widest truncate ${activeTicket?.id === ticket.id ? 'text-zinc-400' : 'text-zinc-300'}`}>
-                                             User: {ticket.user_id}
+                                             {ticket.user_name || `ID: ${ticket.user_id}`}
                                          </div>
                                      </div>
                                  </div>
@@ -164,31 +187,55 @@ export default function TelegramTicketsPage() {
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="p-4 bg-zinc-50 rounded-2xl border border-zinc-100 flex items-center gap-4">
-                                    <BadgeInfo size={16} className="text-blue-400" />
+                                    <User size={16} className="text-blue-400" />
                                     <div>
-                                        <div className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.2em] leading-none mb-1">Subject</div>
-                                        <div className="text-sm font-black text-zinc-950 truncate tracking-tight">{activeTicket.subject || "No Subject Defined"}</div>
+                                        <div className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.2em] leading-none mb-1">Subject Node</div>
+                                        <div className="text-sm font-black text-zinc-950 truncate tracking-tight">{activeTicket.user_name || activeTicket.user_id}</div>
                                     </div>
                                 </div>
                                 <div className="p-4 bg-zinc-50 rounded-2xl border border-zinc-100 flex items-center gap-4">
                                     <Clock size={16} className="text-zinc-400" />
                                     <div>
                                         <div className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.2em] leading-none mb-1">Created At</div>
-                                        <div className="text-sm font-black text-zinc-950 truncate tracking-tight">{new Date(activeTicket.created_at).toLocaleDateString()}</div>
+                                        <div className="text-sm font-black text-zinc-950 truncate tracking-tight">{new Date(activeTicket.created_at).toLocaleString()}</div>
                                     </div>
                                 </div>
                             </div>
                          </div>
 
-                         <div className="flex-1 overflow-y-auto p-10 custom-scrollbar space-y-10 bg-zinc-50/30">
-                             <div className="flex flex-col items-center justify-center h-full opacity-10">
-                                <Terminal size={80} className="mb-6" />
-                                <h4 className="text-2xl font-black tracking-tighter uppercase italic">Inspect Transcript Data</h4>
-                                <p className="text-sm font-black uppercase tracking-[0.2em]">Secure Session Registry</p>
-                            </div>
+                         <div className="flex-1 overflow-y-auto p-10 custom-scrollbar space-y-6 bg-zinc-50/30">
+                            {messagesLoading ? (
+                                <div className="flex flex-col items-center justify-center h-full opacity-20">
+                                    <Loader2 size={40} className="animate-spin mb-4" />
+                                    <span className="text-[10px] font-black uppercase tracking-widest">Decrypting Logs...</span>
+                                </div>
+                            ) : messages.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center h-full opacity-10">
+                                    <Terminal size={80} className="mb-6" />
+                                    <h4 className="text-2xl font-black tracking-tighter uppercase italic">No Logs Decoded</h4>
+                                    <p className="text-sm font-black uppercase tracking-[0.2em]">Secure Session Registry Empty</p>
+                                </div>
+                            ) : (
+                                messages.map((msg, idx) => (
+                                    <div key={msg.id} className="flex gap-4 group">
+                                         <div className="w-10 h-10 rounded-full bg-blue-100 shrink-0 border-2 border-white shadow-sm flex items-center justify-center text-blue-400 font-black text-[10px] italic">
+                                            {msg.user_name?.charAt(0) || 'U'}
+                                         </div>
+                                         <div className="flex flex-col min-w-0">
+                                             <div className="flex items-center gap-3 mb-1">
+                                                <span className="text-xs font-black text-zinc-950 uppercase italic">{msg.user_name || "Node_Unknown"}</span>
+                                                <span className="text-[8px] font-black text-zinc-300 uppercase tracking-widest italic">{new Date(msg.created_at).toLocaleTimeString()}</span>
+                                             </div>
+                                             <div className="p-4 bg-white border border-zinc-100 rounded-2xl rounded-tl-none shadow-sm text-sm font-medium text-zinc-700 leading-relaxed max-w-lg group-hover:shadow-md transition-all">
+                                                 {msg.content}
+                                             </div>
+                                         </div>
+                                    </div>
+                                ))
+                            )}
                          </div>
 
-                         <div className="p-8 border-t border-zinc-50 bg-white">
+                         <div className="p-8 border-t border-zinc-50 bg-white shrink-0">
                             <div className="flex gap-4">
                                 <button className="flex-1 py-4 bg-zinc-50 text-zinc-950 font-black text-[10px] rounded-xl border border-zinc-200 hover:bg-zinc-100 transition-all uppercase tracking-widest italic underline decoration-zinc-300 underline-offset-4">DOWNLOAD_TRANSCRIPT</button>
                                 <button className="flex-1 py-4 bg-blue-600 text-white font-black text-[10px] rounded-xl shadow-xl hover:scale-[1.02] transition-all uppercase tracking-widest flex items-center justify-center gap-3 italic">
@@ -200,7 +247,7 @@ export default function TelegramTicketsPage() {
                 ) : (
                     <div className="flex-1 flex flex-col items-center justify-center p-20 bg-zinc-50/50 rounded-[2.5rem] text-center border-2 border-dashed border-zinc-200 opacity-20">
                         <ShieldCheck size={60} className="mb-10 text-blue-500" />
-                        <h3 className="text-2xl font-black text-zinc-950 tracking-tighter uppercase italic">Select an active node to inspect operational logs</h3>
+                        <h3 className="text-2xl font-black text-zinc-950 tracking-tighter uppercase italic pr-4">Select an active node to inspect operational logs</h3>
                     </div>
                 )}
              </AnimatePresence>

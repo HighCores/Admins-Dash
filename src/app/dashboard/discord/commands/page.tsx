@@ -43,9 +43,11 @@ export default function CommandsPage() {
   };
 
   const handleSave = async () => {
+    if (!name || !response) return alert("All logic nodes must be populated.");
     setSaving(true);
     try {
         const { error } = await supabase.from("dc_commands").upsert({
+            id: editingCommand?.id,
             name: name.replace(/\//g, ''),
             response_text: response,
             permission: permission,
@@ -65,15 +67,15 @@ export default function CommandsPage() {
         setEditingCommand(null);
         fetchCommands();
     } catch (err: any) {
-        alert(`Error saving command: ${err.message}`);
+        alert(`ERR_LOGIC: ${err.message}`);
     } finally {
         setSaving(false);
     }
   };
 
-  const handleDelete = async (cmdName: string) => {
-    if (!confirm(`Are you sure you want to delete /${cmdName}?`)) return;
-    await supabase.from("dc_commands").delete().eq("name", cmdName);
+  const handleDelete = async (id: any) => {
+    if (!confirm(`Are you sure you want to delete this logic node?`)) return;
+    await supabase.from("dc_commands").delete().eq("id", id);
     fetchCommands();
   };
 
@@ -95,17 +97,17 @@ export default function CommandsPage() {
             Logic <span className="text-zinc-300">Nodes</span>
           </h1>
           <p className="text-sm font-bold text-zinc-500 max-w-2xl">
-             Calibrating the agency's command distribution and neural pathways.
+             Calibrating the agency's command distribution and neural pathways for Discord.
           </p>
         </div>
         
         <div className="flex items-center gap-4">
              <div className="relative group">
-                <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
+                <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-hover:text-zinc-950 transition-colors" />
                 <input 
                     type="text" 
                     placeholder="Scan neural paths..."
-                    className="pl-12 pr-6 py-4 bg-white border border-zinc-100 rounded-2xl shadow-sm outline-none focus:ring-8 ring-zinc-950/5 transition-all font-bold text-sm w-72 italic"
+                    className="pl-12 pr-6 py-4 bg-white border border-zinc-100 rounded-2xl shadow-sm outline-none focus:ring-8 ring-zinc-500/5 transition-all font-bold text-sm w-72 italic"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                 />
@@ -132,7 +134,7 @@ export default function CommandsPage() {
         {/* Left: Logic Grid (Col: 8) */}
         <div className="xl:col-span-8 flex flex-col min-h-0">
              <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden">
-                  <div className="grid grid-cols-12 p-6 border-b border-zinc-50 bg-zinc-50/20 text-[9px] font-black text-zinc-400 uppercase tracking-widest">
+                  <div className="grid grid-cols-12 p-6 border-b border-zinc-50 bg-zinc-50/20 text-[9px] font-black text-zinc-400 uppercase tracking-widest leading-none">
                       <div className="col-span-3 pl-4">Neural Path</div>
                       <div className="col-span-4">Automated Payload</div>
                       <div className="col-span-3">Auth Permission</div>
@@ -143,17 +145,14 @@ export default function CommandsPage() {
                      {loading ? (
                          <div className="flex justify-center p-20"><Loader2 className="animate-spin text-zinc-300" size={40} /></div>
                      ) : filteredCommands.length === 0 ? (
-                         <div className="p-32 text-center opacity-10">
-                            <Zap size={60} className="mx-auto mb-6" />
-                            <h3 className="text-2xl font-black tracking-tighter uppercase italic">Logic Void. No active paths.</h3>
-                         </div>
+                         <div className="p-32 text-center opacity-10 italic uppercase font-black tracking-[0.2em] font-mono">Logic Void Detected</div>
                      ) : (
                          filteredCommands.map((cmd, idx) => (
                              <motion.div 
                                  initial={{ opacity: 0, x: -10 }}
                                  animate={{ opacity: 1, x: 0 }}
                                  transition={{ delay: idx * 0.05 }}
-                                 key={cmd.name}
+                                 key={cmd.id}
                                  className="grid grid-cols-12 items-center p-4 rounded-2xl transition-all border border-transparent hover:bg-zinc-50 hover:border-zinc-100 group"
                              >
                                  <div className="col-span-3 pl-4 flex items-center gap-4">
@@ -161,20 +160,20 @@ export default function CommandsPage() {
                                          <Command size={14} />
                                      </div>
                                      <div className="min-w-0">
-                                         <span className="font-black text-zinc-950 text-sm italic tracking-tighter uppercase truncate block">/{cmd.name}</span>
+                                         <span className="font-black text-zinc-950 text-sm italic tracking-tighter uppercase truncate block underline underline-offset-4 decoration-zinc-100">/{cmd.name}</span>
                                          <div className="flex items-center gap-1.5 mt-0.5">
                                              <div className={`w-1.5 h-1.5 rounded-full ${cmd.is_active ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-red-500'}`}></div>
-                                             <span className="text-[8px] font-black text-zinc-300 uppercase tracking-widest leading-none">V1_LOGIC</span>
+                                             <span className="text-[8px] font-black text-zinc-300 uppercase tracking-widest leading-none">CORE_RELAY</span>
                                          </div>
                                      </div>
                                  </div>
                                  <div className="col-span-4">
-                                     <p className="text-xs font-bold text-zinc-500 leading-relaxed pr-10 truncate italic">
+                                     <p className="text-xs font-bold text-zinc-500 leading-relaxed pr-10 truncate italic opacity-60">
                                          "{cmd.response_text || 'Static response payload...'}"
                                      </p>
                                  </div>
                                  <div className="col-span-3">
-                                     <div className="flex items-center gap-2 text-zinc-950 font-black text-[10px] uppercase tracking-widest italic opacity-40">
+                                     <div className="flex items-center gap-2 text-zinc-950 font-black text-[10px] uppercase tracking-widest italic opacity-30">
                                          <Shield size={12} className="text-zinc-300" /> {cmd.permission?.toUpperCase() || 'EVERYONE'}
                                      </div>
                                  </div>
@@ -183,7 +182,7 @@ export default function CommandsPage() {
                                          onClick={() => handleEdit(cmd)}
                                          className="p-3 bg-white text-zinc-950 rounded-xl hover:shadow-xl transition-all border border-zinc-100 shadow-sm"><Edit3 size={16} /></button>
                                      <button 
-                                         onClick={() => handleDelete(cmd.name)}
+                                         onClick={() => handleDelete(cmd.id)}
                                          className="p-3 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all shadow-sm"><Trash2 size={16} /></button>
                                  </div>
                              </motion.div>
@@ -194,39 +193,41 @@ export default function CommandsPage() {
         </div>
 
         {/* Right: Controller Hub (Col: 4) */}
-        <div className="xl:col-span-4 flex flex-col gap-6">
+        <div className="xl:col-span-4 flex flex-col gap-8 min-h-0">
              <div className="bg-zinc-950 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden group shrink-0">
                 <div className="absolute right-0 bottom-0 p-8 opacity-10 rotate-12 group-hover:scale-125 transition-transform duration-1000 pointer-events-none"><Terminal size={200} /></div>
                 <h3 className="text-xl font-black mb-6 flex items-center gap-4 italic tracking-tighter">
-                    <Sparkles className="text-zinc-400" /> Core Pulse
+                    <Sparkles className="text-zinc-400" /> Neural Pulse
                 </h3>
                 
                 <div className="space-y-4 relative z-10">
                     <div className="flex justify-between items-center bg-white/5 p-5 rounded-2xl border border-white/5">
-                        <span className="text-[9px] font-black opacity-30 uppercase italic tracking-widest leading-none">Active Paths</span>
+                        <span className="text-[9px] font-black opacity-30 uppercase italic tracking-widest leading-none">Active Flows</span>
                         <span className="text-2xl font-black italic tracking-tighter leading-none">{commands.length}</span>
                     </div>
                     <div className="flex justify-between items-center bg-white/5 p-5 rounded-2xl border border-white/5">
-                        <span className="text-[9px] font-black opacity-30 uppercase italic tracking-widest leading-none">Latency</span>
-                        <span className="text-xs font-black bg-emerald-400 text-emerald-950 px-3 py-1.5 rounded-lg shadow-lg italic leading-none">12ms_OPTIMAL</span>
+                        <span className="text-[9px] font-black opacity-30 uppercase italic tracking-widest leading-none">Status</span>
+                        <span className="text-[9px] font-black bg-emerald-400 text-emerald-950 px-3 py-1.5 rounded-lg shadow-lg italic leading-none">STABLE</span>
                     </div>
                 </div>
              </div>
 
-             <div className="bg-white p-8 rounded-[3rem] border border-zinc-100 shadow-sm relative overflow-hidden flex-1 group">
+             <div className="bg-white p-8 rounded-[3rem] border border-zinc-100 shadow-sm relative overflow-hidden flex-1 flex flex-col min-h-0 group">
                 <div className="absolute top-0 right-0 p-8 opacity-10 rotate-12 group-hover:rotate-0 transition-transform duration-700 pointer-events-none"><ShieldCheck size={120} /></div>
-                <h4 className="font-black text-xl text-zinc-950 mb-6 flex items-center gap-3 italic tracking-tighter underline underline-offset-8 decoration-zinc-100 uppercase">
-                    <History size={18} className="text-zinc-400" /> High Core Ops
+                <h4 className="font-black text-xl text-zinc-950 mb-8 flex items-center gap-3 italic tracking-tighter underline underline-offset-8 decoration-zinc-100 uppercase shrink-0">
+                    <History size={18} className="text-zinc-400" /> Activity Trace
                 </h4>
-                <p className="text-[10px] font-bold text-zinc-400 leading-relaxed mb-8 italic pr-12">
-                   Emergency override for non-admin logic nodes. Use only during severe network instability or agency calibration breaches. 
-                </p>
-                <div className="space-y-3">
-                    <button className="w-full py-4 bg-zinc-50 text-zinc-950 border border-zinc-100 font-black text-[9px] rounded-2xl shadow-sm hover:bg-zinc-950 hover:text-white transition-all uppercase tracking-widest italic group-hover:shadow-2xl">
-                        INITIATE_LOCKDOWN
-                    </button>
-                    <button className="w-full py-4 bg-white/50 text-zinc-300 font-black text-[9px] rounded-2xl hover:text-zinc-950 transition-all uppercase tracking-widest italic">
-                        neural_sync_audit
+                
+                <div className="flex-1 flex flex-col items-center justify-center p-4 bg-zinc-50 rounded-[2rem] border border-zinc-100 relative overflow-hidden">
+                     <div className="flex flex-col items-center gap-6 text-center relative z-10 opacity-20">
+                        <Terminal size={48} className="text-zinc-400 animate-pulse" />
+                        <h5 className="text-sm font-black uppercase tracking-[0.2em] italic">Real-time Telemetry Active</h5>
+                     </div>
+                </div>
+
+                <div className="mt-8 text-center shrink-0">
+                    <button className="text-[10px] font-black text-zinc-300 uppercase tracking-[0.4em] hover:text-zinc-950 transition-colors flex items-center justify-center gap-3 mx-auto group italic">
+                        Access Performance Ledger <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
                     </button>
                 </div>
              </div>
@@ -247,7 +248,7 @@ export default function CommandsPage() {
                 
                 <div className="flex justify-between items-center">
                     <h3 className="text-2xl font-black text-zinc-950 italic tracking-tighter uppercase flex items-center gap-4 py-2 border-b-2 border-zinc-950">
-                        <Zap className="text-zinc-950" size={24} /> Calibration
+                        <Zap className="text-zinc-950" size={24} /> Neural Calibrator
                     </h3>
                     <button onClick={() => setEditingCommand(null)} className="p-4 text-zinc-300 hover:text-zinc-950 bg-zinc-50 rounded-2xl transition-all"><X size={20} /></button>
                 </div>
@@ -255,32 +256,32 @@ export default function CommandsPage() {
                 <div className="space-y-6 relative z-10">
                     <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-2">
-                            <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Node Path</label>
+                            <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Path Trigger</label>
                             <input 
                                 type="text" 
-                                className="w-full p-4 rounded-xl bg-zinc-50 border border-zinc-100 font-black text-lg text-zinc-950 focus:bg-white outline-none italic transition-all" 
+                                className="w-full p-4 rounded-xl bg-zinc-50 border border-zinc-100 font-black text-2xl text-zinc-950 focus:bg-white outline-none italic transition-all truncate" 
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 placeholder="status_check"
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Path Status</label>
+                            <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Relay Status</label>
                             <button 
                                 onClick={() => setIsActive(!isActive)}
-                                className={`w-full p-4 rounded-xl transition-all border flex items-center justify-between group h-[58px] ${isActive ? 'bg-zinc-50 border-zinc-100 text-zinc-950' : 'bg-red-50 border-red-100 text-red-500'}`}
+                                className={`w-full h-[66px] rounded-xl transition-all border flex items-center justify-between px-6 ${isActive ? 'bg-zinc-950 border-zinc-950 text-white shadow-xl' : 'bg-red-50 border-red-200 text-red-500'}`}
                             >
                                 <span className="text-[9px] font-black uppercase tracking-widest">{isActive ? 'ONLINE' : 'SEVERED'}</span>
-                                <Power size={18} className={isActive ? 'text-emerald-500' : ''} />
+                                <Power size={20} className={isActive ? 'text-emerald-400 animate-pulse shadow-glow-emerald' : ''} />
                             </button>
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Response Payload</label>
+                        <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Automated Payload</label>
                         <textarea 
                             rows={4} 
-                            className="w-full p-6 rounded-xl bg-zinc-50 border border-zinc-100 focus:bg-white font-bold text-zinc-900 leading-relaxed italic transition-all outline-none resize-none" 
+                            className="w-full p-6 rounded-xl bg-zinc-50 border border-zinc-100 focus:bg-white font-bold text-zinc-900 leading-relaxed italic transition-all outline-none resize-none shadow-inner" 
                             value={response}
                             onChange={(e) => setResponse(e.target.value)}
                             placeholder="Enter command response payload..."
@@ -288,7 +289,7 @@ export default function CommandsPage() {
                     </div>
 
                     <DiscordSelect 
-                        label="Authorization Permission"
+                        label="Authorization Node"
                         type="role"
                         value={permission}
                         onChange={setPermission}
@@ -303,7 +304,7 @@ export default function CommandsPage() {
                         className="w-full py-6 bg-zinc-950 text-white font-black text-[10px] rounded-2xl shadow-xl hover:bg-black transition-all flex items-center justify-center gap-4 uppercase tracking-[0.4em] italic disabled:opacity-50"
                     >
                         {saving ? <Loader2 className="animate-spin" /> : <Save size={20} />} 
-                        Deploy Intelligence Node
+                        Broadcast Neural Sync
                     </button>
                 </div>
              </motion.div>

@@ -161,39 +161,24 @@ export default function DashboardOverview() {
 
         {/* Right: Controller Hub */}
         <div className="xl:col-span-4 flex flex-col gap-6">
-             <div className="bg-zinc-950 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden group">
-                 <div className="absolute right-0 bottom-0 opacity-10 rotate-12 group-hover:scale-125 transition-transform duration-1000"><ShieldCheck size={200} /></div>
-                 <h3 className="text-xl font-black mb-4 border-b border-white/5 pb-6 flex items-center gap-3 tracking-tighter italic">
-                    <Zap className="text-white" size={20} /> Action Center
-                 </h3>
-                 <p className="text-white/40 mb-8 text-xs font-bold leading-relaxed pr-8">
-                    Manual override for global agency protocols. Trigger broadcasts or sync neural caches across the fleet.
-                 </p>
-                 <div className="space-y-3 relative z-10">
-                    <button className="w-full py-4 bg-white text-zinc-950 font-black text-[10px] rounded-2xl shadow-xl hover:scale-[1.02] transition-all uppercase tracking-widest flex items-center justify-center gap-3 italic">
-                        <PlusCircle size={16} /> NEW GLOBAL BROADCAST
-                    </button>
-                    <button className="w-full py-4 bg-white/5 text-white/40 font-black text-[10px] border border-white/5 rounded-2xl hover:bg-white/10 hover:text-white transition-all uppercase tracking-widest italic">
-                        FORCE REBOOT LOGIC
-                    </button>
-                 </div>
-             </div>
-
-             <div className="bg-white p-8 rounded-[3rem] border border-zinc-100 shadow-sm flex-1">
-                <h4 className="font-black text-zinc-950 mb-8 flex items-center gap-3 tracking-tighter underline underline-offset-8 decoration-zinc-50">
+             <div className="bg-white p-8 rounded-[3rem] border border-zinc-100 shadow-sm flex-1 flex flex-col group overflow-hidden relative">
+                <div className="absolute top-0 right-0 p-8 opacity-10 rotate-12 group-hover:rotate-0 transition-transform duration-700 pointer-events-none"><ShieldCheck size={120} /></div>
+                <h4 className="font-black text-xl text-zinc-950 mb-8 flex items-center gap-3 italic tracking-tighter underline underline-offset-8 decoration-zinc-100 uppercase shrink-0">
                     <Globe size={18} className="text-zinc-400" /> Agency Health
                 </h4>
-                <div className="space-y-8">
+                <div className="space-y-8 relative z-10 flex-1 overflow-y-auto custom-scrollbar pr-2">
                     <HealthRow label="Core Latency" value="12ms" percent={95} color="zinc-950" />
                     <HealthRow label="Sync Fidelity" value="OPTIMAL" percent={100} color="zinc-950" />
                     <HealthRow label="Agent Uptime" value="99.9%" percent={99} color="zinc-950" />
-                </div>
-                <div className="mt-10 p-5 bg-zinc-50 rounded-2xl border border-zinc-100 flex items-center gap-4">
-                     <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center"><TrendingUp size={18} className="text-emerald-500" /></div>
-                     <div>
-                        <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block leading-none mb-1">Weekly Growth</span>
-                        <span className="text-lg font-black text-zinc-950 tracking-tighter">+14.2% Flow</span>
-                     </div>
+                    <div className="pt-6">
+                         <div className="p-5 bg-zinc-50 rounded-2xl border border-zinc-100 flex items-center gap-4">
+                            <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center"><TrendingUp size={18} className="text-emerald-500" /></div>
+                            <div>
+                                <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block leading-none mb-1">Weekly Growth</span>
+                                <span className="text-lg font-black text-zinc-950 tracking-tighter">+14.2% Flow</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
              </div>
         </div>

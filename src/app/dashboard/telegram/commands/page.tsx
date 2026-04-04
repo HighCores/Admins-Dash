@@ -3,7 +3,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Send, Power, Edit3, ShieldCheck, Zap, 
-  Search, Plus, Save, Trash2, Loader2, Sparkles, AlertCircle, X, Terminal, Share2
+  Search, Plus, Save, Trash2, Loader2, Sparkles, AlertCircle, X, Terminal,
+  History, BarChart3, Settings, Shield, ArrowRight, RefreshCcw, Command
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
@@ -39,9 +40,11 @@ export default function TelegramCommandsPage() {
   };
 
   const handleSave = async () => {
+    if (!name || !response) return alert("All logic nodes must be populated.");
     setSaving(true);
     try {
         const { error } = await supabase.from("dc_commands").upsert({
+            id: editingCommand?.id,
             name: name.replace(/\//g, ''),
             response_text: response,
             is_active: isActive,
@@ -53,213 +56,244 @@ export default function TelegramCommandsPage() {
 
         await supabase.from("dc_stats").insert({
             event_type: "tg_command_updated",
-            details: `Telegram Command /${name} was updated.`
+            details: `Telegram Logic node /${name} was recalibrated.`
         });
 
-        alert("Telegram Logic Node Stabilized! /" + name + " is live. ✈️⚡");
+        alert("Telegram Logic node stabilized! /" + name + " is live. ⚡");
         setEditingCommand(null);
         fetchCommands();
     } catch (err: any) {
-        alert(err.message);
+        alert(`ERR_LOGIC: ${err.message}`);
     } finally {
         setSaving(false);
     }
   };
 
-  const handleDelete = async (cmdName: string) => {
-    if (!confirm(`Delete Telegram path /${cmdName}?`)) return;
-    await supabase.from("dc_commands").delete().eq("name", cmdName);
+  const handleDelete = async (id: any) => {
+    if (!confirm(`Are you sure you want to delete this logic node?`)) return;
+    await supabase.from("dc_commands").delete().eq("id", id);
     fetchCommands();
   };
 
   const filteredCommands = commands.filter(c => c.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="w-full space-y-12 mb-20 animate-in fade-in duration-700">
-      <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <div className="w-full h-full flex flex-col min-h-0 overflow-hidden">
+      
+      {/* Header - Compact */}
+      <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
         <div className="space-y-2">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-3 bg-blue-500/10 text-blue-600 rounded-2xl animate-spin-slow">
-                <Share2 size={24} />
-            </div>
-            <span className="text-xs font-black text-blue-500 uppercase tracking-widest leading-none font-mono italic">N8N Logic Hub</span>
+          <div className="flex items-center gap-3 mb-1">
+             <div className="p-2 bg-blue-600 rounded-xl shadow-lg shadow-blue-200">
+                <Terminal size={16} className="text-white" />
+             </div>
+             <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none font-mono">Telegram Logic Overlord</span>
           </div>
-          <h1 className="text-5xl font-black text-blue-950 tracking-tighter glow-text-blue">
-            Command <span className="opacity-30">Pulse</span>
+          <h1 className="text-3xl font-black text-zinc-950 tracking-tighter">
+            Cloud <span className="text-blue-500">Nodes</span>
           </h1>
-          <p className="text-lg font-medium text-blue-900/60 max-w-2xl italic leading-relaxed">
-            Monitor and calibrate Telegram logic nodes. Each command is mirrored to your N8N flow hooks for real-time interaction.
+          <p className="text-sm font-bold text-zinc-500 max-w-2xl">
+             Calibrating the agency's command distribution and neural pathways for Telegram.
           </p>
         </div>
         
-        <div className="flex gap-4 items-center">
-            <div className="relative group">
-                <Search size={22} className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 group-hover:text-blue-600 transition-colors" />
+        <div className="flex items-center gap-4">
+             <div className="relative group">
+                <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 group-hover:text-blue-600 transition-colors" />
                 <input 
                     type="text" 
-                    placeholder="Search Telegram nodes..."
+                    placeholder="Scan neural paths..."
+                    className="pl-12 pr-6 py-4 bg-white border border-zinc-100 rounded-2xl shadow-sm outline-none focus:ring-8 ring-blue-500/5 transition-all font-bold text-sm w-72 italic"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="pl-14 pr-8 py-5 rounded-[2rem] bg-white border border-blue-50 shadow-xl w-80 font-black text-blue-950 focus:ring-8 ring-blue-500/5 outline-none transition-all placeholder:italic"
                 />
             </div>
             <button 
-                onClick={() => handleEdit({ name: 'tele_cmd', response_text: '', is_active: true })}
-                className="flex items-center gap-3 px-8 py-5 bg-blue-600 text-white font-black text-sm rounded-[2rem] shadow-2xl hover:bg-blue-700 transition-all hover:scale-105 active:scale-95 group italic"
+                onClick={fetchCommands}
+                className="p-4 bg-white border border-zinc-100 rounded-2xl shadow-sm hover:shadow-xl transition-all group active:scale-95"
             >
-                <Plus size={20} className="group-hover:rotate-90 transition-transform" />
-                NEW RELAY NODE
+                <RefreshCcw size={20} className={`text-blue-400 group-hover:text-blue-600 transition-all ${loading ? 'animate-spin' : ''}`} />
+            </button>
+            <button 
+                onClick={() => handleEdit({ name: 'new_cmd', response_text: '', is_active: true })}
+                className="flex items-center gap-4 px-8 py-4 bg-zinc-950 text-white font-black text-xs rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all group italic tracking-widest uppercase"
+            >
+                <Plus size={18} className="group-hover:rotate-90 transition-transform" />
+                Inject Path
             </button>
         </div>
       </header>
 
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-12 items-start">
+      {/* Grid Layout - SIDE-BY-SIDE (NO SCROLL) */}
+      <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 min-h-0 overflow-hidden">
         
-        {/* Logic Grid */}
-        <div className="xl:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-            {loading ? (
-                <div className="col-span-full flex justify-center p-20"><Loader2 className="animate-spin text-blue-500" size={40} /></div>
-            ) : filteredCommands.length === 0 ? (
-                <div className="col-span-full glass-card p-24 text-center border-dashed border-4 border-blue-100/50 bg-white/20 rounded-[4rem]">
-                    <Zap size={60} className="text-blue-200 mb-6 mx-auto" />
-                    <h3 className="text-2xl font-black text-blue-950 opacity-20 tracking-tighter uppercase italic">No active Telegram paths detected.</h3>
-                </div>
-            ) : filteredCommands.map((cmd) => (
-                <motion.div 
-                    layoutId={cmd.name}
-                    key={cmd.name}
-                    className="glass-card p-10 rounded-[3.5rem] border border-white/60 shadow-2xl hover:shadow-blue-500/10 transition-all group relative overflow-hidden bg-white/40 backdrop-blur-xl"
-                >
-                    <div className="flex justify-between items-start mb-8">
-                        <div className="flex items-center gap-4">
-                            <div className="p-4 bg-blue-50 text-blue-600 rounded-2xl shadow-inner">
-                                <Send size={22} className="group-hover:rotate-12 transition-transform" />
-                            </div>
-                            <div>
-                                <h4 className="text-xl font-black text-blue-950 tracking-tighter italic">/{cmd.name}</h4>
-                                <span className="text-[10px] font-black bg-blue-50 text-blue-400 px-3 py-1 rounded-full uppercase italic">N8N_NODE_SECURE</span>
-                            </div>
-                        </div>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" checked={cmd.is_active} className="sr-only peer" readOnly />
-                            <div className="w-14 h-7 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-blue-500 shadow-inner"></div>
-                        </label>
-                    </div>
-                    
-                    <p className="text-sm font-medium text-blue-900 opacity-60 line-clamp-3 mb-10 leading-relaxed italic border-l-4 border-blue-100 pl-4 py-1">
-                        "{cmd.response_text || 'Default response placeholder...'}"
-                    </p>
+        {/* Left: Logic Grid (Col: 8) */}
+        <div className="xl:col-span-8 flex flex-col min-h-0">
+             <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden">
+                  <div className="grid grid-cols-12 p-6 border-b border-zinc-50 bg-zinc-50/20 text-[9px] font-black text-zinc-400 uppercase tracking-widest leading-none">
+                      <div className="col-span-3 pl-4">Neural Path</div>
+                      <div className="col-span-5">Automated Payload</div>
+                      <div className="col-span-2 text-center">Status</div>
+                      <div className="col-span-2 text-right pr-4">Metrics</div>
+                  </div>
 
-                    <div className="flex items-center justify-between border-t border-blue-50 pt-6 mt-auto">
-                        <div className="flex items-center gap-2 text-emerald-600">
-                            <ShieldCheck size={16} />
-                            <span className="text-[10px] font-black uppercase tracking-widest italic opacity-60">LOGIC_ACTIVE</span>
-                        </div>
-                        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button 
-                                onClick={() => handleEdit(cmd)}
-                                className="p-3 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm"><Edit3 size={18} /></button>
-                            <button 
-                                onClick={() => handleDelete(cmd.name)}
-                                className="p-3 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all shadow-sm"><Trash2 size={18} /></button>
-                        </div>
-                    </div>
-                </motion.div>
-            ))}
+                  <div className="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-1">
+                     {loading ? (
+                         <div className="flex justify-center p-20"><Loader2 className="animate-spin text-blue-500" size={40} /></div>
+                     ) : filteredCommands.length === 0 ? (
+                         <div className="p-32 text-center opacity-10 italic uppercase font-black tracking-[0.2em] font-mono">Logic Void Detected</div>
+                     ) : (
+                         filteredCommands.map((cmd, idx) => (
+                             <motion.div 
+                                 initial={{ opacity: 0, x: -10 }}
+                                 animate={{ opacity: 1, x: 0 }}
+                                 transition={{ delay: idx * 0.05 }}
+                                 key={cmd.id}
+                                 className="grid grid-cols-12 items-center p-4 rounded-2xl transition-all border border-transparent hover:bg-zinc-50 hover:border-zinc-100 group"
+                             >
+                                 <div className="col-span-3 pl-4 flex items-center gap-4">
+                                     <div className="w-10 h-10 rounded-xl bg-zinc-50 border border-zinc-100 flex items-center justify-center text-zinc-400 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
+                                         <Command size={14} />
+                                     </div>
+                                     <div className="min-w-0">
+                                         <span className="font-black text-zinc-950 text-sm italic tracking-tighter uppercase truncate block underline underline-offset-4 decoration-zinc-100">/{cmd.name}</span>
+                                         <div className="flex items-center gap-1.5 mt-0.5">
+                                             <div className={`w-1.5 h-1.5 rounded-full ${cmd.is_active ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-red-500'}`}></div>
+                                             <span className="text-[8px] font-black text-zinc-300 uppercase tracking-widest leading-none">CLOUD_RELAY</span>
+                                         </div>
+                                     </div>
+                                 </div>
+                                 <div className="col-span-5">
+                                     <p className="text-xs font-bold text-zinc-500 leading-relaxed pr-10 truncate italic opacity-60 px-4">
+                                         "{cmd.response_text || 'Static response payload...'}"
+                                     </p>
+                                 </div>
+                                 <div className="col-span-2 text-center">
+                                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-50 rounded-full border border-zinc-100 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                         <div className={`w-1.5 h-1.5 rounded-full ${cmd.is_active ? 'bg-emerald-400 shadow-glow-emerald' : 'bg-red-400'}`}></div>
+                                         <span className="text-[9px] font-black uppercase tracking-widest italic">{cmd.is_active ? 'ACTIVE' : 'SEVERED'}</span>
+                                     </div>
+                                 </div>
+                                 <div className="col-span-2 text-right pr-4 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                                     <button 
+                                         onClick={() => handleEdit(cmd)}
+                                         className="p-3 bg-white text-zinc-950 rounded-xl hover:shadow-xl transition-all border border-zinc-100 shadow-sm"><Edit3 size={16} /></button>
+                                     <button 
+                                         onClick={() => handleDelete(cmd.id)}
+                                         className="p-3 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all shadow-sm"><Trash2 size={16} /></button>
+                                 </div>
+                             </motion.div>
+                         ))
+                     )}
+                  </div>
+             </div>
         </div>
 
-        {/* Right Status Panel */}
-        <div className="xl:col-span-4 space-y-8">
-            <div className="glass-card p-10 rounded-[4rem] bg-gradient-to-br from-blue-950 to-blue-900 text-white shadow-2xl relative overflow-hidden group">
-                <div className="absolute -right-6 -top-6 opacity-10 rotate-12 group-hover:rotate-45 transition-transform duration-1000">
-                    <Send size={200} />
-                </div>
-                <h3 className="text-2xl font-black mb-8 flex items-center gap-3 subrayado-glow tracking-tighter italic">
-                    <Sparkles size={24} className="text-sky-400 font-black" /> Telegram Shard
+        {/* Right: Controller Hub (Col: 4) */}
+        <div className="xl:col-span-4 flex flex-col gap-8 min-h-0">
+             <div className="bg-zinc-950 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden group shrink-0">
+                <div className="absolute right-0 bottom-0 p-8 opacity-10 rotate-12 group-hover:scale-125 transition-transform duration-1000 pointer-events-none"><Send size={200} /></div>
+                <h3 className="text-xl font-black mb-6 flex items-center gap-4 italic tracking-tighter">
+                    <Sparkles className="text-zinc-400" /> Neural Pulse
                 </h3>
-                <div className="space-y-6">
-                    <div className="flex justify-between items-center bg-white/10 p-5 rounded-[2.5rem] border border-white/5 backdrop-blur-md">
-                        <span className="text-[10px] font-black opacity-30 uppercase italic tracking-widest">Logic Hub Status</span>
-                        <span className="text-[10px] font-black bg-blue-400 text-blue-950 px-4 py-1.5 rounded-full shadow-lg italic">REACHABLE</span>
+                
+                <div className="space-y-4 relative z-10">
+                    <div className="flex justify-between items-center bg-white/5 p-5 rounded-2xl border border-white/5">
+                        <span className="text-[9px] font-black opacity-30 uppercase italic tracking-widest leading-none">Active Flows</span>
+                        <span className="text-2xl font-black italic tracking-tighter leading-none">{commands.length}</span>
                     </div>
-                    <div className="flex justify-between items-center bg-white/10 p-5 rounded-[2.5rem] border border-white/5 backdrop-blur-md">
-                        <span className="text-[10px] font-black opacity-30 uppercase italic tracking-widest">Active Paths</span>
-                        <span className="text-2xl font-black italic">{commands.length}</span>
-                    </div>
-                    <div className="pt-4">
-                        <button className="w-full py-5 bg-white text-blue-900 font-black text-xs rounded-[2rem] shadow-2xl hover:scale-105 active:scale-95 transition-all uppercase tracking-[0.3em] italic">
-                            Refresh N8N Hooks
-                        </button>
+                    <div className="flex justify-between items-center bg-white/5 p-5 rounded-2xl border border-white/5">
+                        <span className="text-[9px] font-black opacity-30 uppercase italic tracking-widest leading-none">Sync Status</span>
+                        <span className="text-[9px] font-black bg-emerald-400 text-emerald-950 px-3 py-1.5 rounded-lg shadow-lg italic leading-none">ALIGNED</span>
                     </div>
                 </div>
-            </div>
+             </div>
+
+             <div className="bg-white p-8 rounded-[3rem] border border-zinc-100 shadow-sm relative overflow-hidden flex-1 flex flex-col min-h-0 group">
+                <div className="absolute top-0 right-0 p-8 opacity-10 rotate-12 group-hover:rotate-0 transition-transform duration-700 pointer-events-none"><ShieldCheck size={120} /></div>
+                <h4 className="font-black text-xl text-zinc-950 mb-8 flex items-center gap-3 italic tracking-tighter underline underline-offset-8 decoration-zinc-100 uppercase shrink-0">
+                    <History size={18} className="text-zinc-400" /> Activity Trace
+                </h4>
+                
+                <div className="flex-1 flex flex-col items-center justify-center p-4 bg-zinc-50 rounded-[2rem] border border-zinc-100 relative overflow-hidden">
+                     <div className="flex flex-col items-center gap-6 text-center relative z-10 opacity-20">
+                        <Terminal size={48} className="text-zinc-400 animate-pulse" />
+                        <h5 className="text-sm font-black uppercase tracking-[0.2em] italic">Real-time Telemetry Active</h5>
+                     </div>
+                </div>
+
+                <div className="mt-8 text-center shrink-0">
+                    <button className="text-[10px] font-black text-zinc-300 uppercase tracking-[0.4em] hover:text-zinc-950 transition-colors flex items-center justify-center gap-3 mx-auto group italic">
+                        Access Performance Ledger <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
+                    </button>
+                </div>
+             </div>
         </div>
       </div>
 
-      {/* Logic Editor Modal */}
+      {/* Logic Editor Modal - High Density */}
       <AnimatePresence>
         {editingCommand && (
-          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6 bg-blue-950/40 backdrop-blur-2xl animate-in fade-in duration-300">
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6 backdrop-blur-2xl bg-white/10 animate-in fade-in duration-300">
              <motion.div 
-                initial={{ scale: 0.9, opacity: 0, y: 40 }}
+                initial={{ scale: 0.95, opacity: 0, y: 20 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.9, opacity: 0, y: 40 }}
-                className="bg-white rounded-[4rem] w-full max-w-xl p-14 shadow-2xl border border-blue-100 flex flex-col gap-10 relative overflow-hidden"
+                exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                className="bg-white rounded-[3.5rem] w-full max-w-xl p-12 shadow-[0_40px_100px_rgba(0,0,0,0.1)] border border-white flex flex-col gap-8 relative overflow-hidden"
              >
-                <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none rotate-12"><Send size={240} /></div>
+                <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none rotate-45"><Zap size={240} /></div>
                 
-                <div className="flex justify-between items-center border-b border-blue-50 pb-8">
-                    <h3 className="text-3xl font-black text-blue-950 italic tracking-tighter uppercase underline decoration-blue-200 underline-offset-8">
-                        Adjust Node: /{name}
+                <div className="flex justify-between items-center">
+                    <h3 className="text-2xl font-black text-zinc-950 italic tracking-tighter uppercase flex items-center gap-4 py-2 border-b-2 border-zinc-950">
+                        <Zap className="text-zinc-950" size={24} /> Neural Calibrator
                     </h3>
-                    <button onClick={() => setEditingCommand(null)} className="p-4 text-slate-300 hover:text-red-500 bg-slate-50 rounded-2xl transition-all"><X size={24} /></button>
+                    <button onClick={() => setEditingCommand(null)} className="p-4 text-zinc-300 hover:text-red-500 bg-zinc-50 rounded-2xl transition-all"><X size={20} /></button>
                 </div>
                 
-                <div className="space-y-8">
-                    <div className="space-y-3">
-                        <label className="text-[10px] font-black text-blue-950/40 uppercase tracking-[0.3em] px-4 italic font-mono">Node Path Label</label>
-                        <input 
-                            type="text" 
-                            className="w-full p-5 rounded-3xl bg-blue-50/50 border border-blue-100 focus:outline-none focus:ring-8 ring-blue-500/10 font-black text-xl text-blue-950 italic" 
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="command_name"
-                        />
+                <div className="space-y-6 relative z-10">
+                    <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Path Trigger</label>
+                            <input 
+                                type="text" 
+                                className="w-full p-4 rounded-xl bg-zinc-50 border border-zinc-100 font-black text-2xl text-zinc-950 focus:bg-white outline-none italic transition-all truncate" 
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder="status_check"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Relay Status</label>
+                            <button 
+                                onClick={() => setIsActive(!isActive)}
+                                className={`w-full h-[66px] rounded-xl transition-all border flex items-center justify-between px-6 ${isActive ? 'bg-zinc-950 border-zinc-950 text-white shadow-xl' : 'bg-red-50 border-red-200 text-red-500'}`}
+                            >
+                                <span className="text-[9px] font-black uppercase tracking-widest">{isActive ? 'ONLINE' : 'SEVERED'}</span>
+                                <Power size={20} className={isActive ? 'text-blue-400 animate-pulse shadow-glow-blue' : ''} />
+                            </button>
+                        </div>
                     </div>
 
-                    <div className="space-y-3">
-                        <label className="text-[10px] font-black text-blue-950/40 uppercase tracking-[0.3em] px-4 italic font-mono">Automated Payload</label>
+                    <div className="space-y-2">
+                        <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Automated Payload</label>
                         <textarea 
-                            rows={5} 
-                            className="w-full p-6 rounded-[2.5rem] bg-blue-50/50 border border-blue-100 focus:outline-none focus:ring-8 ring-blue-500/10 font-bold text-blue-950 leading-relaxed italic" 
+                            rows={4} 
+                            className="w-full p-6 rounded-xl bg-zinc-50 border border-zinc-100 focus:bg-white font-bold text-zinc-900 leading-relaxed italic transition-all outline-none resize-none shadow-inner" 
                             value={response}
                             onChange={(e) => setResponse(e.target.value)}
-                            placeholder="Enter Telegram response..."
+                            placeholder="Enter command response payload..."
                         />
-                    </div>
-                    
-                    <div className="space-y-3">
-                        <label className="text-[10px] font-black text-blue-950/40 uppercase tracking-[0.3em] px-4 italic font-mono">Active Relay Link</label>
-                        <button 
-                            onClick={() => setIsActive(!isActive)}
-                            className={`w-full p-5 rounded-3xl font-black text-sm flex items-center justify-between transition-all border ${
-                                isActive ? 'bg-emerald-50 border-emerald-200 text-emerald-600' : 'bg-red-50 border-red-200 text-red-600'
-                            }`}
-                        >
-                            <span className="italic">{isActive ? 'RELAY ONLINE' : 'NODE SEVERED'}</span>
-                            <Power size={18} className={isActive ? 'animate-pulse' : ''} />
-                        </button>
                     </div>
                 </div>
 
-                <div className="flex gap-6 pt-6">
+                <div className="pt-4">
                     <button 
                         onClick={handleSave}
                         disabled={saving}
-                        className="flex-1 py-6 bg-blue-600 text-white font-black text-sm rounded-[2.5rem] shadow-2xl hover:bg-blue-700 transition-all flex items-center justify-center gap-3 uppercase tracking-widest italic group disabled:opacity-50"
+                        className="w-full py-6 bg-zinc-950 text-white font-black text-[10px] rounded-2xl shadow-xl hover:bg-black transition-all flex items-center justify-center gap-4 uppercase tracking-[0.4em] italic disabled:opacity-50"
                     >
-                        {saving ? <Loader2 className="animate-spin" /> : <Save size={22} />} 
-                        PUSH LOGIC TO N8N
+                        {saving ? <Loader2 className="animate-spin" /> : <Save size={20} />} 
+                        Broadcast Neural Sync
                     </button>
                 </div>
              </motion.div>

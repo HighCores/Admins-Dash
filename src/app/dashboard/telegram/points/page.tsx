@@ -1,0 +1,289 @@
+"use client";
+
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Zap, Plus, Trash2, Edit3, Save, 
+  Loader2, Sparkles, X, Bot, 
+  CheckCircle2, AlertCircle, RefreshCcw, 
+  Layout, Monitor, Smartphone, Search,
+  ChevronRight, Hash, Send, History, ArrowRight, TrendingUp, Coins,
+  Activity, UserCircle, Target, Globe
+} from "lucide-react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+
+export default function TelegramPointsPage() {
+  const [points, setPoints] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [editingPoints, setEditingPoints] = useState<any | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  // Form State
+  const [userId, setUserId] = useState("");
+  const [amount, setAmount] = useState(0);
+
+  useEffect(() => {
+    fetchPoints();
+  }, []);
+
+  const fetchPoints = async () => {
+    setLoading(true);
+    const { data } = await supabase
+        .from("dc_points")
+        .select("*")
+        .eq("guild_id", "telegram_global")
+        .order("points", { ascending: false });
+    
+    if (data) setPoints(data);
+    setLoading(false);
+  };
+
+  const handleEdit = (entry: any) => {
+    setEditingPoints(entry);
+    setUserId(entry.user_id || "");
+    setAmount(entry.points || 0);
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+        const { error } = await supabase.from("dc_points").upsert({
+            id: editingPoints?.id,
+            guild_id: "telegram_global",
+            user_id: userId,
+            points: amount,
+            updated_at: new Date().toISOString()
+        }, { onConflict: 'user_id,guild_id' });
+
+        if (error) throw error;
+        setEditingPoints(null);
+        fetchPoints();
+    } catch (err: any) {
+        alert(err.message);
+    } finally {
+        setSaving(false);
+    }
+  };
+
+  const filteredPoints = points.filter(p => 
+    p.user_id.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="w-full h-full flex flex-col min-h-0 overflow-hidden">
+      
+      {/* Header - Compact */}
+      <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
+        <div className="space-y-1">
+          <div className="flex items-center gap-3 mb-1">
+             <div className="p-2 bg-blue-600 rounded-xl shadow-lg shadow-blue-200">
+                <Coins size={16} className="text-white" />
+             </div>
+             <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none font-mono">Neural Value Registry</span>
+          </div>
+          <h1 className="text-3xl font-black text-zinc-950 tracking-tighter">
+            General <span className="text-blue-500">Points</span>
+          </h1>
+          <p className="text-sm font-bold text-zinc-500 max-w-2xl">
+             Managing operational credits and user prestige nodes across Telegram High Core.
+          </p>
+        </div>
+        
+        <div className="flex items-center gap-4">
+             <div className="relative group">
+                <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-hover:text-blue-500 transition-colors" />
+                <input 
+                    type="text" 
+                    placeholder="Search User ID..."
+                    className="pl-12 pr-6 py-4 bg-white border border-zinc-100 rounded-2xl shadow-sm outline-none focus:ring-8 ring-blue-500/5 transition-all font-bold text-sm w-64 italic"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
+            </div>
+            <button 
+                onClick={fetchPoints}
+                className="p-4 bg-white border border-zinc-100 rounded-2xl shadow-sm hover:shadow-xl transition-all group active:scale-95"
+            >
+                <RefreshCcw size={20} className={`text-blue-400 group-hover:text-blue-600 transition-all ${loading ? 'animate-spin' : ''}`} />
+            </button>
+            <button 
+                onClick={() => handleEdit({ user_id: '', points: 0 })}
+                className="flex items-center gap-4 px-8 py-4 bg-zinc-950 text-white font-black text-xs rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all group italic tracking-widest uppercase"
+            >
+                <Plus size={18} />
+                Inject Value
+            </button>
+        </div>
+      </header>
+
+      {/* Grid Layout - SIDE-BY-SIDE (NO SCROLL) */}
+      <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 min-h-0 overflow-hidden">
+        
+        {/* Left: Ledger Grid (Col: 8) */}
+        <div className="xl:col-span-8 flex flex-col min-h-0 overflow-hidden">
+             <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden">
+                  <div className="grid grid-cols-12 p-6 border-b border-zinc-50 bg-zinc-50/20 text-[9px] font-black text-zinc-400 uppercase tracking-widest">
+                      <div className="col-span-5 pl-4">User Proxy Identity</div>
+                      <div className="col-span-4 text-center">Neural Credit Balance</div>
+                      <div className="col-span-3 text-right pr-4">Logic Gear</div>
+                  </div>
+
+                  <div className="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-2">
+                     {loading ? (
+                         <div className="flex justify-center p-20"><Loader2 className="animate-spin text-zinc-300" size={40} /></div>
+                     ) : filteredPoints.length === 0 ? (
+                         <div className="p-32 text-center opacity-10 italic uppercase font-black tracking-widest font-mono">Value Matrix Depleted</div>
+                     ) : (
+                         filteredPoints.map((entry, idx) => (
+                             <motion.div 
+                                 initial={{ opacity: 0, x: -10 }}
+                                 animate={{ opacity: 1, x: 0 }}
+                                 transition={{ delay: idx * 0.05 }}
+                                 key={entry.id}
+                                 className="grid grid-cols-12 items-center p-4 rounded-2xl transition-all border border-transparent hover:bg-zinc-50 hover:border-zinc-100 group"
+                             >
+                                 <div className="col-span-5 pl-4">
+                                     <div className="flex items-center gap-4">
+                                         <div className="w-10 h-10 rounded-xl bg-zinc-50 border border-zinc-100 flex items-center justify-center font-black text-zinc-300 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
+                                             <UserCircle size={18} />
+                                         </div>
+                                         <div className="flex flex-col">
+                                            <span className="font-black text-zinc-950 uppercase italic tracking-tighter text-lg leading-none truncate underline underline-offset-4 decoration-zinc-100">{entry.user_id}</span>
+                                            <span className="text-[9px] font-black text-zinc-300 uppercase tracking-widest mt-1">Operational Proxy</span>
+                                         </div>
+                                     </div>
+                                 </div>
+                                 <div className="col-span-4 text-center">
+                                     <div className="inline-flex items-center gap-3 px-6 py-2 bg-zinc-50 rounded-full border border-zinc-100 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                         <Zap size={10} className="text-blue-500 group-hover:text-white" />
+                                         <span className="text-xl font-black italic tracking-tighter leading-none">{entry.points}</span>
+                                     </div>
+                                 </div>
+                                 <div className="col-span-3 text-right pr-4 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                                     <button 
+                                         onClick={() => handleEdit(entry)}
+                                         className="p-3 bg-white text-zinc-950 rounded-xl hover:shadow-xl transition-all border border-zinc-100 shadow-sm"><Edit3 size={16} /></button>
+                                 </div>
+                             </motion.div>
+                         ))
+                     )}
+                  </div>
+             </div>
+        </div>
+
+        {/* Right: Operational Stats (Col: 4) */}
+        <div className="xl:col-span-4 flex flex-col gap-8 min-h-0">
+             <div className="bg-zinc-950 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden group shrink-0">
+                <div className="absolute right-0 bottom-0 p-8 opacity-10 rotate-12 group-hover:scale-125 transition-transform duration-1000 pointer-events-none"><Activity size={200} /></div>
+                <h3 className="text-xl font-black mb-6 flex items-center gap-4 italic tracking-tighter">
+                    <Activity className="text-zinc-400" /> Matrix Health
+                </h3>
+                
+                <div className="space-y-4 relative z-10">
+                    <div className="flex justify-between items-center bg-white/5 p-5 rounded-2xl border border-white/5">
+                        <span className="text-[10px] font-black opacity-30 uppercase italic tracking-widest leading-none">Registered Nodes</span>
+                        <span className="text-2xl font-black italic tracking-tighter leading-none">{points.length}</span>
+                    </div>
+                    <div className="flex justify-between items-center bg-white/5 p-5 rounded-2xl border border-white/5">
+                        <span className="text-[10px] font-black opacity-30 uppercase italic tracking-widest leading-none">Net Value</span>
+                        <span className="text-2xl font-black italic tracking-tighter leading-none">{points.reduce((acc, p) => acc + (p.points || 0), 0)}</span>
+                    </div>
+                </div>
+             </div>
+
+             <div className="bg-white p-8 rounded-[3rem] border border-zinc-100 shadow-sm relative overflow-hidden flex-1 flex flex-col min-h-0 group">
+                <h4 className="font-black text-xl text-zinc-950 mb-8 flex items-center gap-3 italic tracking-tighter underline underline-offset-8 decoration-zinc-100 uppercase shrink-0">
+                    <History size={18} className="text-zinc-400" /> Operational Trace
+                </h4>
+                
+                <div className="flex-1 flex flex-col items-center justify-center p-4 bg-zinc-50 rounded-[2rem] border border-zinc-100 relative overflow-hidden">
+                     <div className="flex flex-col items-center gap-6 text-center relative z-10 opacity-20">
+                        <Globe size={48} className="text-zinc-400 animate-spin-slow" />
+                        <h5 className="text-sm font-black uppercase tracking-[0.2em] italic">Global Sync Active</h5>
+                     </div>
+                </div>
+
+                <div className="mt-8 text-center shrink-0">
+                    <button className="text-[10px] font-black text-zinc-300 uppercase tracking-[0.4em] hover:text-zinc-950 transition-colors flex items-center justify-center gap-3 mx-auto group italic">
+                        Access Sovereigns Ledger <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
+                    </button>
+                </div>
+             </div>
+        </div>
+      </div>
+
+      {/* Value Editor Modal */}
+      <AnimatePresence>
+        {editingPoints && (
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6 backdrop-blur-2xl bg-white/10 animate-in fade-in duration-300">
+             <motion.div 
+                initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                className="bg-white rounded-[3.5rem] w-full max-w-xl p-12 shadow-[0_40px_100px_rgba(0,0,0,0.1)] border border-white flex flex-col gap-8 relative overflow-hidden"
+             >
+                <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none rotate-45"><Coins size={240} /></div>
+                
+                <div className="flex justify-between items-center">
+                    <h3 className="text-2xl font-black text-zinc-950 italic tracking-tighter uppercase flex items-center gap-3 py-2 border-b-2 border-zinc-950">
+                        <Target className="text-zinc-950" size={24} /> Value Calibrator
+                    </h3>
+                    <button onClick={() => setEditingPoints(null)} className="p-4 text-zinc-300 hover:text-zinc-950 bg-zinc-50 rounded-2xl transition-all"><X size={20} /></button>
+                </div>
+                
+                <div className="space-y-6 relative z-10">
+                    <div className="space-y-2">
+                        <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Target Proxy Identity (User ID)</label>
+                        <div className="relative">
+                            <UserCircle size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300" />
+                            <input 
+                                type="text"
+                                className="w-full pl-12 pr-6 py-5 bg-zinc-50 border border-zinc-100 rounded-xl font-bold text-sm text-zinc-950 outline-none focus:bg-white transition-all shadow-inner uppercase tracking-widest"
+                                placeholder="Telegram Identifier..."
+                                value={userId}
+                                onChange={(e) => setUserId(e.target.value)}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-2 text-center pt-4">
+                        <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic block mb-4">Neural Credit Amount</label>
+                        <div className="flex items-center justify-center gap-10">
+                             <button onClick={() => setAmount(Math.max(0, amount - 100))} className="p-6 bg-zinc-50 rounded-2xl border border-zinc-100 font-black text-xl hover:bg-zinc-950 hover:text-white transition-all shadow-sm">-</button>
+                             <input 
+                                type="number" 
+                                className="w-40 p-4 border-b-4 border-zinc-950 bg-transparent font-black text-5xl text-zinc-950 outline-none italic transition-all text-center" 
+                                value={amount}
+                                onChange={(e) => setAmount(parseInt(e.target.value) || 0)}
+                            />
+                             <button onClick={() => setAmount(amount + 100)} className="p-6 bg-zinc-50 rounded-2xl border border-zinc-100 font-black text-xl hover:bg-zinc-950 hover:text-white transition-all shadow-sm">+</button>
+                        </div>
+                    </div>
+
+                    <div className="p-6 bg-blue-600 rounded-[2rem] text-white shadow-xl relative overflow-hidden flex items-center gap-5 mt-6">
+                         <div className="p-3 bg-white/10 rounded-xl backdrop-blur-md"><Sparkles size={24} /></div>
+                         <div>
+                            <div className="text-[10px] font-black uppercase tracking-widest leading-none mb-1">CREDIT_TRANSF_READY</div>
+                            <div className="text-xs font-bold text-white/60 leading-relaxed italic pr-10">Aligning neural credits with the High Core sovereignty matrix.</div>
+                         </div>
+                    </div>
+                </div>
+
+                <div className="pt-4">
+                    <button 
+                        onClick={handleSave}
+                        disabled={saving}
+                        className="w-full py-6 bg-zinc-950 text-white font-black text-[10px] rounded-2xl shadow-xl hover:bg-black transition-all flex items-center justify-center gap-4 uppercase tracking-[0.4em] italic disabled:opacity-50"
+                    >
+                        {saving ? <Loader2 className="animate-spin" /> : <RefreshCcw size={20} />} 
+                        Broadcast Value Alignment
+                    </button>
+                </div>
+             </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
