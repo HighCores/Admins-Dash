@@ -11,6 +11,7 @@ import {
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import DiscordSelect from "@/components/DiscordSelect";
+import { showToast } from "@/components/CustomToaster";
 
 export default function ColorRolesPage() {
   const [roles, setRoles] = useState<any[]>([]);
@@ -36,38 +37,40 @@ export default function ColorRolesPage() {
 
   const handleEdit = (role: any) => {
     setEditingRole(role);
-    setName(role.color_name || "");
+    setName(role.role_name || "");
     setRoleId(role.role_id || "");
-    setHex(role.color_hex || "#ffffff");
+    setHex(role.hex_color || "#3b82f6");
   };
 
-  const handleSave = async () => {
+    const handleSave = async () => {
+    if (!name || !roleId) return showToast("Please provide a name and select a role.", true);
     setSaving(true);
     try {
         const { error } = await supabase.from("dc_color_roles").upsert({
-            guild_id: "global",
             role_id: roleId,
-            color_name: name,
-            color_hex: hex,
+            role_name: name,
+            hex_color: hex,
             updated_at: new Date().toISOString()
-        }, { onConflict: 'guild_id,color_name' });
+        }, { onConflict: 'role_id' });
 
         if (error) throw error;
-        alert("Color spectrum aligned! 🎨");
+        showToast("Color spectrum aligned! 🎨");
         setEditingRole(null);
         fetchRoles();
     } catch (err: any) {
-        alert(err.message);
+        showToast("Failed to sync: " + err.message, true);
     } finally {
         setSaving(false);
     }
   };
 
-  const handleDelete = async (name: string) => {
+  const handleDelete = async (roleIdToDelete: string) => {
     if (!confirm("Delete this color node?")) return;
-    await supabase.from("dc_color_roles").delete().eq("color_name", name);
+    await supabase.from("dc_color_roles").delete().eq("role_id", roleIdToDelete);
     fetchRoles();
   };
+
+  const usedRoleIds = roles.map(r => r.role_id);
 
   const cleanId = (id: string) => {
     if (!id) return "NODE_UNKNOWN";
@@ -102,7 +105,7 @@ export default function ColorRolesPage() {
                 <RefreshCcw size={20} className={`text-zinc-400 group-hover:text-zinc-950 transition-all ${loading ? 'animate-spin' : ''}`} />
             </button>
             <button 
-                onClick={() => handleEdit({ color_name: '', role_id: '', color_hex: '#3b82f6' })}
+                onClick={() => handleEdit({ role_name: '', role_id: '', hex_color: '#3b82f6' })}
                 className="flex items-center gap-4 px-8 py-4 bg-zinc-950 text-white font-black text-xs rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all group italic tracking-widest uppercase"
             >
                 <Plus size={18} className="group-hover:rotate-90 transition-transform" />
@@ -141,12 +144,12 @@ export default function ColorRolesPage() {
                                  <div className="col-span-4 pl-4 flex items-center gap-6">
                                      <div 
                                          className="w-11 h-11 rounded-xl shadow-2xl border-4 border-white transition-all group-hover:scale-110 rotate-3 group-hover:rotate-0" 
-                                         style={{ backgroundColor: role.color_hex }}
+                                         style={{ backgroundColor: role.hex_color }}
                                      />
-                                     <code className="text-[10px] font-black text-zinc-400 bg-white px-3 py-1.5 rounded-lg border border-zinc-100 shadow-inner">{role.color_hex}</code>
+                                     <code className="text-[10px] font-black text-zinc-400 bg-white px-3 py-1.5 rounded-lg border border-zinc-100 shadow-inner">{role.hex_color}</code>
                                  </div>
                                  <div className="col-span-3">
-                                     <span className="font-black text-zinc-950 uppercase italic tracking-tighter text-lg leading-none">{role.color_name}</span>
+                                     <span className="font-black text-zinc-950 uppercase italic tracking-tighter text-lg leading-none">{role.role_name}</span>
                                  </div>
                                  <div className="col-span-3 flex items-center gap-2">
                                      <Shield size={14} className="text-zinc-300" />
@@ -157,7 +160,7 @@ export default function ColorRolesPage() {
                                          onClick={() => handleEdit(role)}
                                          className="p-3 bg-white text-zinc-950 rounded-xl hover:shadow-xl transition-all border border-zinc-100 shadow-sm"><Edit3 size={16} /></button>
                                      <button 
-                                         onClick={() => handleDelete(role.color_name)}
+                                         onClick={() => handleDelete(role.role_id)}
                                          className="p-3 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all shadow-sm"><Trash2 size={16} /></button>
                                  </div>
                              </motion.div>
@@ -202,8 +205,8 @@ export default function ColorRolesPage() {
                         </div>
                         <div className="flex flex-wrap justify-center gap-2 max-w-[240px]">
                              {roles.slice(0, 4).map(r => (
-                                <div key={r.id} className="px-5 py-2 rounded-full text-[9px] font-black text-white shadow-lg uppercase tracking-widest italic flex items-center gap-2" style={{ backgroundColor: r.color_hex }}>
-                                    <Shield size={10} /> {r.color_name}
+                                <div key={r.role_id} className="px-5 py-2 rounded-full text-[9px] font-black text-white shadow-lg uppercase tracking-widest italic flex items-center gap-2" style={{ backgroundColor: r.hex_color }}>
+                                    <Shield size={10} /> {r.role_name}
                                 </div>
                              ))}
                         </div>
@@ -254,6 +257,7 @@ export default function ColorRolesPage() {
                         label="Identity Anchor (Role)"
                         type="role"
                         value={roleId}
+                        excludeIds={usedRoleIds.filter(id => id !== roleId)}
                         onChange={(val, color) => {
                             setRoleId(val);
                             if (color) setHex(color);

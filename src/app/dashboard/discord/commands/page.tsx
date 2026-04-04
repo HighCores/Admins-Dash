@@ -9,6 +9,7 @@ import {
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import DiscordSelect from "@/components/DiscordSelect";
+import { showToast } from "@/components/CustomToaster";
 
 export default function CommandsPage() {
   const [commands, setCommands] = useState<any[]>([]);
@@ -49,7 +50,7 @@ export default function CommandsPage() {
   };
 
   const handleSave = async () => {
-    if (!name || !response) return alert("All logic nodes must be populated.");
+    if (!name || !response) return showToast("All logic nodes must be populated.", true);
     setSaving(true);
     try {
         const { error } = await supabase.from("dc_commands").upsert({
@@ -69,11 +70,11 @@ export default function CommandsPage() {
             details: `Logic node /${name} was recalibrated.`
         });
 
-        alert("Logic node stabilized! /" + name + " is live. ⚡");
+        showToast("Logic node stabilized! /" + name + " is live. ⚡");
         setEditingCommand(null);
         fetchCommands();
     } catch (err: any) {
-        alert(`ERR_LOGIC: ${err.message}`);
+        showToast(`ERR_LOGIC: ${err.message}`, true);
     } finally {
         setSaving(false);
     }

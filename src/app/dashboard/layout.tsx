@@ -1,4 +1,5 @@
 import Sidebar from "@/components/Sidebar";
+import CustomToaster from "@/components/CustomToaster";
 
 export default function DashboardLayout({
   children,
@@ -7,16 +8,17 @@ export default function DashboardLayout({
 }) {
   return (
     <div className="flex h-screen bg-zinc-50 overflow-hidden font-sans selection:bg-zinc-900 selection:text-white">
-      {/* Sidebar - Fixed width to prevent shrinking, high contrast */}
-      <aside className="w-72 shrink-0 h-full bg-white z-50 relative">
+      {/* Sidebar - Fixed width to prevent shrinking, hidden on very small screens or flexible */}
+      <aside className="hidden md:block w-72 shrink-0 h-full bg-white z-50 relative border-r border-zinc-100">
          <Sidebar />
       </aside>
       
-      {/* Main Content Area - No-Scroll Shell */}
-      <main className="flex-1 h-full overflow-hidden bg-zinc-50/30 relative">
-        <div className="h-full w-full p-6 lg:p-8 flex flex-col min-h-0">
+      {/* Main Content Area - Full fluid scrolling */}
+      <main className="flex-1 h-full overflow-y-auto bg-zinc-50/30 relative custom-scrollbar">
+        <div className="min-h-full w-full p-4 lg:p-8 flex flex-col">
           {children}
         </div>
+        <CustomToaster />
         
         {/* Subtle decorative elements for premium feel */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-zinc-100/50 rounded-full blur-[120px] -z-10 pointer-events-none"></div>

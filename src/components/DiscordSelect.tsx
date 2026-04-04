@@ -7,11 +7,12 @@ interface DiscordSelectProps {
   label: string;
   type: "channel" | "role" | "category";
   value: string;
+  excludeIds?: string[];
   onChange: (value: string, color?: string) => void;
   placeholder?: string;
 }
 
-export default function DiscordSelect({ label, type, value, onChange, placeholder }: DiscordSelectProps) {
+export default function DiscordSelect({ label, type, value, excludeIds = [], onChange, placeholder }: DiscordSelectProps) {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -61,6 +62,7 @@ export default function DiscordSelect({ label, type, value, onChange, placeholde
   const selectedItem = items.find((i) => i.id === value);
   const filteredItems = items.filter((i) => {
     const name = i?.name || i?.label || "Unknown Node";
+    if (excludeIds.includes(i.id)) return false;
     return name.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
