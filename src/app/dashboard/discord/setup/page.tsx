@@ -14,6 +14,7 @@ import { supabase } from "@/lib/supabase";
 import DiscordSelect from "@/components/DiscordSelect";
 
 export default function SetupPage() {
+  const [settings, setSettings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [seeding, setSeeding] = useState(false);
@@ -46,6 +47,7 @@ export default function SetupPage() {
     setLoading(true);
     const { data } = await supabase.from("dc_settings").select("*");
     if (data) {
+        setSettings(data);
         const find = (key: string) => data.find(s => s.key === key)?.value || "";
         setWelcomeChannel(find("WELCOME_CHANNEL_ID"));
         setLogCategory(find("LOG_CATEGORY_ID"));
@@ -274,25 +276,37 @@ export default function SetupPage() {
              <div className="bg-white p-10 rounded-[3rem] border border-zinc-100 shadow-sm relative overflow-hidden flex flex-col items-center justify-center group flex-1 shrink-0">
                 <div className="absolute top-0 right-0 p-8 opacity-10 rotate-12 group-hover:rotate-0 transition-transform duration-700 pointer-events-none"><Activity size={120} /></div>
                 <h3 className="text-xl font-black text-zinc-950 mb-10 flex items-center gap-3 italic tracking-tighter underline underline-offset-8 decoration-zinc-100 uppercase shrink-0">
-                    <Activity size={18} className="text-zinc-400" /> System Seeding
+                    <Activity size={18} className="text-zinc-400" /> Nexus Pulse
                 </h3>
 
-                <p className="text-[10px] font-bold text-zinc-400 text-center px-10 italic uppercase tracking-widest leading-relaxed mb-10">
-                    If your logic node grid is empty, use the system seeder to inject standard operational protocols.
-                </p>
-
-                <button 
-                    disabled={seeding}
-                    onClick={handleSeedDefaults}
-                    className="flex flex-col items-center gap-6 px-12 py-10 bg-zinc-50 border-2 border-dashed border-zinc-200 rounded-[2.5rem] group hover:bg-zinc-950 hover:border-transparent transition-all shadow-inner relative overflow-hidden"
-                >
-                    <div className="absolute inset-0 bg-white/5 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-                    <Database size={32} className={`text-zinc-300 ${seeding ? 'animate-spin' : 'group-hover:text-emerald-400 group-hover:scale-125'} transition-all`} />
-                    <div className="text-center">
-                        <span className="text-xs font-black italic tracking-widest text-zinc-950 group-hover:text-white uppercase block mb-1">Seed System Defaults</span>
-                        <span className="text-[8px] font-black text-zinc-300 uppercase tracking-widest italic group-hover:text-zinc-500">POPULATE_EMPTY_LEOPOLD</span>
+                <div className="w-full space-y-6">
+                    <div className="p-6 bg-zinc-50 rounded-3xl border border-zinc-100 space-y-4">
+                        <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest italic">Discord_Uplink</span>
+                            <span className={`px-2 py-1 rounded-md text-[8px] font-black uppercase ${welcomeChannel ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600'}`}>
+                                {welcomeChannel ? 'CONNECTED_STABLE' : 'OFFLINE_ERR'}
+                            </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest italic">Supabase_Matrix</span>
+                            <span className={`px-2 py-1 rounded-md text-[8px] font-black uppercase ${settings.length > 0 ? 'bg-emerald-500/10 text-emerald-600' : 'bg-zinc-500/10 text-zinc-400'}`}>
+                                {settings.length > 0 ? 'SYNCHRONIZED' : 'POLLING...'}
+                            </span>
+                        </div>
                     </div>
-                </button>
+
+                    <button 
+                        disabled={seeding}
+                        onClick={handleSeedDefaults}
+                        className="w-full flex flex-col items-center gap-4 p-8 bg-zinc-50 border-2 border-dashed border-zinc-200 rounded-[2.5rem] group hover:bg-zinc-950 hover:border-transparent transition-all shadow-inner relative overflow-hidden"
+                    >
+                        <Database size={24} className={`text-zinc-300 ${seeding ? 'animate-spin' : 'group-hover:text-emerald-400 group-hover:scale-125'} transition-all`} />
+                        <div className="text-center">
+                            <span className="text-[10px] font-black italic tracking-widest text-zinc-950 group-hover:text-white uppercase block mb-1">Seed System Defaults</span>
+                            <span className="text-[7px] font-black text-zinc-300 uppercase tracking-widest italic group-hover:text-zinc-500">INJECT_LOGIC_NODES</span>
+                        </div>
+                    </button>
+                </div>
              </div>
 
              <div className="p-8 bg-zinc-950 text-white rounded-[2.5rem] shadow-2xl relative overflow-hidden group border border-zinc-900 shrink-0">
@@ -301,7 +315,15 @@ export default function SetupPage() {
                    <ShieldAlert className="text-red-500 animate-pulse" size={18} /> Forced Shutdown
                 </h4>
                 <p className="text-[10px] opacity-40 mb-6 font-bold leading-relaxed pr-10 italic">High Core emergency security failsafe. Abort all active entity threads immediately across all network shards.</p>
-                <button className="w-full py-4 bg-white text-zinc-950 rounded-xl font-black text-[9px] uppercase tracking-[0.3em] shadow-xl hover:bg-zinc-100 transition-all italic underline decoration-zinc-200 underline-offset-4">TERMINATE_ENTITY_CYCLE</button>
+                <button 
+                  onClick={() => {
+                    localStorage.clear();
+                    window.location.href = '/';
+                  }}
+                  className="w-full py-4 bg-white text-zinc-950 rounded-xl font-black text-[9px] uppercase tracking-[0.3em] shadow-xl hover:bg-zinc-100 transition-all italic underline decoration-zinc-200 underline-offset-4"
+                >
+                  TERMINATE_ENTITY_SESSION
+                </button>
             </div>
         </div>
       </div>

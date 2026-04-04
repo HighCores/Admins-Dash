@@ -35,8 +35,11 @@ export default function TicketsPage() {
     const { data } = await query;
     if (data) {
         setTickets(data);
-        // Proactively resolve some names
-        data.slice(0, 10).forEach(t => resolveUsername(t.user_id));
+        // Proactively resolve both users and admins
+        data.slice(0, 15).forEach(t => {
+            resolveUsername(t.user_id);
+            if (t.admin_id) resolveUsername(t.admin_id);
+        });
     }
     setLoading(false);
   };
@@ -227,15 +230,15 @@ export default function TicketsPage() {
                                 <div className="p-4 bg-zinc-50 rounded-2xl border border-zinc-100 flex items-center gap-4">
                                     <User size={16} className="text-zinc-400" />
                                     <div>
-                                        <div className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.2em] leading-none mb-1">Affiliate Node</div>
-                                        <div className="text-sm font-black text-zinc-950 truncate tracking-tight">{usernames[activeTicket.user_id] || activeTicket.user_id}</div>
+                                        <div className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.2em] leading-none mb-1">Affiliate Node (USER)</div>
+                                        <div className="text-sm font-black text-zinc-950 truncate tracking-tight">{usernames[activeTicket.user_id] || activeTicket.user_name || activeTicket.user_id}</div>
                                     </div>
                                 </div>
                                 <div className="p-4 bg-zinc-50 rounded-2xl border border-zinc-100 flex items-center gap-4">
-                                    <Clock size={16} className="text-zinc-400" />
+                                    <Shield size={16} className="text-zinc-400" />
                                     <div>
-                                        <div className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.2em] leading-none mb-1">Created At</div>
-                                        <div className="text-sm font-black text-zinc-950 truncate tracking-tight">{new Date(activeTicket.created_at).toLocaleString()}</div>
+                                        <div className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.2em] leading-none mb-1">Administrative Node (ADMIN)</div>
+                                        <div className="text-sm font-black text-zinc-950 truncate tracking-tight">{usernames[activeTicket.admin_id] || activeTicket.admin_id || "UNASSIGNED"}</div>
                                     </div>
                                 </div>
                             </div>

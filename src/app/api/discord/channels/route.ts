@@ -4,32 +4,26 @@ export async function GET() {
     const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
     const GUILD_ID = process.env.DISCORD_GUILD_ID;
 
-    if (!BOT_TOKEN || !GUILD_ID) {
-        return NextResponse.json({ error: "Missing Discord Credentials" }, { status: 500 });
-    }
+    if (!BOT_TOKEN) return NextResponse.json({ error: "Missing DISCORD_BOT_TOKEN in .env.local" }, { status: 401 });
+    if (!GUILD_ID) return NextResponse.json({ error: "Missing DISCORD_GUILD_ID in .env.local" }, { status: 400 });
 
     try {
         const response = await fetch(`https://discord.com/api/v10/guilds/${GUILD_ID}/channels`, {
-            headers: {
-                Authorization: `Bot ${BOT_TOKEN}`,
-            },
+            headers: { Authorization: `Bot ${BOT_TOKEN}` },
+            next: { revalidate: 0 } // Disable cache for diagnostics
         });
 
-        if (!response.ok) {
-            return NextResponse.json({ error: "Failed to fetch channels" }, { status: response.status });
-        }
+        if (response.status === 401) return NextResponse.json({ error: "Invalid Discord Bot Token" }, { status: 401 });
+        if (response.status === 404) return NextResponse.json({ error: "Guild (Server) Not Found. Check GUILD_ID" }, { status: 404 });
+        if (!response.ok) return NextResponse.json({ error: `Discord API Error: ${response.statusText}` }, { status: response.status });
 
         const channels = await response.json();
-        // Filter for Text Channels (type 0)
         const textChannels = channels
             .filter((ch: any) => ch.type === 0)
-            .map((ch: any) => ({
-                id: ch.id,
-                name: ch.name,
-            }));
+            .map((ch: any) => ({ id: ch.id, name: ch.name }));
 
         return NextResponse.json(textChannels);
-    } catch (error) {
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    } catch (error: any) {
+        return NextResponse.json({ error: `Connection Failed: ${error.message}` }, { status: 500 });
     }
 }
