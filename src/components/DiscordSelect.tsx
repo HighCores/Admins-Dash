@@ -22,9 +22,15 @@ export default function DiscordSelect({ label, type, value, onChange, placeholde
       try {
         const response = await fetch(`/api/discord/${type === "channel" ? "channels" : "roles"}`);
         const data = await response.json();
-        setItems(data);
+        if (Array.isArray(data)) {
+            setItems(data);
+        } else {
+            console.warn(`API returned non-array for ${type}:`, data);
+            setItems([]);
+        }
       } catch (err) {
         console.error(`Error loading ${type}s:`, err);
+        setItems([]);
       } finally {
         setLoading(false);
       }
@@ -33,13 +39,14 @@ export default function DiscordSelect({ label, type, value, onChange, placeholde
   }, [type]);
 
   const selectedItem = items.find((i) => i.id === value);
-  const filteredItems = items.filter((i) => 
-    i.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredItems = items.filter((i) => {
+    const name = i?.name || i?.label || "Unknown Node";
+    return name.toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   return (
     <div className="space-y-2 relative">
-      <label className="text-[10px] font-black text-sunset-800/40 uppercase tracking-widest px-1 italic">
+      <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest px-1">
         {label}
       </label>
       
@@ -47,33 +54,33 @@ export default function DiscordSelect({ label, type, value, onChange, placeholde
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex items-center justify-between p-4 bg-white/50 border border-sunset-100 rounded-2xl font-bold text-sunset-900 focus:ring-2 ring-sunset-500/10 outline-none transition-all hover:bg-white"
+          className="w-full h-11 flex items-center justify-between px-4 bg-zinc-50 border border-zinc-100 rounded-xl font-bold text-zinc-950 focus:ring-2 ring-zinc-950/5 outline-none transition-all hover:bg-white"
         >
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             {loading ? (
-                <Loader2 size={16} className="animate-spin text-sunset-400" />
+                <Loader2 size={14} className="animate-spin text-zinc-400" />
             ) : type === "channel" ? (
-                <Hash size={16} className="text-sunset-400" />
+                <Hash size={14} className="text-zinc-400" />
             ) : (
-                <Shield size={16} className="text-sunset-400" />
+                <Shield size={14} className="text-zinc-400" />
             )}
-            <span className={selectedItem ? "text-sunset-900" : "text-sunset-400"}>
-              {selectedItem ? selectedItem.name : placeholder || `Select a ${type}...`}
+            <span className={`text-sm truncate max-w-[180px] ${selectedItem ? "text-zinc-900" : "text-zinc-400 opacity-60"}`}>
+              {selectedItem ? (selectedItem.name || selectedItem.label) : placeholder || `Select ${type}...`}
             </span>
           </div>
-          <ChevronDown size={16} className={`transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
+          <ChevronDown size={14} className={`text-zinc-300 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
         </button>
 
         {isOpen && (
-          <div className="absolute z-[100] w-full mt-2 bg-white/95 backdrop-blur-md border border-sunset-100 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="p-3 border-b border-sunset-50">
+          <div className="absolute z-[100] w-72 left-0 mt-2 bg-white border border-zinc-100 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="p-3 border-b border-zinc-50 bg-zinc-50/50">
                <div className="relative">
-                 <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-sunset-400" />
+                 <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
                  <input 
                     autoFocus
                     type="text" 
-                    className="w-full pl-9 pr-4 py-2 bg-sunset-50/50 rounded-xl text-sm font-medium focus:outline-none"
-                    placeholder="Search..."
+                    className="w-full pl-9 pr-4 py-2 bg-white rounded-lg text-xs font-bold focus:outline-none border border-zinc-100"
+                    placeholder="Search ledger..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                  />
@@ -82,7 +89,7 @@ export default function DiscordSelect({ label, type, value, onChange, placeholde
             
             <div className="max-h-60 overflow-y-auto p-1 custom-scrollbar">
                {filteredItems.length === 0 ? (
-                 <div className="p-4 text-center text-xs font-bold text-sunset-300 italic">No {type}s found</div>
+                 <div className="p-6 text-center text-[10px] font-black text-zinc-300 uppercase tracking-widest italic">No Data Nodes Found</div>
                ) : (
                  filteredItems.map((item) => (
                    <button
@@ -91,14 +98,14 @@ export default function DiscordSelect({ label, type, value, onChange, placeholde
                         onChange(item.id);
                         setIsOpen(false);
                      }}
-                     className={`w-full flex items-center gap-2 p-3 rounded-xl transition-all text-left text-sm font-bold ${
-                        value === item.id ? "bg-sunset-500 text-white" : "hover:bg-sunset-50 text-sunset-900"
+                     className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left text-sm font-bold ${
+                        value === item.id ? "bg-zinc-950 text-white" : "hover:bg-zinc-50 text-zinc-900"
                      }`}
                    >
-                     {type === "channel" ? <Hash size={14} className="opacity-50" /> : <Shield size={14} className="opacity-50" />}
-                     {item.name}
+                     {type === "channel" ? <Hash size={12} className="opacity-40" /> : <Shield size={12} className="opacity-40" />}
+                     <span className="truncate">{item.name || item.label}</span>
                      {item.color && type === "role" && (
-                        <div className="w-2 h-2 rounded-full ml-auto" style={{ backgroundColor: item.color }}></div>
+                        <div className="w-1.5 h-1.5 rounded-full ml-auto" style={{ backgroundColor: item.color }}></div>
                      )}
                    </button>
                  ))

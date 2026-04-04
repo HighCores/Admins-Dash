@@ -3,7 +3,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Command, Power, Edit3, ShieldCheck, Zap, 
-  Search, Plus, Save, Trash2, Loader2, Sparkles, AlertCircle, X, Terminal
+  Search, Plus, Save, Trash2, Loader2, Sparkles, AlertCircle, X, Terminal,
+  History, BarChart3, Settings, Shield, ArrowRight
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
@@ -57,7 +58,7 @@ export default function CommandsPage() {
 
         await supabase.from("dc_stats").insert({
             event_type: "command_updated",
-            details: `Command /${name} was updated in the logic hub.`
+            details: `Logic node /${name} was recalibrated.`
         });
 
         alert("Logic node stabilized! /" + name + " is live. ⚡");
@@ -76,188 +77,202 @@ export default function CommandsPage() {
     fetchCommands();
   };
 
+  const cleanId = (id: string) => {
+    if (!id) return "NODE_UNKNOWN";
+    return id.replace(/^Node_/i, "").replace(/^panel_/i, "").toUpperCase().slice(0, 8);
+  };
+
   const filteredCommands = commands.filter(c => c.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="w-full space-y-12 mb-20">
+    <div className="w-full flex-1 flex flex-col min-h-0 overflow-hidden">
       <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div className="space-y-2">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-3 bg-indigo-500/10 text-indigo-600 rounded-2xl animate-spin-slow">
-                <Terminal size={24} />
+        <div className="space-y-1">
+          <div className="flex items-center gap-3 mb-1">
+            <div className="p-2.5 bg-zinc-950 text-white rounded-xl shadow-lg">
+                <Terminal size={20} />
             </div>
-            <span className="text-xs font-black text-indigo-500 uppercase tracking-widest leading-none">Logic Hub</span>
+            <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none">Neural Logic Distribution</span>
           </div>
-          <h1 className="text-5xl font-black text-sunset-900 tracking-tighter glow-text-sunset">
-            Command <span className="opacity-30">Overlord</span>
+          <h1 className="text-4xl font-black text-zinc-950 tracking-tighter">
+            Command <span className="text-zinc-300">Overlord</span>
           </h1>
-          <p className="text-lg font-medium text-sunset-800/70 max-w-2xl italic">
-            Visual interface for your bot's neural pathways. Deploy, edit, and toggle commands with absolute precision.
+          <p className="text-sm font-bold text-zinc-500 max-w-2xl">
+            Visual interface for your bot's neural pathways. Deploy, edit, and toggle command logic with absolute precision across the network.
           </p>
         </div>
         
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-4">
             <div className="relative group">
-                <Search size={22} className="absolute left-4 top-1/2 -translate-y-1/2 text-sunset-400 group-hover:text-indigo-500 transition-colors" />
+                <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-hover:text-zinc-950 transition-colors" />
                 <input 
                     type="text" 
-                    placeholder="Search neural paths..."
+                    placeholder="Scan neural paths..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="pl-14 pr-8 py-5 rounded-[2rem] bg-white border border-sunset-50 shadow-xl w-80 font-black text-sunset-900 focus:ring-4 ring-indigo-500/5 outline-none transition-all placeholder:italic"
+                    className="pl-12 pr-6 py-4 rounded-[1.5rem] bg-white border border-zinc-100 shadow-sm w-72 font-black text-zinc-950 focus:ring-4 ring-zinc-950/5 outline-none transition-all placeholder:opacity-30"
                 />
             </div>
             <button 
                 onClick={() => handleEdit({ name: 'new_cmd', response_text: '', is_active: true })}
-                className="flex items-center gap-3 px-8 py-5 bg-indigo-600 text-white font-black text-sm rounded-[2rem] shadow-2xl hover:bg-indigo-700 transition-all hover:scale-105 active:scale-95 group"
+                className="flex items-center gap-4 px-8 py-4 bg-zinc-950 text-white font-black text-xs rounded-2xl shadow-xl hover:bg-black transition-all active:scale-95 italic tracking-widest"
             >
-                <Plus size={20} className="group-hover:rotate-90 transition-transform" />
-                NEW LOGIC NODE
+                <Plus size={20} /> INJECT COMMAND
             </button>
         </div>
       </header>
 
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-12 items-start">
+      <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 min-h-0 overflow-hidden">
         
-        {/* Logic Grid with Breathing Space */}
-        <div className="xl:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-            {loading ? (
-                <div className="col-span-full flex justify-center p-20"><Loader2 className="animate-spin text-sunset-500" size={40} /></div>
-            ) : filteredCommands.length === 0 ? (
-                <div className="col-span-full glass-card p-24 text-center border-dashed border-4 border-sunset-100/50 bg-white/20 rounded-[4rem]">
-                    <Zap size={60} className="text-sunset-200 mb-6 mx-auto" />
-                    <h3 className="text-2xl font-black text-sunset-900 opacity-20 tracking-tighter uppercase italic">No active commands found in the neural hub.</h3>
+        {/* Logic Grid */}
+        <div className="xl:col-span-8 flex flex-col min-h-0 overflow-hidden">
+            <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden">
+                <div className="grid grid-cols-5 p-6 border-b border-zinc-50 bg-zinc-50/20 text-[10px] font-black text-zinc-400 uppercase tracking-widest">
+                    <div className="pl-4">Neural Path</div>
+                    <div className="col-span-2">Automated Payload</div>
+                    <div>Auth Permission</div>
+                    <div className="text-right pr-4">Metrics</div>
                 </div>
-            ) : filteredCommands.map((cmd) => (
-                <motion.div 
-                    layoutId={cmd.name}
-                    key={cmd.name}
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className="glass-card p-8 rounded-[3rem] border border-white/60 shadow-2xl hover:shadow-indigo-500/10 transition-all group relative overflow-hidden bg-white/40 backdrop-blur-xl"
-                >
-                    <div className="flex justify-between items-start mb-6">
-                        <div className="flex items-center gap-4">
-                            <div className="p-4 bg-indigo-50 text-indigo-600 rounded-2xl shadow-inner">
-                                <Command size={22} className="group-hover:rotate-12 transition-transform" />
-                            </div>
-                            <div>
-                                <h4 className="text-xl font-black text-sunset-950 tracking-tighter italic">/{cmd.name}</h4>
-                                <span className="text-[10px] font-black bg-slate-100 text-slate-400 px-3 py-1 rounded-full uppercase italic">Neural_Node_v1</span>
-                            </div>
-                        </div>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" checked={cmd.is_active} className="sr-only peer" readOnly />
-                            <div className="w-14 h-7 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
-                        </label>
-                    </div>
-                    
-                    <p className="text-sm font-medium text-sunset-800 opacity-60 line-clamp-3 mb-8 leading-relaxed italic border-l-4 border-indigo-100 pl-4 py-1">
-                        "{cmd.response_text || 'Default response placeholder...'}"
-                    </p>
 
-                    <div className="flex items-center justify-between border-t border-sunset-50 pt-6 mt-auto">
-                        <div className="flex items-center gap-2 text-emerald-600">
-                            <ShieldCheck size={16} />
-                            <span className="text-[10px] font-black uppercase tracking-widest italic">{cmd.permission || 'EVERYONE'}</span>
+                <div className="flex-1 overflow-y-auto custom-scrollbar p-2">
+                    {loading ? (
+                        <div className="flex justify-center p-20"><Loader2 className="animate-spin text-zinc-300" size={40} /></div>
+                    ) : filteredCommands.length === 0 ? (
+                        <div className="p-32 text-center opacity-10">
+                            <Zap size={60} className="mx-auto mb-6" />
+                            <h3 className="text-2xl font-black tracking-tighter uppercase italic">Logic Void. No active paths.</h3>
                         </div>
-                        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button 
-                                onClick={() => handleEdit(cmd)}
-                                className="p-3 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition-all shadow-sm"><Edit3 size={18} /></button>
-                            <button 
-                                onClick={() => handleDelete(cmd.name)}
-                                className="p-3 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all shadow-sm"><Trash2 size={18} /></button>
+                    ) : (
+                        <div className="space-y-1">
+                            {filteredCommands.map((cmd, idx) => (
+                                <motion.div 
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: idx * 0.05 }}
+                                    key={cmd.name}
+                                    className="grid grid-cols-5 items-center p-4 rounded-2xl hover:bg-zinc-50 transition-all group"
+                                >
+                                    <div className="pl-4 flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-zinc-50 border border-zinc-100 flex items-center justify-center text-zinc-400 group-hover:bg-zinc-950 group-hover:text-white transition-all shadow-sm">
+                                            <Command size={14} />
+                                        </div>
+                                        <div>
+                                            <span className="font-black text-zinc-950 text-sm italic tracking-tighter uppercase">/{cmd.name}</span>
+                                            <div className="flex items-center gap-1.5 mt-0.5">
+                                                <div className={`w-1.5 h-1.5 rounded-full ${cmd.is_active ? 'bg-emerald-500 shadow-glow-emerald' : 'bg-red-500'}`}></div>
+                                                <span className="text-[8px] font-black text-zinc-300 uppercase tracking-widest leading-none">V1_LOGIC</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-2">
+                                        <p className="text-xs font-bold text-zinc-500 leading-relaxed pr-10 truncate line-clamp-2 italic">
+                                            "{cmd.response_text || 'Static response payload...'}"
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <div className="flex items-center gap-2 text-zinc-950 font-black text-[10px] uppercase tracking-widest italic opacity-40">
+                                            <Shield size={10} className="text-zinc-300" /> {cmd.permission?.toUpperCase() || 'EVERYONE'}
+                                        </div>
+                                    </div>
+                                    <div className="text-right pr-4 flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button 
+                                            onClick={() => handleEdit(cmd)}
+                                            className="p-3 bg-white text-zinc-950 rounded-xl hover:shadow-xl transition-all border border-zinc-100 shadow-sm"><Edit3 size={16} /></button>
+                                        <button 
+                                            onClick={() => handleDelete(cmd.name)}
+                                            className="p-3 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all shadow-sm"><Trash2 size={16} /></button>
+                                    </div>
+                                </motion.div>
+                            ))}
                         </div>
-                    </div>
-                </motion.div>
-            ))}
+                    )}
+                </div>
+            </div>
         </div>
 
-        {/* Status Terminal */}
-        <div className="xl:col-span-4 space-y-8">
-            <div className="glass-card p-10 rounded-[3rem] bg-gradient-to-br from-indigo-950 to-indigo-900 text-white shadow-2xl relative overflow-hidden group">
-                <div className="absolute -right-6 -top-6 opacity-10 rotate-12 group-hover:rotate-45 transition-transform duration-1000">
-                    <Zap size={200} />
-                </div>
-                <h3 className="text-2xl font-black mb-6 flex items-center gap-3 subrayado-glow tracking-tighter italic">
-                    <Sparkles size={24} className="text-yellow-400" /> Agency Nexus
+        {/* Status Hub */}
+        <div className="xl:col-span-4 flex flex-col gap-6">
+            <div className="bg-zinc-950 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden group">
+                <div className="absolute right-0 bottom-0 p-8 opacity-10 rotate-12 group-hover:scale-125 transition-transform duration-1000"><Terminal size={200} /></div>
+                <h3 className="text-xl font-black mb-8 flex items-center gap-4 italic tracking-tighter subrayado-glow cursor-default">
+                    <Sparkles className="text-zinc-400" /> Logic Core Hub
                 </h3>
-                <div className="space-y-6">
-                    <div className="flex justify-between items-center bg-white/10 p-5 rounded-[2rem] backdrop-blur-md border border-white/5">
-                        <span className="text-xs font-black opacity-60 uppercase italic tracking-widest">Logic Core Status</span>
-                        <span className="text-xs font-black bg-emerald-400 text-emerald-950 px-4 py-1.5 rounded-full shadow-lg">SYNCHRONIZED</span>
+                
+                <div className="space-y-6 relative z-10">
+                    <div className="flex justify-between items-center bg-white/5 p-6 rounded-[2rem] border border-white/5">
+                        <span className="text-[10px] font-black opacity-30 uppercase italic tracking-widest leading-none">Active Commands</span>
+                        <span className="text-3xl font-black italic tracking-tighter leading-none">{commands.length}</span>
                     </div>
-                    <div className="flex justify-between items-center bg-white/10 p-5 rounded-[2rem] backdrop-blur-md border border-white/5">
-                        <span className="text-xs font-black opacity-60 uppercase italic tracking-widest">Active Paths</span>
-                        <span className="text-2xl font-black italic">{commands.length}</span>
+                    <div className="flex justify-between items-center bg-white/5 p-6 rounded-[2rem] border border-white/5">
+                        <span className="text-[10px] font-black opacity-30 uppercase italic tracking-widest leading-none">Sync Status</span>
+                        <span className="text-xs font-black bg-emerald-400 text-emerald-950 px-4 py-1.5 rounded-full shadow-lg italic leading-none">ALIGNED</span>
                     </div>
                     <div className="pt-4">
-                        <button className="w-full py-5 bg-white text-indigo-900 font-black text-xs rounded-[2rem] shadow-2xl hover:scale-105 active:scale-95 transition-all uppercase tracking-[0.3em] italic">
-                            Sync Java Handshake
+                        <button className="w-full py-5 bg-white text-zinc-950 font-black text-[10px] rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all uppercase tracking-[0.4em] italic leading-none">
+                            REBOOT JAVA HANDSHAKE
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div className="glass-card p-10 rounded-[3rem] border border-sunset-100 bg-white/80 shadow-xl overflow-hidden relative group">
-                <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:scale-150 transition-transform duration-700"><ShieldCheck size={100} /></div>
-                <h4 className="font-black text-xl text-sunset-950 mb-4 flex items-center gap-3 italic tracking-tighter">
-                    <AlertCircle size={22} className="text-orange-500" /> Maintenance Lockdown
+            <div className="bg-white p-8 rounded-[3rem] border border-zinc-100 shadow-sm relative overflow-hidden flex-1 group">
+                <div className="absolute top-0 right-0 p-6 opacity-10 rotate-12 group-hover:rotate-0 transition-transform duration-700 pointer-events-none"><ShieldCheck size={100} /></div>
+                <h4 className="font-black text-xl text-zinc-950 mb-4 flex items-center gap-3 italic tracking-tighter underline underline-offset-8 decoration-zinc-100">
+                    <History size={20} className="text-zinc-400" /> Operations
                 </h4>
-                <p className="text-xs font-bold text-sunset-800 opacity-50 leading-relaxed mb-8 italic">
-                    Emergency override for all non-admin logic nodes. Use only during severe network instability or agency breaches.
+                <p className="text-[10px] font-bold text-zinc-400 leading-relaxed mb-8 italic pr-12">
+                   Emergency override for all non-admin logic nodes. Use only during severe network instability or agency breaches. 
                 </p>
-                <button className="w-full py-5 border-4 border-orange-500/20 text-orange-600 font-black text-xs rounded-[2rem] hover:bg-orange-500 hover:text-white transition-all uppercase tracking-widest">
-                    ENABLE LOCKDOWN
+                <button className="w-full py-4 bg-zinc-50 text-zinc-950 border border-zinc-100 font-black text-[10px] rounded-2xl shadow-sm hover:bg-zinc-950 hover:text-white transition-all uppercase tracking-widest italic group-hover:shadow-2xl">
+                    INITIATE LOCKDOWN
                 </button>
             </div>
         </div>
       </div>
 
-      {/* Logic Editor Modal (Scary Premium Overlay) */}
+      {/* Logic Editor Modal */}
       <AnimatePresence>
         {editingCommand && (
-          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6 bg-indigo-950/40 backdrop-blur-xl animate-in fade-in duration-300">
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6 bg-zinc-950/40 backdrop-blur-2xl animate-in fade-in duration-300">
              <motion.div 
                 initial={{ scale: 0.9, opacity: 0, y: 40 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.9, opacity: 0, y: 40 }}
-                className="bg-white rounded-[4rem] w-full max-w-2xl p-12 shadow-2xl border border-indigo-100 flex flex-col gap-8 relative overflow-hidden"
+                className="bg-white rounded-[4rem] w-full max-w-xl p-14 shadow-2xl border border-zinc-100 flex flex-col gap-10 relative overflow-hidden"
              >
-                <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none"><Zap size={200} /></div>
+                <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none rotate-45"><Zap size={240} /></div>
                 
-                <div className="flex justify-between items-center border-b border-indigo-50 pb-6">
-                    <h3 className="text-3xl font-black text-indigo-950 tracking-tighter italic uppercase underline decoration-indigo-200 underline-offset-8">
-                        Adjust Node: /{name}
+                <div className="flex justify-between items-center border-b border-zinc-50 pb-8">
+                    <h3 className="text-2xl font-black text-zinc-950 italic tracking-tighter uppercase flex items-center gap-4">
+                        <Zap className="text-zinc-400" /> Command Calibration
                     </h3>
-                    <button onClick={() => setEditingCommand(null)} className="p-4 text-slate-300 hover:text-red-500 bg-slate-50 rounded-2xl transition-all"><X size={24} /></button>
+                    <button onClick={() => setEditingCommand(null)} className="p-4 text-slate-300 hover:text-red-500 bg-slate-50 rounded-2xl transition-all shadow-sm"><X size={24} /></button>
                 </div>
                 
-                <div className="space-y-8 flex-1 overflow-y-auto px-2 custom-scrollbar">
-                    <div className="space-y-2">
-                        <label className="text-[10px] font-black text-indigo-950/40 uppercase tracking-[0.3em] px-2 italic font-mono">Node Path Label</label>
+                <div className="space-y-8 relative z-10">
+                    <div className="space-y-3">
+                        <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Node Path (Command Name)</label>
                         <input 
                             type="text" 
-                            className="w-full p-5 rounded-3xl bg-indigo-50/50 border border-indigo-100 focus:outline-none focus:ring-4 ring-indigo-500/10 font-black text-xl text-indigo-950" 
+                            className="w-full p-5 rounded-2xl bg-zinc-50 border border-zinc-100 font-black text-xl text-zinc-950 focus:bg-white outline-none placeholder:opacity-10 italic transition-all" 
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder="command_name"
+                            placeholder="e.g. status_check"
                         />
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-[10px] font-black text-indigo-950/40 uppercase tracking-[0.3em] px-2 italic font-mono">Automated Payload</label>
+                    <div className="space-y-3">
+                        <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Response Output (Payload)</label>
                         <textarea 
-                            rows={5} 
-                            className="w-full p-6 rounded-[2.5rem] bg-indigo-50/50 border border-indigo-100 focus:outline-none focus:ring-4 ring-indigo-500/10 font-bold text-indigo-900 leading-relaxed" 
+                            rows={4} 
+                            className="w-full p-6 rounded-2xl bg-zinc-50 border border-zinc-100 focus:bg-white focus:ring-4 ring-zinc-950/5 font-bold text-zinc-900 leading-relaxed italic transition-all outline-none" 
                             value={response}
                             onChange={(e) => setResponse(e.target.value)}
-                            placeholder="Enter command response..."
+                            placeholder="Enter command response payload..."
                         />
                     </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                    <div className="grid grid-cols-2 gap-8">
                         <DiscordSelect 
                             label="Auth Permission Token"
                             type="role"
@@ -265,29 +280,27 @@ export default function CommandsPage() {
                             onChange={setPermission}
                             placeholder="Select required role..."
                         />
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black text-indigo-950/40 uppercase tracking-[0.3em] px-2 italic font-mono">Active Linkage</label>
+                        <div className="space-y-3">
+                            <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Path Status</label>
                             <button 
                                 onClick={() => setIsActive(!isActive)}
-                                className={`w-full p-5 rounded-3xl font-black text-sm flex items-center justify-between transition-all border ${
-                                    isActive ? 'bg-emerald-50 border-emerald-200 text-emerald-600' : 'bg-red-50 border-red-200 text-red-600'
-                                }`}
+                                className={`w-full p-5 rounded-2xl transition-all border flex items-center justify-between group ${isActive ? 'bg-zinc-50 border-zinc-100 text-zinc-950' : 'bg-red-50 border-red-100 text-red-500'}`}
                             >
-                                <span className="italic">{isActive ? 'SYSTEM ONLINE' : 'PATHWAY SEVERED'}</span>
-                                <Power size={18} className={isActive ? 'animate-pulse' : ''} />
+                                <span className="text-[10px] font-black uppercase tracking-widest">{isActive ? 'ONLINE' : 'SEVERED'}</span>
+                                <Power size={18} className={isActive ? 'text-emerald-500' : ''} />
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex gap-6 pt-6 mt-auto">
+                <div className="pt-2">
                     <button 
                         onClick={handleSave}
                         disabled={saving}
-                        className="flex-1 py-6 bg-indigo-600 text-white font-black text-sm rounded-[2.5rem] shadow-2xl hover:bg-indigo-700 transition-all flex items-center justify-center gap-3 group disabled:opacity-50"
+                        className="w-full py-6 bg-zinc-950 text-white font-black text-[10px] rounded-3xl shadow-xl hover:bg-black transition-all flex items-center justify-center gap-4 uppercase tracking-[0.4em] italic disabled:opacity-50"
                     >
                         {saving ? <Loader2 className="animate-spin" /> : <Save size={22} />} 
-                        <span className="tracking-[0.2em]">PULSE LOGIC TO SYSTEM</span>
+                        CALIBRATE COMMAND PATH
                     </button>
                 </div>
              </motion.div>

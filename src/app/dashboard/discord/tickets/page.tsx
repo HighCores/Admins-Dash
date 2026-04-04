@@ -1,7 +1,11 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Ticket, Search, Clock, Archive, UserCircle, MessageCircle, X, ExternalLink, Loader2 } from "lucide-react";
+import { 
+  Ticket, Search, Clock, Archive, UserCircle, 
+  MessageCircle, X, ExternalLink, Loader2, Filter, 
+  ChevronRight, BadgeInfo, Zap, History, User, Bot
+} from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 
@@ -24,6 +28,7 @@ export default function TicketsPage() {
     const { data, error } = await supabase
       .from("dc_tickets")
       .select("*")
+      .eq("platform", "discord")
       .order("created_at", { ascending: false });
 
     if (!error && data) {
@@ -52,123 +57,195 @@ export default function TicketsPage() {
     setMessages([]);
   };
 
+  // Utility to clean "Node_" naming as requested
+  const cleanId = (id: string) => {
+    if (!id) return "UNIDENTIFIED";
+    return id.replace(/^Node_/i, "").replace(/^panel_/i, "").toUpperCase();
+  };
+
   const filteredTickets = tickets.filter(t => 
-    t.ticket_id.toLowerCase().includes(search.toLowerCase()) ||
-    t.user_name.toLowerCase().includes(search.toLowerCase())
+    (t.ticket_id?.toLowerCase() || "").includes(search.toLowerCase()) ||
+    (t.user_name?.toLowerCase() || "").includes(search.toLowerCase())
   );
 
   return (
-    <div className="w-full space-y-6 z-10 lg:pl-4">
-      <header className="mb-8 flex flex-col md:flex-row md:justify-between md:items-end gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-sunset-900 tracking-tight">Support Tickets</h1>
-          <p className="text-sunset-800/70 font-medium">Manage server tickets, view transcripts, and control settings.</p>
+    <div className="w-full flex-1 flex flex-col min-h-0">
+      <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="space-y-1">
+          <div className="flex items-center gap-3 mb-1">
+            <div className="p-2.5 bg-zinc-950 text-white rounded-xl shadow-lg">
+                <Ticket size={20} />
+            </div>
+            <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none">Support Fleet Log</span>
+          </div>
+          <h1 className="text-4xl font-black text-zinc-950 tracking-tighter">
+            Ticket <span className="text-zinc-300">Vault</span>
+          </h1>
+          <p className="text-sm font-bold text-zinc-500 max-w-2xl">
+            Centralized monitoring of all Discord support inquiries. Inspect transcripts and audit agent performance.
+          </p>
         </div>
-        <div className="relative w-full md:w-72">
-          <Search className="absolute left-3 top-3 text-sunset-800/40" size={20} />
+        
+        <div className="relative w-full md:w-80">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
           <input 
             type="text" 
-            placeholder="Search tickets by ID or Username..." 
+            placeholder="Search Registry..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 rounded-xl glass-input text-sunset-900 font-semibold"
+            className="w-full pl-12 pr-4 py-4 rounded-[1.5rem] bg-white border border-zinc-100 font-bold text-zinc-950 shadow-sm focus:ring-4 ring-zinc-950/5 outline-none transition-all placeholder:opacity-30"
           />
         </div>
       </header>
 
-      {/* Tickets List */}
-      <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="glass-card rounded-3xl overflow-hidden">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-sunset-100/50 text-sunset-900 border-b border-sunset-400/20">
-              <th className="p-5 font-semibold">Ticket ID</th>
-              <th className="p-5 font-semibold">Creator</th>
-              <th className="p-5 font-semibold">Status</th>
-              <th className="p-5 font-semibold">Priority</th>
-              <th className="p-5 font-semibold">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr><td colSpan={5} className="p-10 text-center"><Loader2 className="animate-spin mx-auto text-sunset-600" /></td></tr>
-            ) : filteredTickets.length === 0 ? (
-              <tr><td colSpan={5} className="p-10 text-center text-sunset-800/60 font-semibold">No tickets found in the database.</td></tr>
-            ) : filteredTickets.map((ticket) => (
-              <tr key={ticket.ticket_id} className="border-b border-sunset-400/10 hover:bg-white/30 transition-colors">
-                <td className="p-5 font-bold text-sunset-900">#{ticket.ticket_id}</td>
-                <td className="p-5">
-                  <div className="flex items-center gap-2">
-                    <UserCircle size={18} className="text-sunset-600" />
-                    <span className="font-semibold text-sunset-800">{ticket.user_name}</span>
-                  </div>
-                </td>
-                <td className="p-5">
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
-                    ticket.status === 'open' ? 'bg-emerald-100 text-emerald-700' :
-                    ticket.status === 'claimed' ? 'bg-amber-100 text-amber-700' :
-                    'bg-slate-200 text-slate-700'
-                  }`}>
-                    {ticket.status}
-                  </span>
-                </td>
-                <td className="p-5">
-                  <span className="text-sm font-bold text-sunset-600/80 capitalize">{ticket.priority || "Normal"}</span>
-                </td>
-                <td className="p-5">
-                  <button 
-                    onClick={() => openTranscript(ticket)}
-                    className="flex items-center gap-2 px-4 py-2 bg-sunset-100 hover:bg-sunset-200 text-sunset-800 rounded-lg transition-colors text-sm font-semibold"
-                  >
-                    <MessageCircle size={16} /> Transcript
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </motion.div>
+      {/* Stats Quickbar */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div className="bg-white p-6 rounded-3xl border border-zinc-100 shadow-sm flex items-center gap-5">
+            <div className="w-12 h-12 bg-zinc-50 rounded-2xl flex items-center justify-center text-zinc-950 shadow-inner"><Clock size={20} /></div>
+            <div>
+                <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block mb-0.5 leading-none">Total Unclaimed</span>
+                <span className="text-2xl font-black text-zinc-950 tracking-tighter">{tickets.filter(t => t.status === 'open').length} Nodes</span>
+            </div>
+        </div>
+        <div className="bg-white p-6 rounded-3xl border border-zinc-100 shadow-sm flex items-center gap-5">
+            <div className="w-12 h-12 bg-zinc-50 rounded-2xl flex items-center justify-center text-zinc-950 shadow-inner"><History size={20} /></div>
+            <div>
+                <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block mb-0.5 leading-none">System Load</span>
+                <span className="text-2xl font-black text-emerald-600 tracking-tighter italic">OPTIMAL</span>
+            </div>
+        </div>
+        <div className="bg-zinc-950 p-6 rounded-3xl border border-zinc-950 shadow-2xl flex items-center gap-5 text-white">
+            <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-white shadow-inner"><Zap size={20} /></div>
+            <div>
+                <span className="text-[10px] font-black text-white/30 uppercase tracking-widest block mb-0.5 leading-none">Global Accuracy</span>
+                <span className="text-2xl font-black tracking-tighter">99.4%</span>
+            </div>
+        </div>
+      </div>
 
-      {/* Transcript Modal */}
+      <div className="flex-1 min-h-0 bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm overflow-hidden flex flex-col">
+        <div className="grid grid-cols-5 p-6 border-b border-zinc-50 bg-zinc-50/20 text-[10px] font-black text-zinc-400 uppercase tracking-widest">
+            <div className="pl-4">Reference</div>
+            <div>Creator</div>
+            <div>Status</div>
+            <div>Agent</div>
+            <div className="text-right pr-4">Metrics</div>
+        </div>
+        
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
+            {loading ? (
+                <div className="flex justify-center p-20"><Loader2 className="animate-spin text-zinc-300" size={40} /></div>
+            ) : filteredTickets.length === 0 ? (
+                <div className="p-32 text-center opacity-20">
+                    <Archive size={60} className="mx-auto mb-6" />
+                    <h3 className="text-2xl font-black tracking-tighter uppercase italic">Registry empty. No data nodes found.</h3>
+                </div>
+            ) : (
+                filteredTickets.map((ticket, idx) => (
+                    <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.05 }}
+                        key={ticket.ticket_id} 
+                        className="grid grid-cols-5 items-center p-6 border-b border-zinc-50 hover:bg-zinc-50/50 transition-colors group cursor-default"
+                    >
+                        <div className="pl-4">
+                            <span className="font-black text-zinc-950 text-sm italic tracking-tighter underline underline-offset-4 decoration-zinc-100 group-hover:decoration-zinc-300 transition-all">#{cleanId(ticket.ticket_id)}</span>
+                            <span className="text-[9px] font-bold text-zinc-300 block mt-1 uppercase tracking-widest">{new Date(ticket.created_at).toLocaleDateString()}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-zinc-50 flex items-center justify-center text-zinc-400 group-hover:bg-zinc-950 group-hover:text-white transition-all"><UserCircle size={14} /></div>
+                            <span className="font-bold text-sm text-zinc-950 truncate max-w-[120px]">{ticket.user_name || "Unknown"}</span>
+                        </div>
+                        <div className="flex">
+                            <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] shadow-sm flex items-center gap-2 ${
+                                ticket.status === 'open' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' :
+                                ticket.status === 'claimed' ? 'bg-amber-50 text-amber-600 border border-amber-100' :
+                                'bg-zinc-100 text-zinc-500'
+                            }`}>
+                                <div className={`w-1 h-1 rounded-full ${ticket.status === 'open' ? 'bg-emerald-500' : 'bg-current shadow-glow-small'}`}></div>
+                                {ticket.status}
+                            </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                             <div className="w-6 h-6 rounded-md bg-zinc-50 flex items-center justify-center text-zinc-300 border border-zinc-100"><Bot size={12} /></div>
+                             <span className="text-xs font-bold text-zinc-500">{cleanId(ticket.claimed_by || "NO_AGENT")}</span>
+                        </div>
+                        <div className="text-right pr-4">
+                            <button 
+                                onClick={() => openTranscript(ticket)}
+                                className="inline-flex items-center gap-3 px-6 py-2.5 bg-zinc-950 text-white font-black text-[9px] rounded-xl hover:bg-black transition-all shadow-xl hover:scale-105 active:scale-95 italic tracking-widest group/btn"
+                            >
+                                <MessageCircle size={14} className="opacity-40 group-hover/btn:opacity-100 transition-opacity" /> INSPECT
+                            </button>
+                        </div>
+                    </motion.div>
+                ))
+            )}
+        </div>
+      </div>
+
       <AnimatePresence>
         {selectedTicket && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-sunset-900/40 backdrop-blur-sm">
-            <motion.div 
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white/95 backdrop-blur-xl w-full max-w-3xl max-h-[85vh] rounded-3xl shadow-2xl flex flex-col border border-sunset-200"
-            >
-              <div className="flex items-center justify-between p-6 border-b border-sunset-100">
-                <div>
-                  <h2 className="text-xl font-bold text-sunset-900 flex items-center gap-2">
-                    <Archive className="text-sunset-500" /> Transcript for #{selectedTicket.ticket_id}
-                  </h2>
-                  <p className="text-sm font-medium text-sunset-600 mt-1">Claimed By: {selectedTicket.claimed_by || "No one"} • Subject: {selectedTicket.subject || "General Support"}</p>
-                </div>
-                <button onClick={closeTranscript} className="p-2 text-sunset-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors">
-                  <X size={24} />
-                </button>
-              </div>
-              
-              <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                {loadingMessages ? (
-                  <div className="flex justify-center p-10"><Loader2 className="animate-spin text-sunset-500" /></div>
-                ) : messages.length === 0 ? (
-                  <p className="text-center text-sunset-600 italic">No messages were logged for this ticket.</p>
-                ) : messages.map((msg, idx) => (
-                  <div key={idx} className={`flex flex-col ${msg.user_name === selectedTicket.user_name ? "items-start" : "items-end"}`}>
-                    <span className="text-xs font-bold text-sunset-400 mb-1 px-1">{msg.user_name}</span>
-                    <div className={`px-4 py-3 rounded-2xl max-w-[80%] ${
-                      msg.user_name === selectedTicket.user_name 
-                        ? "bg-slate-100 text-slate-800 rounded-tl-sm"
-                        : "bg-sunset-500 text-white rounded-tr-sm shadow-md shadow-sunset-500/20"
-                    }`}>
-                      {msg.content}
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6 bg-zinc-950/40 backdrop-blur-2xl animate-in fade-in duration-300">
+             <motion.div 
+                initial={{ scale: 0.9, opacity: 0, y: 40 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 40 }}
+                className="bg-white rounded-[3rem] w-full max-w-4xl max-h-[85vh] flex flex-col shadow-2xl border border-zinc-100 overflow-hidden"
+             >
+                <div className="p-10 border-b border-zinc-50 flex items-center justify-between bg-zinc-50/20 px-12">
+                    <div className="flex items-center gap-6">
+                        <div className="p-4 bg-zinc-900 text-white rounded-2xl shadow-xl shadow-zinc-200">
+                             <Archive size={24} />
+                        </div>
+                        <div>
+                            <h2 className="text-3xl font-black text-zinc-950 tracking-tighter italic uppercase flex items-center gap-3">
+                                #{cleanId(selectedTicket.ticket_id)} <span className="opacity-10">/</span> <span className="text-zinc-300">Transcript</span>
+                            </h2>
+                            <div className="flex items-center gap-4 mt-1 text-[10px] font-black text-zinc-400 uppercase tracking-widest">
+                                <span className="flex items-center gap-2"><User size={12} /> {selectedTicket.user_name}</span>
+                                <span className="flex items-center gap-2"><BadgeInfo size={12} /> {selectedTicket.subject || "GENERAL_QUERY"}</span>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
+                    <button onClick={closeTranscript} className="p-5 text-zinc-300 hover:text-red-500 bg-white rounded-2xl border border-zinc-100 shadow-sm transition-all hover:rotate-90"><X size={24} /></button>
+                </div>
+                
+                <div className="flex-1 overflow-y-auto p-12 custom-scrollbar bg-white space-y-8">
+                    {loadingMessages ? (
+                        <div className="flex justify-center p-20"><Loader2 className="animate-spin text-zinc-300" size={60} /></div>
+                    ) : messages.length === 0 ? (
+                        <div className="p-20 text-center opacity-10">
+                            <MessageCircle size={80} className="mx-auto" />
+                            <p className="text-xl font-black uppercase italic tracking-tighter mt-4">No neural activity recorded for this session.</p>
+                        </div>
+                    ) : (
+                        messages.map((msg, idx) => (
+                            <div key={idx} className={`flex flex-col ${msg.user_id === selectedTicket.user_id ? "items-start" : "items-end"}`}>
+                                <div className="flex items-center gap-2 mb-2 px-2">
+                                    <span className="text-[10px] font-black text-zinc-300 uppercase tracking-widest italic">{msg.user_name}</span>
+                                    <span className="text-[8px] font-black text-zinc-200 uppercase">{new Date(msg.created_at).toLocaleTimeString()}</span>
+                                </div>
+                                <div className={`px-8 py-5 rounded-[2rem] max-w-[70%] shadow-sm border ${
+                                    msg.user_id === selectedTicket.user_id 
+                                        ? "bg-zinc-50 text-zinc-900 border-zinc-100 rounded-tl-sm"
+                                        : "bg-zinc-950 text-white border-zinc-800 rounded-tr-sm shadow-xl"
+                                }`}>
+                                    <p className="font-bold text-sm leading-relaxed">{msg.content}</p>
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
+
+                <div className="p-10 bg-zinc-50/50 border-t border-zinc-100 flex items-center justify-between px-12">
+                     <span className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.4em] italic">High Core Secure Archive</span>
+                     <button className="flex items-center gap-3 px-6 py-3 bg-white text-zinc-950 font-black text-[10px] rounded-xl shadow-sm border border-zinc-100 hover:scale-105 transition-all italic tracking-widest tracking-widest">
+                         <ExternalLink size={14} /> EXPORT_DATA_NODE
+                     </button>
+                </div>
+             </motion.div>
           </div>
         )}
       </AnimatePresence>
