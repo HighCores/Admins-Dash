@@ -6,7 +6,7 @@ import {
   Loader2, Zap, Sparkles, X, Bot, 
   CheckCircle2, AlertCircle, RefreshCcw, 
   Layout, Monitor, Smartphone, Search,
-  ChevronRight, Hash, Shield
+  ChevronRight, Hash, Shield, History
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
