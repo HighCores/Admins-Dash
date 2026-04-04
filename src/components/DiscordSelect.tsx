@@ -7,7 +7,7 @@ interface DiscordSelectProps {
   label: string;
   type: "channel" | "role" | "category";
   value: string;
-  onChange: (value: string) => void;
+  onChange: (value: string, color?: string) => void;
   placeholder?: string;
 }
 
@@ -18,10 +18,24 @@ export default function DiscordSelect({ label, type, value, onChange, placeholde
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const CACHE_DURATION = 5 * 60 * 1000;
+
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
       setError(null);
+      const cacheKey = `discord_${type}`;
+      
+      const cached = sessionStorage.getItem(cacheKey);
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        if (Date.now() - timestamp < CACHE_DURATION) {
+          setItems(data);
+          setLoading(false);
+          return;
+        }
+      }
+
       try {
         const endpoint = type === "channel" ? "channels" : type === "role" ? "roles" : "categories";
         const response = await fetch(`/api/discord/${endpoint}`);
@@ -29,6 +43,7 @@ export default function DiscordSelect({ label, type, value, onChange, placeholde
         
         if (response.ok && Array.isArray(data)) {
             setItems(data);
+            sessionStorage.setItem(cacheKey, JSON.stringify({ data, timestamp: Date.now() }));
         } else {
             setError(data.error || `Failed to fetch ${type}s`);
             setItems([]);
@@ -83,7 +98,7 @@ export default function DiscordSelect({ label, type, value, onChange, placeholde
         </button>
 
         {isOpen && (
-          <div className="absolute z-[100] w-72 left-0 mt-2 bg-white border border-zinc-100 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+          <div className="absolute z-[9999] w-72 left-0 mt-2 bg-white border border-zinc-100 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             {error ? (
                 <div className="p-8 text-center bg-red-50/50">
                     <AlertCircle size={24} className="mx-auto text-red-400 mb-3" />
@@ -115,7 +130,7 @@ export default function DiscordSelect({ label, type, value, onChange, placeholde
                         <button
                             key={item.id}
                             onClick={() => {
-                                onChange(item.id);
+                                onChange(item.id, item.color);
                                 setIsOpen(false);
                             }}
                             className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left text-sm font-bold ${

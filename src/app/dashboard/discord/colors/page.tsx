@@ -75,7 +75,7 @@ export default function ColorRolesPage() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col min-h-0 overflow-hidden">
+    <div className="w-full h-full flex flex-col min-h-0 overflow-y-auto custom-scrollbar">
       
       {/* Header - Compact */}
       <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
@@ -254,7 +254,10 @@ export default function ColorRolesPage() {
                         label="Identity Anchor (Role)"
                         type="role"
                         value={roleId}
-                        onChange={setRoleId}
+                        onChange={(val, color) => {
+                            setRoleId(val);
+                            if (color) setHex(color);
+                        }}
                         placeholder="Select target tier..."
                     />
 

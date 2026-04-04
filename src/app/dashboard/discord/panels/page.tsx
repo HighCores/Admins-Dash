@@ -26,6 +26,7 @@ export default function PanelsPage() {
   const [channelId, setChannelId] = useState("");
   const [menuId, setMenuId] = useState("");
   const [triggerCommand, setTriggerCommand] = useState("");
+  const [color, setColor] = useState("#ffffff");
 
   useEffect(() => {
     fetchMenus();
@@ -57,6 +58,7 @@ export default function PanelsPage() {
     setImageUrl(menu.image_url || "");
     setChannelId(menu.channel_id || "");
     setTriggerCommand(menu.trigger_command || "");
+    setColor(menu.color_hex || "#ffffff");
     fetchButtons(menu.menu_id);
   };
 
@@ -70,6 +72,7 @@ export default function PanelsPage() {
     setImageUrl("");
     setChannelId("");
     setTriggerCommand("");
+    setColor("#ffffff");
     setButtons([]);
   };
 
@@ -84,6 +87,7 @@ export default function PanelsPage() {
             image_url: imageUrl,
             channel_id: channelId,
             trigger_command: triggerCommand,
+            color_hex: color,
             platform: "discord",
             is_active: true,
             updated_at: new Date().toISOString()
@@ -133,7 +137,7 @@ export default function PanelsPage() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col min-h-0 overflow-hidden">
+    <div className="w-full h-full flex flex-col min-h-0 overflow-y-auto custom-scrollbar">
       
       {/* Header - Compact */}
       <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
@@ -266,6 +270,24 @@ export default function PanelsPage() {
                                 onChange={setChannelId}
                                 placeholder="Select target route..."
                             />
+
+                            <div className="space-y-2">
+                                <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Panel Tint (Hex)</label>
+                                <div className="flex gap-4">
+                                    <input 
+                                        type="color" 
+                                        className="w-12 h-12 rounded-xl cursor-pointer border-4 border-white shadow-xl bg-transparent"
+                                        value={color}
+                                        onChange={(e) => setColor(e.target.value)}
+                                    />
+                                    <input 
+                                        type="text" 
+                                        className="flex-1 p-3 rounded-xl bg-zinc-50 border border-zinc-100 font-black text-xs text-zinc-950 outline-none uppercase tracking-widest italic"
+                                        value={color}
+                                        onChange={(e) => setColor(e.target.value)}
+                                    />
+                                </div>
+                            </div>
 
                             <div className="space-y-2">
                                 <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Headline Content</label>
