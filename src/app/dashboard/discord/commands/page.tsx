@@ -59,7 +59,6 @@ export default function CommandsPage() {
     setActionType(cmd.action_type || "text");
     setActionValue(cmd.action_value || "");
   };
-  };
 
   const handleSave = async () => {
     if (!name || !response) return showToast("All logic nodes must be populated.", true);
