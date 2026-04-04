@@ -1,56 +1,97 @@
 "use client";
 
+"use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, MessageSquareText, Settings, Bot, ShieldAlert, LogOut } from "lucide-react";
-// import { signOut } from "next-auth/react";
+import { motion } from "framer-motion";
+import { LayoutDashboard, MessageSquare, Ticket, PanelsTopLeft, Command, TrendingUp, Coins, Crown, Palette, Settings, LogOut, Send } from "lucide-react";
+import { signOut } from "next-auth/react";
+import { useState } from "react";
 
-const navItems = [
-  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
-  { href: "/dashboard/bots", label: "Bot Controls", icon: Bot },
-  { href: "/dashboard/auto-replies", label: "Auto Replies", icon: MessageSquareText },
-  { href: "/dashboard/logs", label: "Access Logs", icon: ShieldAlert },
-  { href: "/dashboard/settings", label: "System Settings", icon: Settings },
+const discordLinks = [
+  { href: "/dashboard/discord", label: "Overview", icon: LayoutDashboard },
+  { href: "/dashboard/discord/tickets", label: "Tickets", icon: Ticket },
+  { href: "/dashboard/discord/panels", label: "Panels", icon: PanelsTopLeft },
+  { href: "/dashboard/discord/commands", label: "Commands", icon: Command },
+  { href: "/dashboard/discord/auto-replies", label: "Auto Replies", icon: MessageSquare },
+  { href: "/dashboard/discord/levels", label: "Levels & Roles", icon: TrendingUp },
+  { href: "/dashboard/discord/points", label: "General Points", icon: Coins },
+  { href: "/dashboard/discord/admin-points", label: "Admin Points", icon: Crown },
+  { href: "/dashboard/discord/colors", label: "Color Roles", icon: Palette },
+  { href: "/dashboard/discord/setup", label: "Room Setup", icon: Settings },
 ];
 
-export function Sidebar() {
+const telegramLinks = [
+  { href: "/dashboard/telegram", label: "Overview", icon: LayoutDashboard },
+  { href: "/dashboard/telegram/tickets", label: "Tickets", icon: Ticket },
+  { href: "/dashboard/telegram/panels", label: "Panels", icon: PanelsTopLeft },
+  { href: "/dashboard/telegram/commands", label: "Commands", icon: Command },
+];
+
+export default function Sidebar() {
   const pathname = usePathname();
+  const [platform, setPlatform] = useState<"discord" | "telegram">("discord");
+
+  const links = platform === "discord" ? discordLinks : telegramLinks;
 
   return (
-    <aside className="w-64 glass-card m-4 rounded-3xl flex flex-col items-center py-8">
-      <div className="flex items-center gap-3 px-6 w-full mb-10 text-sunset-700">
-        <Bot size={28} className="text-sunset-500" />
-        <h2 className="text-xl font-bold tracking-tight">High Core</h2>
-      </div>
+    <aside className="w-72 min-h-[calc(100vh-2rem)] flex flex-col p-4 z-20">
+      <div className="glass-card flex-1 rounded-3xl p-6 flex flex-col items-start text-left">
+        <div className="mb-6 w-full">
+          <h2 className="text-2xl font-bold text-sunset-900 tracking-tight glow-text-sunset">
+            High Core
+          </h2>
+          <p className="text-xs font-semibold text-sunset-800/60 uppercase tracking-widest mt-1">Agency</p>
+        </div>
 
-      <nav className="flex-1 w-full px-4 space-y-2">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href;
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-200 font-medium ${
-                isActive
-                  ? "bg-sunset-500 text-white shadow-lg shadow-sunset-500/20"
-                  : "text-sunset-800 hover:bg-sunset-100/50 hover:text-sunset-600"
-              }`}
-            >
-              <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
+        {/* Platform Switcher */}
+        <div className="flex w-full bg-sunset-100/50 p-1 rounded-xl mb-6">
+          <button
+            onClick={() => setPlatform("discord")}
+            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${
+              platform === "discord" ? "bg-white text-indigo-600 shadow-sm" : "text-sunset-800/60"
+            }`}
+          >
+            Discord
+          </button>
+          <button
+            onClick={() => setPlatform("telegram")}
+            className={`flex-1 flex items-center justify-center gap-1 py-2 text-sm font-bold rounded-lg transition-all ${
+              platform === "telegram" ? "bg-white text-blue-500 shadow-sm" : "text-sunset-800/60"
+            }`}
+          >
+            <Send size={14} /> Telegram
+          </button>
+        </div>
 
-      <div className="w-full px-4 mt-auto">
+        <nav className="flex-1 space-y-2 w-full flex flex-col items-start">
+          {links.map((link) => {
+            const isActive = pathname === link.href || (pathname.startsWith(link.href) && link.href !== `/dashboard/${platform}`);
+            return (
+              <Link key={link.href} href={link.href} className="w-full">
+                <motion.div
+                  whileHover={{ x: 4 }}
+                  className={`w-full flex items-center justify-start gap-3 p-3 rounded-2xl transition-all font-semibold text-sm ${
+                    isActive
+                      ? "bg-gradient-to-r from-sunset-500 to-peach-400 text-white shadow-lg shadow-sunset-500/20"
+                      : "text-sunset-800 hover:bg-white/40"
+                  }`}
+                >
+                  <link.icon size={20} className={isActive ? "text-white" : "text-sunset-600"} />
+                  <span>{link.label}</span>
+                </motion.div>
+              </Link>
+            );
+          })}
+        </nav>
+
         <button 
-          onClick={() => { /* signOut({ callbackUrl: '/' }) */ console.log("Sign Out") }}
-          className="flex w-full items-center gap-3 px-4 py-3 text-sunset-800 hover:bg-red-50 hover:text-red-500 transition-colors rounded-2xl font-medium"
+          onClick={() => signOut({ callbackUrl: '/' })}
+          className="w-full flex items-center justify-start gap-3 p-3 mt-6 text-red-500 hover:bg-red-100 rounded-2xl transition-all font-bold text-sm"
         >
           <LogOut size={20} />
-          Sign Out
+          <span>Sign Out</span>
         </button>
       </div>
     </aside>
