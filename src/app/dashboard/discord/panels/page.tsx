@@ -456,11 +456,11 @@ export default function PanelsPage() {
                                 ) : buttons.map((btn, idx) => (
                                     <button 
                                         key={idx}
-                                        className={`px-4 py-1.5 text-white text-sm font-medium rounded transition-all flex items-center justify-center gap-2 ${
-                                            btn.button_style === 'SUCCESS' ? 'bg-[#248046] hover:bg-[#1a6334]' :
-                                            btn.button_style === 'DANGER' ? 'bg-[#da373c] hover:bg-[#a12829]' :
+                                        className={`px-4 py-1.5 text-sm font-medium rounded transition-all flex items-center justify-center gap-2 ${
+                                            btn.button_style === 'SUCCESS' ? 'bg-[#248046] hover:bg-[#1a6334] text-white' :
+                                            btn.button_style === 'DANGER' ? 'bg-[#da373c] hover:bg-[#a12829] text-white' :
                                             btn.button_style === 'SECONDARY' ? 'bg-[#4e5058] hover:bg-[#6d6f78] text-[#dbdee1]' :
-                                            'bg-[#5865f2] hover:bg-[#4752c4]'
+                                            'bg-[#5865f2] hover:bg-[#4752c4] text-white'
                                         }`}
                                     >
                                         {btn.label || "Action Label"}

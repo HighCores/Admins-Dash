@@ -52,7 +52,7 @@ export default function ColorRolesPage() {
             color_name: name,
             color_hex: hex,
             updated_at: new Date().toISOString()
-        }, { onConflict: 'guild_id,color_name' });
+        }, { onConflict: 'role_id' });
 
         if (error) throw error;
         showToast("Color spectrum aligned! 🎨");
@@ -66,9 +66,10 @@ export default function ColorRolesPage() {
   };
 
   const handleDelete = async (roleIdToDelete: string) => {
-    if (!confirm("Delete this color node?")) return;
+    showToast("Purging color node...", false);
     await supabase.from("dc_color_roles").delete().eq("role_id", roleIdToDelete);
     fetchRoles();
+    showToast("Color node purged. 🗑️");
   };
 
   const usedRoleIds = roles.map(r => r.role_id);
