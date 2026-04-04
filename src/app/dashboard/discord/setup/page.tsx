@@ -7,22 +7,35 @@ import {
   Bell, FileText, UserPlus, Server,
   RefreshCcw, Terminal, HardDrive, Smartphone, Cpu,
   Globe, History, TrendingUp, ArrowRight, ShieldAlert,
-  Hash, Command, Layout, Monitor, Shield
+  Hash, Command, Layout, Monitor, Shield, Database
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import DiscordSelect from "@/components/DiscordSelect";
 
 export default function SetupPage() {
-  const [settings, setSettings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [seeding, setSeeding] = useState(false);
 
-  // Form State
-  const [logChannel, setLogChannel] = useState("");
+  // Java-aligned Keys (Direct from Config.java)
   const [welcomeChannel, setWelcomeChannel] = useState("");
-  const [adminRole, setAdminRole] = useState("");
-  const [supportRole, setSupportRole] = useState("");
+  const [logCategory, setLogCategory] = useState("");
+  const [ticketCategory, setTicketCategory] = useState("");
+  const [transcriptChannel, setTranscriptChannel] = useState("");
+  
+  // Roles
+  const [roleHigh, setRoleHigh] = useState("");
+  const [roleFounder, setRoleFounder] = useState("");
+  const [roleMod, setRoleMod] = useState("");
+  const [roleStaff, setRoleStaff] = useState("");
+  
+  // Operational Channels
+  const [chSignup, setChSignup] = useState("");
+  const [chOrder, setChOrder] = useState("");
+  const [chUpdates, setChUpdates] = useState("");
+  const [chTicket, setChTicket] = useState("");
+  
   const [botPrefix, setBotPrefix] = useState("!");
 
   useEffect(() => {
@@ -33,13 +46,23 @@ export default function SetupPage() {
     setLoading(true);
     const { data } = await supabase.from("dc_settings").select("*");
     if (data) {
-        setSettings(data);
         const find = (key: string) => data.find(s => s.key === key)?.value || "";
-        setLogChannel(find("log_channel"));
-        setWelcomeChannel(find("welcome_channel"));
-        setAdminRole(find("admin_role"));
-        setSupportRole(find("support_role"));
-        setBotPrefix(find("bot_prefix") || "!");
+        setWelcomeChannel(find("WELCOME_CHANNEL_ID"));
+        setLogCategory(find("LOG_CATEGORY_ID"));
+        setTicketCategory(find("TICKET_CATEGORY_ID"));
+        setTranscriptChannel(find("TRANSCRIPT_CHANNEL_ID"));
+        
+        setRoleHigh(find("ROLE_HIGH"));
+        setRoleFounder(find("ROLE_FOUNDER"));
+        setRoleMod(find("ROLE_MODERATOR"));
+        setRoleStaff(find("ROLE_STAFF"));
+        
+        setChSignup(find("CH_STARTUP"));
+        setChOrder(find("CH_ORDER"));
+        setChUpdates(find("CH_UPDATES"));
+        setChTicket(find("CH_TICKET"));
+        
+        setBotPrefix(find("BOT_PREFIX") || "!");
     }
     setLoading(false);
   };
@@ -48,11 +71,22 @@ export default function SetupPage() {
     setSaving(true);
     try {
         const updates = [
-            { key: "log_channel", value: logChannel },
-            { key: "welcome_channel", value: welcomeChannel },
-            { key: "admin_role", value: adminRole },
-            { key: "support_role", value: supportRole },
-            { key: "bot_prefix", value: botPrefix },
+            { key: "WELCOME_CHANNEL_ID", value: welcomeChannel },
+            { key: "LOG_CATEGORY_ID", value: logCategory },
+            { key: "TICKET_CATEGORY_ID", value: ticketCategory },
+            { key: "TRANSCRIPT_CHANNEL_ID", value: transcriptChannel },
+            
+            { key: "ROLE_HIGH", value: roleHigh },
+            { key: "ROLE_FOUNDER", value: roleFounder },
+            { key: "ROLE_MODERATOR", value: roleMod },
+            { key: "ROLE_STAFF", value: roleStaff },
+            
+            { key: "CH_STARTUP", value: chSignup },
+            { key: "CH_ORDER", value: chOrder },
+            { key: "CH_UPDATES", value: chUpdates },
+            { key: "CH_TICKET", value: chTicket },
+            
+            { key: "BOT_PREFIX", value: botPrefix },
         ];
 
         for (const update of updates) {
@@ -61,14 +95,36 @@ export default function SetupPage() {
 
         await supabase.from("dc_stats").insert({
             event_type: "settings_updated",
-            details: "Core bot settings were recalibrated in the High Core Nexus."
+            details: "Core Java bot shards were recalibrated."
         });
 
-        alert("Nexus synchronized! Central nervous system updated. 🧠⚡");
+        alert("System Synchronized! Shards updated. ⚡");
     } catch (err: any) {
         alert(err.message);
     } finally {
         setSaving(false);
+    }
+  };
+
+  const handleSeedDefaults = async () => {
+    if (!confirm("Populate empty Logic Nodes with system defaults? (/ping, /help, etc)")) return;
+    setSeeding(true);
+    try {
+        const defaultCommands = [
+            { name: 'ping', response_text: 'Neural latency: **POLLING_STABLE** (0.12ms)', permission: 'everyone', platform: 'discord' },
+            { name: 'help', response_text: '### High Core Navigation\n- `/setup`: Calibration Suite\n- `/panels`: Deployment Hub\n- `/levels`: Neural Progression', permission: 'everyone', platform: 'discord' },
+            { name: 'info', response_text: '**High Core Agency**\nLogic Status: `OPERATIONAL`\nNodes: `ACTIVE`', permission: 'everyone', platform: 'discord' }
+        ];
+
+        for (const cmd of defaultCommands) {
+            await supabase.from("dc_commands").upsert(cmd, { onConflict: 'name' });
+        }
+
+        alert("Default logic nodes injected successfully! ⚡");
+    } catch (err: any) {
+        alert(`SEEDING_ERR: ${err.message}`);
+    } finally {
+        setSeeding(false);
     }
   };
 
@@ -82,13 +138,13 @@ export default function SetupPage() {
              <div className="p-2 bg-zinc-950 rounded-xl shadow-lg shadow-zinc-200">
                 <Settings size={16} className="text-white" />
              </div>
-             <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none font-mono">Central Nervous System Configuration</span>
+             <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none font-mono">Java Bot Nexus Calibration</span>
           </div>
           <h1 className="text-3xl font-black text-zinc-950 tracking-tighter">
-            Bot <span className="text-zinc-300">Nexus</span>
+            Nexus <span className="text-zinc-300">Setup</span>
           </h1>
           <p className="text-sm font-bold text-zinc-500 max-w-2xl">
-             Calibrating global settings and monitoring the entity's health across the network architecture.
+             Calibrating global settings and parent shards for the Java High Core relay.
           </p>
         </div>
         
@@ -105,7 +161,7 @@ export default function SetupPage() {
                 className="flex items-center gap-4 px-10 py-5 bg-zinc-950 text-white font-black text-xs rounded-2xl shadow-xl hover:scale-105 active:scale-95 group disabled:opacity-50 italic tracking-widest uppercase"
             >
                 {saving ? <Loader2 className="animate-spin" /> : <ShieldCheck size={22} className="group-hover:scale-110 transition-transform" />}
-                Sync Nexus Core
+                Sync Nexus Shards
             </button>
         </div>
       </header>
@@ -124,57 +180,89 @@ export default function SetupPage() {
                   </div>
 
                   <div className="flex-1 overflow-y-auto p-12 custom-scrollbar">
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                        {/* Shard 1: Infrastructure */}
                         <div className="space-y-10">
+                            <h4 className="text-[10px] font-black text-zinc-950 uppercase tracking-[0.4em] mb-6 italic opacity-20">Infrastructure Shards</h4>
                             <DiscordSelect 
-                                label="Incident Log Shard (Channel)"
-                                type="channel"
-                                value={logChannel}
-                                onChange={setLogChannel}
-                                placeholder="Select log channel..."
+                                label="Log Shard (Category)"
+                                type="category"
+                                value={logCategory}
+                                onChange={setLogCategory}
+                                placeholder="Select log category..."
                             />
                             <DiscordSelect 
-                                label="Arrival Port (Welcome Channel)"
+                                label="Ticket Nest (Category)"
+                                type="category"
+                                value={ticketCategory}
+                                onChange={setTicketCategory}
+                                placeholder="Select ticket category..."
+                            />
+                            <DiscordSelect 
+                                label="Transcript Ledger (Channel)"
+                                type="channel"
+                                value={transcriptChannel}
+                                onChange={setTranscriptChannel}
+                                placeholder="Select transcript channel..."
+                            />
+                            <DiscordSelect 
+                                label="Arrival Port (Welcome)"
                                 type="channel"
                                 value={welcomeChannel}
                                 onChange={setWelcomeChannel}
                                 placeholder="Select welcome channel..."
                             />
                              <div className="space-y-3">
-                                <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Logical Command Prefix</label>
+                                <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Logical Prefix</label>
                                 <input 
                                     type="text"
                                     maxLength={3}
                                     value={botPrefix}
                                     onChange={(e) => setBotPrefix(e.target.value)}
-                                    className="w-full p-6 rounded-2xl bg-zinc-50 border border-zinc-100 font-black text-5xl text-zinc-950 focus:bg-white outline-none placeholder:opacity-10 transition-all text-center italic shadow-inner"
+                                    className="w-full p-4 rounded-xl bg-zinc-50 border border-zinc-100 font-black text-2xl text-zinc-950 focus:bg-white outline-none placeholder:opacity-10 transition-all text-center italic"
                                     placeholder="!"
                                 />
                             </div>
                         </div>
 
+                        {/* Shard 2: Authority & Operations */}
                         <div className="space-y-10">
+                             <h4 className="text-[10px] font-black text-zinc-950 uppercase tracking-[0.4em] mb-6 italic opacity-20">Authority Shards</h4>
                              <DiscordSelect 
-                                label="High Authority Key (Admin Role)"
+                                label="High Authority (ROLE_HIGH)"
                                 type="role"
-                                value={adminRole}
-                                onChange={setAdminRole}
-                                placeholder="Select admin role..."
+                                value={roleHigh}
+                                onChange={setRoleHigh}
+                                placeholder="Select High role..."
                             />
                             <DiscordSelect 
-                                label="Field Agent Token (Support Role)"
+                                label="Founder (ROLE_FOUNDER)"
                                 type="role"
-                                value={supportRole}
-                                onChange={setSupportRole}
-                                placeholder="Select support role..."
+                                value={roleFounder}
+                                onChange={setRoleFounder}
+                                placeholder="Select Founder role..."
+                            />
+                            <DiscordSelect 
+                                label="Moderator (ROLE_MOD)"
+                                type="role"
+                                value={roleMod}
+                                onChange={setRoleMod}
+                                placeholder="Select Moderator role..."
                             />
                             
-                            <div className="p-10 bg-zinc-50 border border-zinc-100 rounded-[2.5rem] flex flex-col items-center justify-center text-center group cursor-pointer hover:bg-zinc-950 transition-all relative overflow-hidden h-48 shadow-inner">
-                                <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none rotate-12 transition-transform group-hover:scale-125 duration-1000"><Shield size={140} /></div>
-                                <ShieldCheck size={32} className="text-zinc-300 mb-4 group-hover:text-emerald-400 group-hover:scale-125 transition-all" />
-                                <h4 className="text-sm font-black italic tracking-widest text-zinc-950 group-hover:text-white underline underline-offset-4 mb-2 uppercase">System Matrix Sync</h4>
-                                <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-[0.2em] leading-relaxed px-10 italic">Align all shards with the backend processor protocols.</p>
-                            </div>
+                            <h4 className="text-[10px] font-black text-zinc-950 uppercase tracking-[0.4em] mt-10 mb-6 italic opacity-20">Operational Ports</h4>
+                            <DiscordSelect 
+                                label="Startup Signal (CH_STARTUP)"
+                                type="channel"
+                                value={chSignup}
+                                onChange={setChSignup}
+                            />
+                            <DiscordSelect 
+                                label="Order Feed (CH_ORDER)"
+                                type="channel"
+                                value={chOrder}
+                                onChange={setChOrder}
+                            />
                         </div>
                      </div>
                   </div>
@@ -186,29 +274,25 @@ export default function SetupPage() {
              <div className="bg-white p-10 rounded-[3rem] border border-zinc-100 shadow-sm relative overflow-hidden flex flex-col items-center justify-center group flex-1 shrink-0">
                 <div className="absolute top-0 right-0 p-8 opacity-10 rotate-12 group-hover:rotate-0 transition-transform duration-700 pointer-events-none"><Activity size={120} /></div>
                 <h3 className="text-xl font-black text-zinc-950 mb-10 flex items-center gap-3 italic tracking-tighter underline underline-offset-8 decoration-zinc-100 uppercase shrink-0">
-                    <Activity size={18} className="text-zinc-400" /> Nexus Pulse
+                    <Activity size={18} className="text-zinc-400" /> System Seeding
                 </h3>
 
-                <div className="flex-1 flex flex-col items-center justify-center p-4 relative w-full">
-                     <div className="w-48 h-48 rounded-full border-8 border-zinc-50 relative bg-white shadow-[0_20px_50px_rgba(0,0,0,0.05)] flex items-center justify-center group/pulse">
-                          <div className="absolute inset-0 rounded-full border-4 border-dashed border-zinc-100 animate-spin-slow opacity-20"></div>
-                          <div className="text-center">
-                                <div className="text-5xl font-black text-zinc-950 italic tracking-tighter group-hover/pulse:scale-110 transition-transform">99.9<span className="text-sm opacity-20 ml-1">%</span></div>
-                                <div className="text-[9px] font-black opacity-20 uppercase tracking-[0.4em] italic mt-2 leading-none">UPTIME_INDEX</div>
-                          </div>
-                     </div>
-                </div>
+                <p className="text-[10px] font-bold text-zinc-400 text-center px-10 italic uppercase tracking-widest leading-relaxed mb-10">
+                    If your logic node grid is empty, use the system seeder to inject standard operational protocols.
+                </p>
 
-                <div className="w-full space-y-4 mt-8">
-                     <div className="flex items-center justify-between border-b border-zinc-50 pb-4">
-                        <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest italic">Neural Shards</span>
-                        <span className="text-lg font-black text-zinc-950 italic tracking-tighter uppercase">5 Active Nodes</span>
-                     </div>
-                     <div className="flex items-center justify-between border-b border-zinc-50 pb-4">
-                        <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest italic">Sync Latency</span>
-                        <span className="text-lg font-black text-emerald-600 italic tracking-tighter uppercase">0.14ms_Optimal</span>
-                     </div>
-                </div>
+                <button 
+                    disabled={seeding}
+                    onClick={handleSeedDefaults}
+                    className="flex flex-col items-center gap-6 px-12 py-10 bg-zinc-50 border-2 border-dashed border-zinc-200 rounded-[2.5rem] group hover:bg-zinc-950 hover:border-transparent transition-all shadow-inner relative overflow-hidden"
+                >
+                    <div className="absolute inset-0 bg-white/5 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                    <Database size={32} className={`text-zinc-300 ${seeding ? 'animate-spin' : 'group-hover:text-emerald-400 group-hover:scale-125'} transition-all`} />
+                    <div className="text-center">
+                        <span className="text-xs font-black italic tracking-widest text-zinc-950 group-hover:text-white uppercase block mb-1">Seed System Defaults</span>
+                        <span className="text-[8px] font-black text-zinc-300 uppercase tracking-widest italic group-hover:text-zinc-500">POPULATE_EMPTY_LEOPOLD</span>
+                    </div>
+                </button>
              </div>
 
              <div className="p-8 bg-zinc-950 text-white rounded-[2.5rem] shadow-2xl relative overflow-hidden group border border-zinc-900 shrink-0">

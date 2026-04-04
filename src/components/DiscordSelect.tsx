@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Hash, Shield, Search, Loader2, ChevronDown } from "lucide-react";
+import { Hash, Shield, Search, Loader2, ChevronDown, Layout } from "lucide-react";
 
 interface DiscordSelectProps {
   label: string;
-  type: "channel" | "role";
+  type: "channel" | "role" | "category";
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
@@ -20,7 +20,8 @@ export default function DiscordSelect({ label, type, value, onChange, placeholde
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch(`/api/discord/${type === "channel" ? "channels" : "roles"}`);
+        const endpoint = type === "channel" ? "channels" : type === "role" ? "roles" : "categories";
+        const response = await fetch(`/api/discord/${endpoint}`);
         const data = await response.json();
         if (Array.isArray(data)) {
             setItems(data);
@@ -61,8 +62,10 @@ export default function DiscordSelect({ label, type, value, onChange, placeholde
                 <Loader2 size={14} className="animate-spin text-zinc-400" />
             ) : type === "channel" ? (
                 <Hash size={14} className="text-zinc-400" />
-            ) : (
+            ) : type === "role" ? (
                 <Shield size={14} className="text-zinc-400" />
+            ) : (
+                <Layout size={14} className="text-zinc-400" />
             )}
             <span className={`text-sm truncate max-w-[180px] ${selectedItem ? "text-zinc-900" : "text-zinc-400 opacity-60"}`}>
               {selectedItem ? (selectedItem.name || selectedItem.label) : placeholder || `Select ${type}...`}
@@ -102,7 +105,7 @@ export default function DiscordSelect({ label, type, value, onChange, placeholde
                         value === item.id ? "bg-zinc-950 text-white" : "hover:bg-zinc-50 text-zinc-900"
                      }`}
                    >
-                     {type === "channel" ? <Hash size={12} className="opacity-40" /> : <Shield size={12} className="opacity-40" />}
+                     {type === "channel" ? <Hash size={12} className="opacity-40" /> : type === "role" ? <Shield size={12} className="opacity-40" /> : <Layout size={12} className="opacity-40" />}
                      <span className="truncate">{item.name || item.label}</span>
                      {item.color && type === "role" && (
                         <div className="w-1.5 h-1.5 rounded-full ml-auto" style={{ backgroundColor: item.color }}></div>

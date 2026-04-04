@@ -16,19 +16,19 @@ export async function GET() {
         });
 
         if (!response.ok) {
-            return NextResponse.json({ error: "Failed to fetch channels" }, { status: response.status });
+            return NextResponse.json({ error: "Failed to fetch categories" }, { status: response.status });
         }
 
         const channels = await response.json();
-        // Filter for Text Channels (type 0)
-        const textChannels = channels
-            .filter((ch: any) => ch.type === 0)
+        // Filter for Categories (type 4)
+        const categories = channels
+            .filter((ch: any) => ch.type === 4)
             .map((ch: any) => ({
                 id: ch.id,
                 name: ch.name,
             }));
 
-        return NextResponse.json(textChannels);
+        return NextResponse.json(categories);
     } catch (error) {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
