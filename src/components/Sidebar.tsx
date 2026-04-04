@@ -38,7 +38,7 @@ export default function Sidebar() {
   }, [pathname]);
 
   return (
-    <div className="flex flex-col h-full bg-white text-zinc-900 border-r border-zinc-100 p-6 overflow-hidden">
+    <div className="flex flex-col h-full bg-white text-zinc-900 border-r border-zinc-100 p-6 overflow-hidden shadow-[1px_0_0_0_rgba(0,0,0,0.02)]">
       {/* Brand Header */}
       <div className="mb-10 px-4">
         <h2 className="text-2xl font-black text-black tracking-tighter flex items-center gap-3">

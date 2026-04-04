@@ -8,7 +8,7 @@ export default function DashboardLayout({
   return (
     <div className="flex h-screen bg-zinc-50 overflow-hidden font-sans selection:bg-zinc-900 selection:text-white">
       {/* Sidebar - Fixed width to prevent shrinking, high contrast */}
-      <aside className="w-72 shrink-0 h-full border-r border-zinc-100 bg-white">
+      <aside className="w-72 shrink-0 h-full bg-white z-50 relative">
          <Sidebar />
       </aside>
       

@@ -137,7 +137,7 @@ export default function PanelsPage() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col min-h-0 overflow-y-auto custom-scrollbar">
+    <div className="w-full h-full flex flex-col min-h-0 overflow-y-auto custom-scrollbar overflow-x-visible p-1">
       
       {/* Header - Compact */}
       <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
@@ -171,8 +171,8 @@ export default function PanelsPage() {
         </div>
       </header>
 
-      {/* Main Workspace - 3 Column Layout (SIDE-BY-SIDE, NO SCROLL) */}
-      <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 min-h-0 overflow-hidden">
+      {/* Main Workspace - 3 Column Layout (SIDE-BY-SIDE) */}
+      <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 min-h-0 overflow-y-auto xl:overflow-visible p-1">
         
         {/* Column 1: Interactive List Rack */}
         <div className="xl:col-span-3 flex flex-col min-h-0">
@@ -236,7 +236,7 @@ export default function PanelsPage() {
                                 className="p-2.5 text-zinc-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"><Trash2 size={18} /></button>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-6">
+                        <div className="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-6 overflow-x-visible">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Internal ID</label>
@@ -431,7 +431,12 @@ export default function PanelsPage() {
                             <div className="space-y-4">
                                 <h4 className="text-white font-black text-2xl tracking-tighter leading-tight">{title || "Structural Headline"}</h4>
                                 <p className="text-[#dbdee1] text-sm leading-relaxed font-medium font-sans pr-4 opacity-90 whitespace-pre-wrap">
-                                    {content || "Payload description will materialize here after network sync. Calibrate the editor logic to populate this view."}
+                                    {(content || "").split("\\n").map((line, i, arr) => (
+                                        <span key={i}>
+                                            {line}
+                                            {i < arr.length - 1 && <br />}
+                                        </span>
+                                    )) || "Payload description will materialize here after network sync."}
                                 </p>
                             </div>
                             

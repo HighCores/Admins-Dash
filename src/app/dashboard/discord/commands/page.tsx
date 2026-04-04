@@ -88,7 +88,7 @@ export default function CommandsPage() {
   const filteredCommands = commands.filter(c => c.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="w-full h-full flex flex-col min-h-0 overflow-hidden">
+    <div className="w-full h-full flex flex-col min-h-0 overflow-y-auto custom-scrollbar overflow-x-visible">
       
       {/* Header - Compact */}
       <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
