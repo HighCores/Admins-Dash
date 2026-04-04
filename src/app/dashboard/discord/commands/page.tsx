@@ -317,7 +317,6 @@ export default function CommandsPage() {
                         placeholder="Select required role..."
                     />
 
-                    {/* NEW: Neural Action Center */}
                     <div className="pt-4 border-t border-zinc-100 flex flex-col gap-6">
                         <div className="space-y-2">
                             <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Neural Action Type</label>
@@ -353,13 +352,6 @@ export default function CommandsPage() {
                                         <option key={m.menu_id} value={m.menu_id}>{m.title} ({m.menu_id})</option>
                                     ))}
                                 </select>
-                                <div className="px-4 flex items-center justify-between">
-                                    <span className="text-[8px] font-black text-zinc-300 uppercase italic">Link to existsing neural interface</span>
-                                    <button 
-                                        onClick={() => window.location.href = '/dashboard/discord/panels'} 
-                                        className="text-[8px] font-black text-zinc-950 underline underline-offset-2 uppercase hover:text-zinc-500 transition-colors"
-                                    >Construct New Panel</button>
-                                </div>
                             </div>
                         )}
                     </div>
@@ -371,7 +363,7 @@ export default function CommandsPage() {
                         disabled={saving}
                         className="w-full py-6 bg-zinc-950 text-white font-black text-[10px] rounded-2xl shadow-xl hover:bg-black transition-all flex items-center justify-center gap-4 uppercase tracking-[0.4em] italic disabled:opacity-50"
                     >
-                        {saving ? <Loader2 className="animate-spin" /> : <Save size={20} />} 
+                        {saving ? <Loader2 className="animate-spin" size={16} /> : <Save size={20} />} 
                         Broadcast Neural Sync
                     </button>
                 </div>
