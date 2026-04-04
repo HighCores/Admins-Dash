@@ -5,7 +5,7 @@ import {
   Coins, TrendingUp, History, UserPlus, 
   MinusCircle, PlusCircle, Search, 
   Loader2, BadgeDollarSign, Wallet,
-  Zap, Crown, ShieldCheck, Heart, User, ArrowRight, X, Sparkles
+  Zap, Crown, ShieldCheck, Heart, User, ArrowRight, X, Sparkles, RefreshCcw
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";

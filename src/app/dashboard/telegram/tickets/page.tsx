@@ -58,7 +58,7 @@ export default function TelegramTicketsPage() {
                     type="text" 
                     placeholder="Search Telegram ledger..."
                     value={search}
-                    onChange={(e) => setSearch(setSearch(e.target.value))}
+                    onChange={(e) => setSearch(e.target.value)}
                     className="pl-14 pr-8 py-5 rounded-[2.5rem] bg-white border border-blue-50 shadow-xl w-80 font-black text-blue-950 focus:ring-8 ring-blue-500/5 outline-none transition-all placeholder:italic"
                 />
             </div>
