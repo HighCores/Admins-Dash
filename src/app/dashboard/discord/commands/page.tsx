@@ -23,10 +23,19 @@ export default function CommandsPage() {
   const [response, setResponse] = useState("");
   const [permission, setPermission] = useState("everyone");
   const [isActive, setIsActive] = useState(true);
+  const [actionType, setActionType] = useState("text"); // text, panel, ticket, colors, levels
+  const [actionValue, setActionValue] = useState("");
+  const [availableMenus, setAvailableMenus] = useState<any[]>([]);
 
   useEffect(() => {
     fetchCommands();
+    fetchMenus();
   }, []);
+
+  const fetchMenus = async () => {
+    const { data } = await supabase.from("dc_menus").select("menu_id, title").eq("is_active", true);
+    if (data) setAvailableMenus(data);
+  };
 
   const fetchCommands = async () => {
     setLoading(true);
@@ -47,6 +56,9 @@ export default function CommandsPage() {
     setResponse(cmd.response_text || "");
     setPermission(cmd.permission || "everyone");
     setIsActive(cmd.is_active !== false);
+    setActionType(cmd.action_type || "text");
+    setActionValue(cmd.action_value || "");
+  };
   };
 
   const handleSave = async () => {
@@ -59,6 +71,8 @@ export default function CommandsPage() {
             response_text: response,
             permission: permission,
             is_active: isActive,
+            action_type: actionType,
+            action_value: actionValue,
             platform: "discord",
             updated_at: new Date().toISOString()
         }, { onConflict: 'name' });
@@ -302,6 +316,53 @@ export default function CommandsPage() {
                         onChange={setPermission}
                         placeholder="Select required role..."
                     />
+
+                    {/* NEW: Neural Action Center */}
+                    <div className="pt-4 border-t border-zinc-100 flex flex-col gap-6">
+                        <div className="space-y-2">
+                            <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Neural Action Type</label>
+                            <div className="grid grid-cols-2 gap-4 p-2 bg-zinc-50 rounded-2xl border border-zinc-100">
+                                {[
+                                    { id: 'text', label: 'Payload Message', icon: Terminal },
+                                    { id: 'panel', label: 'Open Neural Panel', icon: Sparkles },
+                                    { id: 'ticket', label: 'Open Ticket', icon: Edit3 },
+                                    { id: 'colors', label: 'Color Matrix', icon: Zap }
+                                ].map((type) => (
+                                    <button
+                                        key={type.id}
+                                        onClick={() => setActionType(type.id)}
+                                        className={`flex items-center gap-3 p-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${actionType === type.id ? 'bg-zinc-950 text-white shadow-lg' : 'hover:bg-white text-zinc-400'}`}
+                                    >
+                                        <type.icon size={14} className={actionType === type.id ? 'text-zinc-400' : ''} />
+                                        {type.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {actionType === 'panel' && (
+                            <div className="space-y-2 animate-in slide-in-from-top-2 duration-300">
+                                <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Select Panel ID</label>
+                                <select 
+                                    className="w-full p-4 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-950 text-sm outline-none appearance-none"
+                                    value={actionValue}
+                                    onChange={(e) => setActionValue(e.target.value)}
+                                >
+                                    <option value="">No Panel Selected</option>
+                                    {availableMenus.map(m => (
+                                        <option key={m.menu_id} value={m.menu_id}>{m.title} ({m.menu_id})</option>
+                                    ))}
+                                </select>
+                                <div className="px-4 flex items-center justify-between">
+                                    <span className="text-[8px] font-black text-zinc-300 uppercase italic">Link to existsing neural interface</span>
+                                    <button 
+                                        onClick={() => window.location.href = '/dashboard/discord/panels'} 
+                                        className="text-[8px] font-black text-zinc-950 underline underline-offset-2 uppercase hover:text-zinc-500 transition-colors"
+                                    >Construct New Panel</button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 <div className="pt-4">
