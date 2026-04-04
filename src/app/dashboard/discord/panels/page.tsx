@@ -96,16 +96,18 @@ export default function PanelsPage() {
 
         if (error) throw error;
 
-        // Save buttons
-        for (let i = 0; i < buttons.length; i++) {
-            await supabase.from("dc_buttons").upsert({
-                id: buttons[i].id,
+        // Save buttons: Delete existing ones first to ensure clean state
+        await supabase.from("dc_buttons").delete().eq("menu_id", menuId);
+        
+        if (buttons.length > 0) {
+            const buttonsToInsert = buttons.map((b, i) => ({
                 menu_id: menuId,
-                label: buttons[i].label,
-                action_id: buttons[i].action_id,
-                button_style: buttons[i].button_style || 'PRIMARY',
+                label: b.label,
+                action_id: b.action_id,
+                button_style: b.button_style || 'PRIMARY',
                 position: i
-            });
+            }));
+            await supabase.from("dc_buttons").insert(buttonsToInsert);
         }
 
         showToast("System Synchronized! ⚡");
@@ -450,14 +452,14 @@ export default function PanelsPage() {
 
                             <div className="flex flex-wrap gap-2 pt-4">
                                 {buttons.length === 0 ? (
-                                    <button className="px-5 py-2.5 bg-[#4e5058] text-white text-[10px] font-black rounded-lg shadow-lg hover:bg-[#6d6f78] transition-all italic border-b-2 border-black/20 opacity-20">No Action Nodes</button>
+                                    <button className="px-3 py-1.5 bg-[#4e5058] text-[#dbdee1] text-sm font-medium rounded shadow-sm transition-all border border-[#2b2d31] opacity-50 cursor-default">No Action Nodes</button>
                                 ) : buttons.map((btn, idx) => (
                                     <button 
                                         key={idx}
-                                        className={`px-5 py-2.5 text-white text-[10px] font-black rounded-lg shadow-lg transition-all italic border-b-2 border-black/20 ${
+                                        className={`px-4 py-1.5 text-white text-sm font-medium rounded transition-all flex items-center justify-center gap-2 ${
                                             btn.button_style === 'SUCCESS' ? 'bg-[#248046] hover:bg-[#1a6334]' :
                                             btn.button_style === 'DANGER' ? 'bg-[#da373c] hover:bg-[#a12829]' :
-                                            btn.button_style === 'SECONDARY' ? 'bg-[#4e5058] hover:bg-[#6d6f78]' :
+                                            btn.button_style === 'SECONDARY' ? 'bg-[#4e5058] hover:bg-[#6d6f78] text-[#dbdee1]' :
                                             'bg-[#5865f2] hover:bg-[#4752c4]'
                                         }`}
                                     >
