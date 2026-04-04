@@ -10,6 +10,7 @@ import {
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import DiscordSelect from "@/components/DiscordSelect";
+import { showToast } from "@/components/CustomToaster";
 
 export default function PanelsPage() {
   const [menus, setMenus] = useState<any[]>([]);
@@ -77,7 +78,7 @@ export default function PanelsPage() {
   };
 
   const handleSave = async () => {
-    if (!menuId || !title) return alert("ID and Title are mandatory nodes.");
+    if (!menuId || !title) return showToast("ID and Title are mandatory nodes.", true);
     setSaving(true);
     try {
         const { error } = await supabase.from("dc_menus").upsert({
@@ -107,10 +108,10 @@ export default function PanelsPage() {
             });
         }
 
-        alert("System Synchronized! ⚡");
+        showToast("System Synchronized! ⚡");
         fetchMenus();
     } catch (err: any) {
-        alert(`ERR_LOGIC: ${err.message}`);
+        showToast(`ERR_LOGIC: ${err.message}`, true);
     } finally {
         setSaving(false);
     }
@@ -121,6 +122,7 @@ export default function PanelsPage() {
     await supabase.from("dc_menus").delete().eq("menu_id", id);
     if (activeMenu?.menu_id === id) setActiveMenu(null);
     fetchMenus();
+    showToast("Interface nexus purged.");
   };
 
   const addButton = () => {

@@ -37,9 +37,9 @@ export default function ColorRolesPage() {
 
   const handleEdit = (role: any) => {
     setEditingRole(role);
-    setName(role.role_name || "");
+    setName(role.color_name || "");
     setRoleId(role.role_id || "");
-    setHex(role.hex_color || "#3b82f6");
+    setHex(role.color_hex || "#3b82f6");
   };
 
     const handleSave = async () => {
@@ -47,11 +47,12 @@ export default function ColorRolesPage() {
     setSaving(true);
     try {
         const { error } = await supabase.from("dc_color_roles").upsert({
+            guild_id: "global",
             role_id: roleId,
-            role_name: name,
-            hex_color: hex,
+            color_name: name,
+            color_hex: hex,
             updated_at: new Date().toISOString()
-        }, { onConflict: 'role_id' });
+        }, { onConflict: 'guild_id,color_name' });
 
         if (error) throw error;
         showToast("Color spectrum aligned! 🎨");
@@ -105,7 +106,7 @@ export default function ColorRolesPage() {
                 <RefreshCcw size={20} className={`text-zinc-400 group-hover:text-zinc-950 transition-all ${loading ? 'animate-spin' : ''}`} />
             </button>
             <button 
-                onClick={() => handleEdit({ role_name: '', role_id: '', hex_color: '#3b82f6' })}
+                onClick={() => handleEdit({ color_name: '', role_id: '', color_hex: '#3b82f6' })}
                 className="flex items-center gap-4 px-8 py-4 bg-zinc-950 text-white font-black text-xs rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all group italic tracking-widest uppercase"
             >
                 <Plus size={18} className="group-hover:rotate-90 transition-transform" />
@@ -144,12 +145,12 @@ export default function ColorRolesPage() {
                                  <div className="col-span-4 pl-4 flex items-center gap-6">
                                      <div 
                                          className="w-11 h-11 rounded-xl shadow-2xl border-4 border-white transition-all group-hover:scale-110 rotate-3 group-hover:rotate-0" 
-                                         style={{ backgroundColor: role.hex_color }}
+                                         style={{ backgroundColor: role.color_hex }}
                                      />
-                                     <code className="text-[10px] font-black text-zinc-400 bg-white px-3 py-1.5 rounded-lg border border-zinc-100 shadow-inner">{role.hex_color}</code>
+                                     <code className="text-[10px] font-black text-zinc-400 bg-white px-3 py-1.5 rounded-lg border border-zinc-100 shadow-inner">{role.color_hex}</code>
                                  </div>
                                  <div className="col-span-3">
-                                     <span className="font-black text-zinc-950 uppercase italic tracking-tighter text-lg leading-none">{role.role_name}</span>
+                                     <span className="font-black text-zinc-950 uppercase italic tracking-tighter text-lg leading-none">{role.color_name}</span>
                                  </div>
                                  <div className="col-span-3 flex items-center gap-2">
                                      <Shield size={14} className="text-zinc-300" />
@@ -205,8 +206,8 @@ export default function ColorRolesPage() {
                         </div>
                         <div className="flex flex-wrap justify-center gap-2 max-w-[240px]">
                              {roles.slice(0, 4).map(r => (
-                                <div key={r.role_id} className="px-5 py-2 rounded-full text-[9px] font-black text-white shadow-lg uppercase tracking-widest italic flex items-center gap-2" style={{ backgroundColor: r.hex_color }}>
-                                    <Shield size={10} /> {r.role_name}
+                                <div key={r.role_id} className="px-5 py-2 rounded-full text-[9px] font-black text-white shadow-lg uppercase tracking-widest italic flex items-center gap-2" style={{ backgroundColor: r.color_hex }}>
+                                    <Shield size={10} /> {r.color_name}
                                 </div>
                              ))}
                         </div>

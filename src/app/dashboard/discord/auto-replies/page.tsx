@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import { showToast } from "@/components/CustomToaster";
 
 export default function AutoRepliesPage() {
   const [replies, setReplies] = useState<any[]>([]);
@@ -47,7 +48,7 @@ export default function AutoRepliesPage() {
   };
 
   const handleSave = async () => {
-    if (!keyword || !response) return alert("Keyword and response are required.");
+    if (!keyword || !response) return showToast("Keyword and response are required.", true);
     setSaving(true);
     try {
         const { error } = await supabase.from("dc_auto_responses").upsert({
@@ -64,11 +65,11 @@ export default function AutoRepliesPage() {
             details: `Neural trigger [${keyword}] was recalibrated.`
         });
 
-        alert("Neural trigger synchronized! 🧠⚡");
+        showToast("Neural trigger synchronized! 🧠⚡");
         setEditingReply(null);
         fetchReplies();
     } catch (err: any) {
-        alert(err.message);
+        showToast(err.message, true);
     } finally {
         setSaving(false);
     }
@@ -78,6 +79,7 @@ export default function AutoRepliesPage() {
     if (!confirm(`Deep-delete the [${kw}] trigger?`)) return;
     await supabase.from("dc_auto_responses").delete().eq("keyword", kw);
     fetchReplies();
+    showToast("Neural trigger purged.");
   };
 
   const filteredReplies = replies.filter(r => r.keyword.toLowerCase().includes(search.toLowerCase()));
