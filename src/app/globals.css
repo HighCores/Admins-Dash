@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-sunset-100: #fff0e5;
+  --color-sunset-200: #ffd1b3;
+  --color-sunset-300: #ffb180;
+  --color-sunset-400: #ff8e4d;
+  --color-sunset-500: #ff6a1a;
+  --color-sunset-600: #e65200;
+  --color-sunset-700: #b34000;
+  --color-sunset-800: #802e00;
+  --color-sunset-900: #4d1c00;
+
+  --color-sunset-glow: rgba(255, 106, 26, 0.4);
+
+  --font-sans: var(--font-outfit), sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+}
+
+:root {
+  --background: #fff8f5;
+  --foreground: #2a1105;
+}
+
+body {
+  background: linear-gradient(135deg, #fff0e5 0%, #ffe3d1 50%, #ffd6c2 100%);
+  color: var(--foreground);
+  min-height: 100vh;
+}
+
+/* Glassmorphism Classes */
+.glass {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 10px 40px rgba(255, 106, 26, 0.08);
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 150, 100, 0.3);
+  backdrop-filter: blur(8px);
+}
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: var(--color-sunset-400);
+  box-shadow: 0 0 0 3px rgba(255, 106, 26, 0.2);
+  outline: none;
+}
