@@ -29,7 +29,13 @@ export default function CommandsPage() {
 
   const fetchCommands = async () => {
     setLoading(true);
-    const { data } = await supabase.from("dc_commands").select("*").eq("platform", "discord").order("name", { ascending: true });
+    // Legacy support: Include records where platform is NULL as they were likely Discord commands.
+    const { data } = await supabase
+        .from("dc_commands")
+        .select("*")
+        .or('platform.eq.discord,platform.is.null')
+        .order("name", { ascending: true });
+    
     if (data) setCommands(data);
     setLoading(false);
   };

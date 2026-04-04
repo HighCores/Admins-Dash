@@ -33,7 +33,13 @@ export default function PanelsPage() {
 
   const fetchMenus = async () => {
     setLoading(true);
-    const { data } = await supabase.from("dc_menus").select("*").eq("platform", "discord").order("created_at", { ascending: false });
+    // Legacy support: Include records where platform is NULL as they were likely Discord panels.
+    const { data } = await supabase
+        .from("dc_menus")
+        .select("*")
+        .or('platform.eq.discord,platform.is.null')
+        .order("created_at", { ascending: false });
+    
     if (data) setMenus(data);
     setLoading(false);
   };

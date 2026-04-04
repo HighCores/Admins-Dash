@@ -28,7 +28,13 @@ export default function AutoRepliesPage() {
 
   const fetchReplies = async () => {
     setLoading(true);
-    const { data } = await supabase.from("dc_auto_responses").select("*").order("keyword", { ascending: true });
+    // Legacy support: Include records where platform is NULL as they were likely Discord replies.
+    const { data } = await supabase
+        .from("dc_auto_responses")
+        .select("*")
+        .or('platform.eq.discord,platform.is.null')
+        .order("keyword", { ascending: true });
+    
     if (data) setReplies(data);
     setLoading(false);
   };

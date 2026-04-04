@@ -155,29 +155,43 @@ export default function TicketsPage() {
                          <div className="p-20 text-center opacity-20 italic">No tickets manifest.</div>
                      ) : (
                          filteredTickets.map((ticket) => (
-                             <motion.button 
+                             <motion.div 
                                  key={ticket.id}
-                                 whileHover={{ x: 5 }}
-                                 onClick={() => setActiveTicket(ticket)}
-                                 className={`w-full p-6 rounded-2xl border transition-all text-left flex items-center justify-between group ${
+                                 whileHover={{ scale: 1.01 }}
+                                 className={`w-full p-6 rounded-3xl border transition-all text-left flex flex-col gap-6 group relative overflow-hidden ${
                                     activeTicket?.id === ticket.id 
-                                    ? "bg-zinc-950 text-white shadow-xl border-transparent" 
+                                    ? "bg-zinc-950 text-white shadow-2xl border-transparent ring-2 ring-zinc-100" 
                                     : "bg-white border-zinc-100 hover:bg-zinc-50 text-zinc-900"
                                  }`}
                              >
-                                 <div className="flex items-center gap-4">
-                                     <div className={`p-3 rounded-xl ${activeTicket?.id === ticket.id ? 'bg-white/10' : 'bg-zinc-50 text-zinc-400'}`}>
-                                         {ticket.status === 'open' ? <Zap size={16} className="text-emerald-400" /> : <Archive size={16} />}
-                                     </div>
-                                     <div className="min-w-0">
-                                         <div className="font-black text-sm italic tracking-tight">{ticket.ticket_id}</div>
-                                         <div className={`text-[10px] font-black uppercase tracking-widest truncate ${activeTicket?.id === ticket.id ? 'text-zinc-400' : 'text-zinc-300'}`}>
-                                             {usernames[ticket.user_id] || `ID: ${ticket.user_id}`}
+                                 <div className="flex items-center justify-between">
+                                     <div className="flex items-center gap-4">
+                                         <div className={`p-4 rounded-2xl ${activeTicket?.id === ticket.id ? 'bg-white/10' : 'bg-zinc-50 text-zinc-400'}`}>
+                                             {ticket.status === 'open' ? <Zap size={20} className="text-emerald-400 animate-pulse" /> : <Archive size={20} />}
+                                         </div>
+                                         <div className="min-w-0">
+                                             <div className="font-black text-lg italic tracking-tighter leading-none mb-1 uppercase font-mono">{ticket.ticket_id}</div>
+                                             <div className={`text-[10px] font-black uppercase tracking-[0.2em] truncate ${activeTicket?.id === ticket.id ? 'text-zinc-500' : 'text-zinc-300'}`}>
+                                                 {usernames[ticket.user_id] || ticket.user_name || `Node: ${ticket.user_id}`}
+                                             </div>
                                          </div>
                                      </div>
+                                     <div className={`px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest ${ticket.status === 'open' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-zinc-100 text-zinc-400'}`}>
+                                         {ticket.status}
+                                     </div>
                                  </div>
-                                 <ChevronRight size={16} className={activeTicket?.id === ticket.id ? "opacity-100" : "opacity-20"} />
-                             </motion.button>
+
+                                 <button 
+                                     onClick={() => setActiveTicket(ticket)}
+                                     className={`w-full py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3 italic ${
+                                         activeTicket?.id === ticket.id 
+                                         ? "bg-white text-zinc-950 shadow-xl" 
+                                         : "bg-zinc-50 text-zinc-400 hover:bg-zinc-950 hover:text-white"
+                                     }`}
+                                 >
+                                    <Terminal size={14} /> INSPECT_TRANSCRIPT <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
+                                 </button>
+                             </motion.div>
                          ))
                      )}
                   </div>
