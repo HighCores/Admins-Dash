@@ -5,7 +5,7 @@ import {
   Send, Ticket, MessageSquare, Search, 
   ExternalLink, Clock, User, Filter, 
   Loader2, BadgeInfo, Zap, History, X,
-  Archive, ShieldCheck, Ticket as TicketIcon, Use
+  Archive, ShieldCheck, Ticket as TicketIcon
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
