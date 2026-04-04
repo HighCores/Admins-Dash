@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Send, Plus, Image as ImageIcon, Link as LinkIcon, 
   MousePointer2, Save, Trash2, Eye, Layout, Monitor, Smartphone,
-  Zap, Sparkles, Loader2, ChevronRight, X, Bot, Hash, Shield, Share2
+  Zap, Sparkles, Loader2, ChevronRight, X, Bot, Hash, Shield, Share2,
+  RefreshCcw, Terminal, Activity
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
@@ -87,204 +88,221 @@ export default function TelegramPanelsPage() {
   };
 
   return (
-    <div className="w-full space-y-12 mb-20 animate-in fade-in duration-700">
-      <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div className="space-y-2">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-3 bg-blue-500/10 text-blue-600 rounded-2xl animate-pulse shadow-glow-blue-small">
-                <Send size={24} />
+    <div className="w-full h-full flex flex-col min-h-0 overflow-hidden">
+      
+      {/* Header - Optimized Height */}
+      <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
+        <div className="space-y-1">
+          <div className="flex items-center gap-3 mb-1">
+            <div className="p-2 bg-blue-600 rounded-xl shadow-lg shadow-blue-200">
+                <Send size={16} className="text-white" />
             </div>
-            <span className="text-xs font-black text-blue-500 uppercase tracking-widest leading-none font-mono italic">Telegram Architect</span>
+            <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none font-mono">Telegram Architect Console</span>
           </div>
-          <h1 className="text-5xl font-black text-blue-950 tracking-tighter glow-text-blue">
-            Cloud <span className="opacity-30">Panels</span>
+          <h1 className="text-3xl font-black text-zinc-950 tracking-tighter">
+            Cloud <span className="text-blue-600">Panels</span>
           </h1>
-          <p className="text-lg font-medium text-blue-900/60 max-w-2xl italic leading-relaxed">
-            N8N-powered visual editor for Telegram bot menus. Design the interface, link the webhooks, and deploy instantly to all users.
+          <p className="text-sm font-bold text-zinc-500 max-w-2xl">
+             Visual interface design suite for N8N-powered Telegram transmissions.
           </p>
         </div>
         
-        <button 
-            onClick={createNewMenu}
-            className="flex items-center gap-3 px-8 py-5 bg-blue-600 text-white font-black text-sm rounded-[2rem] shadow-2xl hover:scale-105 active:scale-95 transition-all group italic"
-        >
-            <Plus size={20} className="group-hover:rotate-90 transition-transform" />
-            INITIALIZE TELE_NODE
-        </button>
+        <div className="flex items-center gap-3">
+             <button 
+                onClick={fetchMenus}
+                className="p-4 bg-white border border-zinc-100 rounded-2xl shadow-sm hover:shadow-xl transition-all group active:scale-95"
+            >
+                <RefreshCcw size={20} className={`text-blue-400 group-hover:text-blue-600 transition-all ${loading ? 'animate-spin' : ''}`} />
+            </button>
+            <button 
+                onClick={createNewMenu}
+                className="flex items-center gap-4 px-8 py-4 bg-zinc-950 text-white font-black text-xs rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all group italic tracking-widest"
+            >
+                <Plus size={18} className="group-hover:rotate-90 transition-transform" />
+                INITIALIZE TELE_NODE
+            </button>
+        </div>
       </header>
 
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-12 items-start">
+      {/* Main Workspace - 3 Column Layout (SIDE-BY-SIDE, NO SCROLL) */}
+      <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 min-h-0 overflow-hidden">
         
-        {/* Left: Proxy Rack */}
-        <div className="xl:col-span-4 space-y-6">
-          <div className="glass-card p-10 rounded-[3rem] border border-blue-50 shadow-2xl bg-white/40 backdrop-blur-xl">
-            <div className="flex items-center justify-between mb-8">
-                <h3 className="text-xl font-black text-blue-950 uppercase italic underline underline-offset-8 decoration-blue-100">Live Proxies</h3>
-                <span className="bg-blue-50 text-blue-600 text-[10px] px-3 py-1.5 rounded-full font-black tracking-widest leading-none underline decoration-blue-200">{menus.length} ACTIVE</span>
+        {/* Column 1: Proxy Rack (Selective List) */}
+        <div className="xl:col-span-3 flex flex-col min-h-0">
+          <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden">
+            <div className="p-6 border-b border-zinc-50 bg-zinc-50/20 flex items-center justify-between">
+                <h3 className="text-sm font-black text-zinc-950 uppercase italic tracking-tighter">Live Proxies</h3>
+                <span className="bg-blue-600 text-white text-[9px] px-3 py-1 rounded-lg font-black tracking-widest leading-none">{menus.length} ACTIVE</span>
             </div>
 
-            {loading ? (
-                <div className="flex justify-center p-10"><Loader2 className="animate-spin text-blue-500" /></div>
-            ) : (
-                <div className="space-y-4">
-                    {menus.map((menu) => (
+            <div className="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-3">
+                {loading ? (
+                    <div className="flex justify-center p-10"><Loader2 className="animate-spin text-blue-500" /></div>
+                ) : menus.length === 0 ? (
+                    <div className="p-8 text-center opacity-20"><Activity size={40} className="mx-auto mb-4" /><p className="text-sm font-black italic">Waiting for node handshake...</p></div>
+                ) : (
+                    menus.map((menu) => (
                         <motion.button
                             key={menu.menu_id}
-                            whileHover={{ x: 10 }}
+                            whileHover={{ x: 5 }}
                             onClick={() => handleEdit(menu)}
-                            className={`w-full flex items-center justify-between p-6 rounded-[2rem] text-left transition-all border ${
+                            className={`w-full flex items-center justify-between p-5 rounded-2xl text-left transition-all border ${
                                 activeMenu?.menu_id === menu.menu_id 
-                                ? "bg-blue-950 text-white shadow-2xl border-transparent" 
-                                : "hover:bg-white text-blue-950 border-blue-50"
+                                ? "bg-zinc-950 text-white shadow-xl border-transparent" 
+                                : "hover:bg-zinc-50 text-zinc-950 border-zinc-100 bg-white"
                             }`}
                         >
                             <div className="flex items-center gap-4">
-                                <Share2 size={18} className={activeMenu?.menu_id === menu.menu_id ? "opacity-100" : "opacity-20"} />
-                                <div>
-                                    <span className="font-black italic text-lg leading-none block mb-1">{menu.title || "Untitled"}</span>
-                                    <span className="text-[10px] font-bold opacity-40 uppercase tracking-widest">{menu.menu_id}</span>
+                                <Share2 size={16} className={activeMenu?.menu_id === menu.menu_id ? "text-blue-400" : "text-zinc-300"} />
+                                <div className="min-w-0">
+                                    <span className="font-black italic text-sm leading-none block mb-1 truncate">{menu.title || "Untitled"}</span>
+                                    <span className="text-[10px] font-bold opacity-40 uppercase tracking-widest truncate block">{menu.menu_id}</span>
                                 </div>
                             </div>
                         </motion.button>
-                    ))}
-                </div>
-            )}
+                    ))
+                )}
+            </div>
           </div>
         </div>
 
-        {/* Right: Tele-Engine Architect */}
-        <div className="xl:col-span-8 grid grid-cols-1 lg:grid-cols-2 gap-12">
-            
-            {/* Editor Workspace */}
+        {/* Column 2: Architect Workspace (Editor) */}
+        <div className="xl:col-span-5 flex flex-col min-h-0">
             <AnimatePresence mode="wait">
                 {activeMenu ? (
                     <motion.div 
                         key={menuId}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="space-y-8"
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 10 }}
+                        className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden"
                     >
-                        <div className="glass-card p-10 rounded-[3rem] border border-blue-100 shadow-2xl space-y-8 bg-white/60 backdrop-blur-xl">
-                            <div className="flex items-center justify-between border-b border-blue-50 pb-6">
-                                <h3 className="text-2xl font-black text-blue-950 italic flex items-center gap-3 tracking-tighter">
-                                    <Sparkles className="text-blue-500" size={24} /> Transmission: <span className="text-blue-500">{activeMenu.title}</span>
-                                </h3>
-                                <button 
-                                    onClick={() => handleDelete(activeMenu.menu_id)}
-                                    className="p-3 text-red-500 hover:bg-red-50 rounded-2xl transition-all shadow-sm"><Trash2 size={22} /></button>
+                        <div className="p-6 border-b border-zinc-50 bg-zinc-50/20 flex items-center justify-between">
+                            <h3 className="text-sm font-black text-zinc-950 italic flex items-center gap-3 tracking-tighter uppercase">
+                                <Sparkles className="text-blue-500" size={18} /> Transmission: <span className="text-blue-500">{activeMenu.title}</span>
+                            </h3>
+                            <button 
+                                onClick={() => handleDelete(activeMenu.menu_id)}
+                                className="p-2.5 text-zinc-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"><Trash2 size={18} /></button>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-6">
+                            <div className="space-y-2">
+                                <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Structural ID (Unique)</label>
+                                <input 
+                                    type="text" 
+                                    value={menuId} 
+                                    onChange={(e) => setMenuId(e.target.value)}
+                                    className="w-full px-6 py-4 rounded-xl bg-zinc-50 border border-zinc-100 font-black text-zinc-950 focus:bg-white transition-all outline-none"
+                                    placeholder="tele_unique_id"
+                                />
                             </div>
 
-                            <div className="space-y-6">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-blue-950/40 uppercase tracking-[0.3em] px-2 italic font-mono">Structural ID (Unique)</label>
+                            <div className="space-y-2">
+                                <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Panel Headline</label>
+                                <input 
+                                    type="text" 
+                                    value={title} 
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    className="w-full px-6 py-4 rounded-xl bg-zinc-50 border border-zinc-100 font-black text-zinc-950 focus:bg-white outline-none"
+                                    placeholder="The BIG Catchy Title..."
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">The Message Payload</label>
+                                <textarea 
+                                    rows={4}
+                                    value={content}
+                                    onChange={(e) => setContent(e.target.value)}
+                                    className="w-full px-6 py-4 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-800 leading-relaxed focus:bg-white outline-none resize-none"
+                                    placeholder="Describe the logic flow..."
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Asset Mirror Link</label>
+                                <div className="relative">
+                                    <LinkIcon size={16} className="absolute left-6 top-1/2 -translate-y-1/2 text-blue-400" />
                                     <input 
                                         type="text" 
-                                        value={menuId} 
-                                        onChange={(e) => setMenuId(e.target.value)}
-                                        className="w-full px-6 py-4 rounded-2xl bg-white border border-blue-50 font-black text-blue-950 focus:ring-8 ring-blue-500/5 transition-all outline-none"
-                                        placeholder="tele_unique_id"
+                                        value={imageUrl}
+                                        onChange={(e) => setImageUrl(e.target.value)}
+                                        className="w-full pl-14 pr-6 py-4 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-blue-600 outline-none focus:bg-white"
+                                        placeholder="https://t.me/i/asset.png"
                                     />
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-blue-950/40 uppercase tracking-[0.3em] px-2 italic font-mono">Panel Headline</label>
-                                    <input 
-                                        type="text" 
-                                        value={title} 
-                                        onChange={(e) => setTitle(e.target.value)}
-                                        className="w-full px-6 py-4 rounded-2xl bg-white border border-blue-50 font-black text-blue-950 outline-none"
-                                        placeholder="The BIG Catchy Title..."
-                                    />
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-blue-950/40 uppercase tracking-[0.3em] px-2 italic font-mono">The Message Payload</label>
-                                    <textarea 
-                                        rows={6}
-                                        value={content}
-                                        onChange={(e) => setContent(e.target.value)}
-                                        className="w-full px-6 py-4 rounded-2xl bg-white border border-blue-50 font-bold text-blue-800 leading-relaxed outline-none"
-                                        placeholder="Describe the logic flow..."
-                                    />
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-blue-950/40 uppercase tracking-[0.3em] px-2 italic font-mono">Asset Mirror Link</label>
-                                    <div className="relative">
-                                        <LinkIcon size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-blue-400" />
-                                        <input 
-                                            type="text" 
-                                            value={imageUrl}
-                                            onChange={(e) => setImageUrl(e.target.value)}
-                                            className="w-full pl-14 pr-6 py-4 rounded-2xl bg-white border border-blue-50 font-bold text-blue-600 outline-none"
-                                            placeholder="https://t.me/i/asset.png"
-                                        />
-                                    </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div className="pt-6">
-                                <button 
-                                    onClick={handleSave}
-                                    disabled={saving}
-                                    className="w-full flex items-center justify-center gap-3 py-6 bg-blue-600 text-white font-black text-sm rounded-[2.5rem] shadow-2xl hover:bg-blue-700 transition-all active:scale-95 disabled:opacity-50 italic uppercase tracking-widest"
-                                >
-                                    {saving ? <Loader2 className="animate-spin" /> : <Save size={20} />} 
-                                    PUSH TO TELEGRAM NETWORK
-                                </button>
-                            </div>
+                        <div className="p-6 bg-zinc-50/50 border-t border-zinc-50">
+                            <button 
+                                onClick={handleSave}
+                                disabled={saving}
+                                className="w-full flex items-center justify-center gap-4 py-5 bg-blue-600 text-white font-black text-xs rounded-2xl shadow-xl hover:bg-blue-700 transition-all active:scale-95 disabled:opacity-50 italic uppercase tracking-widest"
+                            >
+                                {saving ? <Loader2 className="animate-spin" /> : <Save size={18} />} 
+                                PUSH TO TELEGRAM NETWORK
+                            </button>
                         </div>
                     </motion.div>
                 ) : (
-                    <div className="flex flex-col items-center justify-center p-32 glass-card rounded-[4rem] text-center border-dashed border-4 border-blue-100/50 bg-white/20">
-                        <div className="p-10 bg-blue-50 rounded-full mb-8 animate-pulse text-blue-200">
-                           <Layout size={80} />
-                        </div>
-                        <h3 className="text-3xl font-black text-blue-900 opacity-20 tracking-tighter uppercase italic">Select a node to initiate architect</h3>
+                    <div className="flex-1 flex flex-col items-center justify-center p-20 bg-zinc-50 rounded-[2.5rem] text-center border-2 border-dashed border-zinc-200 opacity-20">
+                        <Terminal size={60} className="mb-10 text-zinc-400" />
+                        <h3 className="text-xl font-black text-zinc-950 tracking-tighter uppercase italic">Select a node to initiate architect suite</h3>
                     </div>
                 )}
             </AnimatePresence>
+        </div>
 
-            {/* Telegram Mirror (Preview) */}
-            <div className="hidden lg:block sticky top-8 self-start">
-                <div className="w-full mx-auto transition-all duration-700 ease-in-out">
-                    <div className="bg-[#242f3d] rounded-[3rem] p-10 shadow-2xl relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 p-8 opacity-5"><Send size={150} /></div>
-                        
-                        <div className="space-y-6">
-                             {imageUrl && (
-                                <div className="rounded-[1.5rem] overflow-hidden border border-white/5 shadow-2xl max-h-60">
-                                    <img src={imageUrl} alt="Panel" className="w-full h-full object-cover" />
-                                </div>
-                            )}
-                            
-                            <div className="space-y-3">
-                                <h4 className="text-blue-400 font-black text-xl italic tracking-tighter leading-none">{title || "Telegram_Node_Title"}</h4>
-                                <p className="text-[#dbdee1] text-base leading-relaxed font-medium whitespace-pre-wrap opacity-90">
-                                   {content || "Craft your message here... Telegram messages are delivered via High Core's N8N Relay Hub."}
-                                </p>
-                            </div>
+        {/* Column 3: Telegram Mirror (Preview) */}
+        <div className="xl:col-span-4 flex flex-col min-h-0 overflow-hidden">
+             <div className="bg-[#1c242d] rounded-[3rem] p-8 shadow-2xl flex-1 flex flex-col relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none"><Send size={200} /></div>
+                
+                <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em] mb-8 flex items-center gap-3">
+                    <Monitor size={14} className="text-blue-400" /> Real-time Cloud Sync
+                </h3>
 
-                            <div className="grid grid-cols-1 gap-2 pt-4">
-                                <button className="w-full py-3 bg-[#3390ec] text-white text-xs font-black rounded-lg shadow-xl shadow-blue-500/20 italic">Action: Trigger Webhook</button>
-                                <button className="w-full py-3 border border-blue-500/30 text-blue-400 text-xs font-black rounded-lg italic">Secondary Flow</button>
-                            </div>
+                <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-6">
+                     {imageUrl ? (
+                        <div className="rounded-2xl overflow-hidden border border-white/5 shadow-2xl">
+                            <img src={imageUrl} alt="Panel" className="w-full h-auto object-cover max-h-48" />
                         </div>
-
-                        <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between">
-                            <div className="flex items-center gap-3 opacity-20">
-                                <Bot size={12} className="text-blue-400" />
-                                <span className="text-[10px] text-white font-black uppercase tracking-[0.3em] font-mono italic">Proxy Status</span>
-                            </div>
-                            <span className="text-[10px] text-emerald-400 font-black italic">CONNECTED</span>
+                    ) : (
+                        <div className="aspect-video rounded-3xl bg-white/5 flex items-center justify-center opacity-10 border border-dashed border-white/20">
+                            <ImageIcon size={40} className="text-white" />
                         </div>
+                    )}
+                    
+                    <div className="space-y-4">
+                        <h4 className="text-blue-400 font-black text-2xl italic tracking-tighter leading-none pr-6">{title || "Telegram_Node_Title"}</h4>
+                        <p className="text-[#dbdee1] text-sm leading-relaxed font-medium whitespace-pre-wrap opacity-90 font-sans pr-4">
+                           {content || "Craft your message logic here... High Core delivery pipelines will process this transmission."}
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-3 pt-6 border-t border-white/5">
+                        <button className="w-full py-4 bg-[#3390ec] text-white text-[10px] font-black rounded-xl shadow-xl hover:scale-[1.02] transition-transform italic uppercase tracking-widest underline decoration-white/20 underline-offset-4">Action: Trigger Webhook</button>
+                        <button className="w-full py-4 bg-white/5 border border-white/10 text-blue-400 text-[10px] font-black rounded-xl hover:bg-white/10 transition-all italic uppercase tracking-widest">Secondary Flow</button>
                     </div>
                 </div>
 
-                <div className="mt-8 p-5 bg-gradient-to-r from-blue-900 to-blue-700 text-white rounded-[2rem] text-[10px] font-black text-center uppercase tracking-[0.4em] shadow-2xl relative overflow-hidden group italic">
-                    <div className="absolute inset-0 bg-white/5 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-                    <span className="flex items-center justify-center gap-3"><Eye size={14} className="animate-pulse" /> Telegram Cloud Sync Active</span>
+                <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between">
+                    <div className="flex items-center gap-3 opacity-30">
+                        <Bot size={14} className="text-blue-400" />
+                        <span className="text-[9px] text-white font-black uppercase tracking-[0.2em] font-mono italic">Proxy Handshake</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.5)]"></div>
+                        <span className="text-[10px] text-emerald-400 font-black italic">CONNECTED</span>
+                    </div>
                 </div>
+            </div>
+
+            <div className="mt-6 p-5 bg-blue-600 text-white rounded-[2rem] text-[9px] font-black text-center uppercase tracking-[0.4em] shadow-xl relative overflow-hidden group italic">
+                <div className="absolute inset-0 bg-white/5 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                <span className="flex items-center justify-center gap-3"><Eye size={12} className="animate-pulse" /> TELEGRAM_CLOUD_SYNC_ACTIVE</span>
             </div>
         </div>
       </div>

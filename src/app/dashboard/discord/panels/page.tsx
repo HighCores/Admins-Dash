@@ -5,7 +5,7 @@ import {
   PanelsTopLeft, Plus, Image as ImageIcon, Link as LinkIcon, 
   MousePointer2, Save, Trash2, Eye, Layout, Monitor, Smartphone,
   Zap, Sparkles, Loader2, ChevronRight, X, Bot, Hash, Shield, 
-  Settings2, Activity, Terminal
+  Settings2, Activity, Terminal, RefreshCcw
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
@@ -25,7 +25,6 @@ export default function PanelsPage() {
   const [channelId, setChannelId] = useState("");
   const [menuId, setMenuId] = useState("");
   const [triggerCommand, setTriggerCommand] = useState("");
-  const [imageMode, setImageMode] = useState<"link" | "upload">("link");
 
   useEffect(() => {
     fetchMenus();
@@ -91,226 +90,273 @@ export default function PanelsPage() {
     }
   };
 
+  const handleDelete = async (id: string) => {
+    if (!confirm("Terminate this Discord transmission?")) return;
+    await supabase.from("dc_menus").delete().eq("menu_id", id);
+    if (activeMenu?.menu_id === id) setActiveMenu(null);
+    fetchMenus();
+  };
+
   return (
-    <div className="w-full flex-1 flex flex-col min-h-0">
-      <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <div className="w-full h-full flex flex-col min-h-0 overflow-hidden">
+      
+      {/* Header - Compact */}
+      <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
         <div className="space-y-1">
           <div className="flex items-center gap-3 mb-1">
-            <Zap size={20} className="text-zinc-400" />
-            <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Architect Domain</span>
+            <Zap size={18} className="text-zinc-400" />
+            <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none font-mono">Architect Domain Console</span>
           </div>
-          <h1 className="text-4xl font-black text-zinc-950 tracking-tighter">
+          <h1 className="text-3xl font-black text-zinc-950 tracking-tighter">
             System <span className="text-zinc-300">Panels</span>
           </h1>
           <p className="text-sm font-bold text-zinc-500 max-w-2xl">
-            Design high-end interactive interfaces. All changes propagate instantly through the High Core network.
+             Design high-end interactive interfaces for the High Core network architecture.
           </p>
         </div>
         
-        <button 
-            onClick={createNewMenu}
-            className="flex items-center gap-4 px-8 py-5 bg-zinc-950 text-white font-black text-xs rounded-2xl shadow-xl hover:bg-black transition-all active:scale-95 italic tracking-widest"
-        >
-            <Plus size={18} /> INITIATE NEW NODE
-        </button>
+        <div className="flex items-center gap-3">
+             <button 
+                onClick={fetchMenus}
+                className="p-4 bg-white border border-zinc-100 rounded-2xl shadow-sm hover:shadow-xl transition-all group active:scale-95"
+            >
+                <RefreshCcw size={20} className={`text-zinc-400 group-hover:text-zinc-950 transition-all ${loading ? 'animate-spin' : ''}`} />
+            </button>
+            <button 
+                onClick={createNewMenu}
+                className="flex items-center gap-4 px-8 py-4 bg-zinc-950 text-white font-black text-xs rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all group italic tracking-widest"
+            >
+                <Plus size={18} className="group-hover:rotate-90 transition-transform" />
+                INITIATE NEW NODE
+            </button>
+        </div>
       </header>
 
+      {/* Main Workspace - 3 Column Layout (SIDE-BY-SIDE, NO SCROLL) */}
       <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 min-h-0 overflow-hidden">
         
-        {/* Left: Interactive List Rack */}
+        {/* Column 1: Interactive List Rack */}
         <div className="xl:col-span-3 flex flex-col min-h-0">
-          <div className="bg-white rounded-3xl border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden">
-            <div className="p-6 border-b border-zinc-50 bg-zinc-50/30 flex items-center justify-between">
-                <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Global Rack</span>
-                <span className="text-[9px] font-black bg-zinc-950 text-white px-2 py-1 rounded-md">{menus.length} ACTIVE</span>
+          <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden">
+            <div className="p-6 border-b border-zinc-50 bg-zinc-50/20 flex items-center justify-between">
+                <h3 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest italic">Global Rack</h3>
+                <span className="text-[9px] font-black bg-zinc-950 text-white px-2.5 py-1 rounded-lg tracking-widest">{menus.length} ACTIVE</span>
             </div>
 
             <div className="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-2">
                 {loading ? (
-                    <div className="flex items-center justify-center h-full"><Loader2 className="animate-spin text-zinc-300" /></div>
+                    <div className="flex items-center justify-center h-full p-10"><Loader2 className="animate-spin text-zinc-300" /></div>
+                ) : menus.length === 0 ? (
+                    <div className="p-12 text-center opacity-20"><Activity size={40} className="mx-auto mb-4" /><p className="text-sm font-black italic">No nodes detected.</p></div>
                 ) : (
                     menus.map((menu) => (
-                        <button
+                        <motion.button
                             key={menu.menu_id}
+                            whileHover={{ x: 5 }}
                             onClick={() => handleEdit(menu)}
-                            className={`w-full flex items-center justify-between p-4 rounded-2xl text-left transition-all group ${
+                            className={`w-full flex items-center justify-between p-4 rounded-2xl text-left transition-all border ${
                                 activeMenu?.menu_id === menu.menu_id 
-                                ? "bg-zinc-950 text-white shadow-xl shadow-zinc-200" 
-                                : "hover:bg-zinc-50 text-zinc-900 border border-transparent hover:border-zinc-100"
+                                ? "bg-zinc-950 text-white shadow-xl border-transparent" 
+                                : "hover:bg-zinc-50 text-zinc-900 border-zinc-100 bg-white"
                             }`}
                         >
                             <div className="flex items-center gap-3">
-                                <Layout size={16} className={activeMenu?.menu_id === menu.menu_id ? "opacity-100" : "opacity-30"} />
-                                <div className="truncate">
-                                    <span className="font-bold text-sm block truncate pr-4">{menu.title || "Untitled"}</span>
-                                    <span className={`text-[9px] font-black uppercase tracking-widest ${activeMenu?.menu_id === menu.menu_id ? "text-zinc-500" : "text-zinc-300"}`}>
+                                <Layout size={16} className={activeMenu?.menu_id === menu.menu_id ? "text-zinc-400" : "text-zinc-300"} />
+                                <div className="min-w-0">
+                                    <span className="font-black italic text-sm leading-none block mb-1 truncate">{menu.title || "Untitled"}</span>
+                                    <span className={`text-[9px] font-black uppercase tracking-widest truncate block ${activeMenu?.menu_id === menu.menu_id ? "text-zinc-500" : "text-zinc-300"}`}>
                                         {menu.menu_id.replace("panel_", "")}
                                     </span>
                                 </div>
                             </div>
                             <ChevronRight size={14} className={activeMenu?.menu_id === menu.menu_id ? "opacity-100" : "opacity-20"} />
-                        </button>
+                        </motion.button>
                     ))
                 )}
             </div>
           </div>
         </div>
 
-        {/* Center: The Core Architect */}
-        <div className="xl:col-span-5 overflow-y-auto custom-scrollbar pr-2">
+        {/* Column 2: Architect Workspace (Editor) */}
+        <div className="xl:col-span-5 flex flex-col min-h-0">
             <AnimatePresence mode="wait">
                 {activeMenu ? (
                     <motion.div 
-                        initial={{ opacity: 0, x: 20 }}
+                        key={menuId}
+                        initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="space-y-6"
+                        exit={{ opacity: 0, x: 10 }}
+                        className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden"
                     >
-                        <div className="bg-white p-8 rounded-3xl border border-zinc-100 shadow-sm space-y-8">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-3 bg-zinc-50 rounded-2xl"><Settings2 className="text-zinc-900" size={20} /></div>
-                                    <h3 className="font-black text-xl tracking-tighter">Edit System Node</h3>
-                                </div>
-                                <button className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-all shadow-sm"><Trash2 size={18} /></button>
-                            </div>
+                        <div className="p-6 border-b border-zinc-50 bg-zinc-50/20 flex items-center justify-between">
+                            <h3 className="text-sm font-black text-zinc-950 italic flex items-center gap-3 tracking-tighter uppercase">
+                                <Sparkles size={18} className="text-zinc-400" /> Architect: <span className="text-zinc-400">{activeMenu.title}</span>
+                            </h3>
+                            <button 
+                                onClick={() => handleDelete(activeMenu.menu_id)}
+                                className="p-2.5 text-zinc-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"><Trash2 size={18} /></button>
+                        </div>
 
-                            <div className="space-y-6">
-                                <div className="grid grid-cols-2 gap-4">
-                                     <div className="space-y-2">
-                                        <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest ml-1">Structural ID</label>
-                                        <input 
-                                            type="text" 
-                                            value={menuId} 
-                                            onChange={(e) => setMenuId(e.target.value)}
-                                            className="w-full px-5 py-3 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-950 focus:bg-white transition-all outline-none"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest ml-1">Triggering Command</label>
-                                        <div className="relative">
-                                            <Terminal size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
-                                            <input 
-                                                type="text" 
-                                                value={triggerCommand} 
-                                                onChange={(e) => setTriggerCommand(e.target.value)}
-                                                className="w-full pl-10 pr-5 py-3 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-950 focus:bg-white transition-all outline-none"
-                                                placeholder="e.g. support"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <DiscordSelect 
-                                    label="Target Relay Channel"
-                                    type="channel"
-                                    value={channelId}
-                                    onChange={setChannelId}
-                                    placeholder="Select deployment route..."
-                                />
-
+                        <div className="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-6">
+                            <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest ml-1">Headline Content</label>
+                                    <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Internal ID</label>
                                     <input 
                                         type="text" 
-                                        value={title} 
-                                        onChange={(e) => setTitle(e.target.value)}
-                                        className="w-full px-5 py-3 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-900 outline-none hover:border-zinc-200 focus:bg-white"
+                                        value={menuId} 
+                                        onChange={(e) => setMenuId(e.target.value)}
+                                        className="w-full px-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-black text-zinc-950 transition-all outline-none focus:bg-white"
+                                        placeholder="panel_unique_id"
                                     />
                                 </div>
-
                                 <div className="space-y-2">
-                                    <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest ml-1">Payload Body</label>
-                                    <textarea 
-                                        rows={4}
-                                        value={content}
-                                        onChange={(e) => setContent(e.target.value)}
-                                        className="w-full px-5 py-3 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-800 leading-relaxed outline-none hover:border-zinc-200 focus:bg-white"
-                                    />
+                                    <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Command Trigger</label>
+                                    <div className="relative">
+                                        <Terminal size={14} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                                        <input 
+                                            type="text" 
+                                            value={triggerCommand} 
+                                            onChange={(e) => setTriggerCommand(e.target.value)}
+                                            className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-black text-zinc-950 transition-all outline-none focus:bg-white"
+                                            placeholder="support"
+                                        />
+                                    </div>
                                 </div>
+                            </div>
 
-                                <div className="space-y-3">
-                                     <div className="flex justify-between items-center px-1">
-                                         <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest leading-none">Visual Asset URL</label>
-                                         <LinkIcon size={12} className="text-zinc-300" />
-                                     </div>
-                                     <input 
+                            <DiscordSelect 
+                                label="Network Relay Channel"
+                                type="channel"
+                                value={channelId}
+                                onChange={setChannelId}
+                                placeholder="Select target route..."
+                            />
+
+                            <div className="space-y-2">
+                                <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Headline Content</label>
+                                <input 
+                                    type="text" 
+                                    value={title} 
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    className="w-full px-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-black text-zinc-950 transition-all outline-none focus:bg-white"
+                                    placeholder="Enter structural title..."
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Payload Description</label>
+                                <textarea 
+                                    rows={3}
+                                    value={content}
+                                    onChange={(e) => setContent(e.target.value)}
+                                    className="w-full px-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-800 leading-relaxed transition-all outline-none focus:bg-white resize-none"
+                                    placeholder="Detailed payload data..."
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Asset URL (Embed Cover)</label>
+                                <div className="relative">
+                                    <LinkIcon size={14} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                                    <input 
                                         type="text" 
                                         value={imageUrl}
                                         onChange={(e) => setImageUrl(e.target.value)}
-                                        className="w-full px-5 py-3 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-500 text-xs outline-none"
-                                        placeholder="https://content.asset.bot/img.png"
+                                        className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-500 text-xs transition-all outline-none focus:bg-white"
+                                        placeholder="https://assets.hc.agency/img.png"
                                     />
                                 </div>
                             </div>
 
-                            <div className="pt-2">
-                                <button 
-                                    onClick={handleSave}
-                                    disabled={saving}
-                                    className="w-full py-5 bg-zinc-950 text-white font-black text-[10px] rounded-xl shadow-xl hover:bg-black transition-all disabled:opacity-50 tracking-[0.4em]"
-                                >
-                                    {saving ? <Loader2 className="animate-spin" /> : "DEPLOY TO NETWORK"}
-                                </button>
+                            <div className="bg-zinc-950 p-6 rounded-3xl text-white relative overflow-hidden group border border-white/5 transition-all hover:border-white/20">
+                                <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none rotate-12"><Activity size={80} /></div>
+                                <div className="flex items-center justify-between mb-4">
+                                    <h4 className="font-black text-[10px] italic tracking-widest flex items-center gap-2 uppercase">
+                                        <Bot size={12} className="text-zinc-400" /> Action Nodes
+                                    </h4>
+                                    <button className="px-3 py-1.5 bg-white text-zinc-950 text-[8px] font-black rounded-lg hover:scale-105 transition-all uppercase tracking-widest">
+                                        ADD_LOGIC
+                                    </button>
+                                </div>
+                                <div className="p-3 bg-white/5 rounded-xl border border-white/5 flex items-center justify-between group-hover:bg-white/10 transition-all cursor-default">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center font-black text-[9px]">1</div>
+                                        <span className="text-[10px] font-bold italic tracking-tight">Support Ticket Handshake</span>
+                                    </div>
+                                    <Trash2 size={12} className="opacity-20 hover:text-red-400 hover:opacity-100 transition-all cursor-pointer" />
+                                </div>
                             </div>
                         </div>
 
-                        <div className="bg-zinc-950 p-8 rounded-3xl text-white relative overflow-hidden shadow-2xl">
-                             <div className="absolute top-0 right-0 p-6 opacity-10 rotate-12"><Activity size={100} /></div>
-                             <div className="flex items-center justify-between mb-6">
-                                <h4 className="font-black text-sm italic tracking-widest flex items-center gap-2">
-                                   <Bot size={16} /> ACTION NODES
-                                </h4>
-                                <button className="px-4 py-2 bg-white text-zinc-950 text-[9px] font-black rounded-lg hover:scale-102 transition-transform">
-                                     NEW ACTION
-                                </button>
-                             </div>
-                             <div className="p-4 bg-white/5 rounded-xl border border-white/5 flex items-center justify-between group hover:bg-white/10 transition-all cursor-pointer">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center font-black text-[10px]">1</div>
-                                    <span className="text-xs font-bold italic">Open Ticket Logic</span>
-                                </div>
-                                <Trash2 size={14} className="opacity-20 hover:text-red-400 hover:opacity-100" />
-                             </div>
+                        <div className="p-6 bg-zinc-50/50 border-t border-zinc-50">
+                            <button 
+                                onClick={handleSave}
+                                disabled={saving}
+                                className="w-full flex items-center justify-center gap-4 py-5 bg-zinc-950 text-white font-black text-[10px] rounded-2xl shadow-xl hover:bg-black transition-all active:scale-95 disabled:opacity-50 italic uppercase tracking-[0.4em]"
+                            >
+                                {saving ? <Loader2 className="animate-spin" /> : <Save size={18} />} 
+                                DEPLOY TO NETWORK
+                            </button>
                         </div>
                     </motion.div>
                 ) : (
-                    <div className="flex flex-col items-center justify-center h-full p-20 bg-zinc-50/50 rounded-[3rem] text-center border-dashed border-2 border-zinc-200">
-                        <Layout size={40} className="text-zinc-200 mb-6" />
-                        <h3 className="text-sm font-black text-zinc-300 tracking-[0.3em] uppercase">Select Node to Architect</h3>
+                    <div className="flex-1 flex flex-col items-center justify-center p-20 bg-zinc-50/50 rounded-[2.5rem] text-center border-2 border-dashed border-zinc-200 opacity-20">
+                        <Terminal size={60} className="mb-10 text-zinc-400" />
+                        <h3 className="text-xl font-black text-zinc-950 tracking-tighter uppercase italic">Select node to initiate architect suite</h3>
                     </div>
                 )}
             </AnimatePresence>
         </div>
 
-        {/* Right: Mirror Stream Viewable (High End) */}
-        <div className="xl:col-span-4 self-start">
-             <div className="bg-white p-4 rounded-3xl border border-zinc-100 mb-6 flex justify-center gap-2">
-                 <button onClick={() => setIsPreviewMobile(false)} className={`p-4 rounded-2xl transition-all ${!isPreviewMobile ? 'bg-zinc-950 text-white shadow-xl' : 'text-zinc-300'}`}><Monitor size={20} /></button>
-                 <button onClick={() => setIsPreviewMobile(true)} className={`p-4 rounded-2xl transition-all ${isPreviewMobile ? 'bg-zinc-950 text-white shadow-xl' : 'text-zinc-300'}`}><Smartphone size={20} /></button>
+        {/* Column 3: Live Mirror (Preview) */}
+        <div className="xl:col-span-4 flex flex-col min-h-0 overflow-hidden">
+             {/* Device Switcher */}
+             <div className="bg-white p-2 rounded-2xl border border-zinc-100 mb-6 flex justify-center gap-2 shrink-0">
+                 <button onClick={() => setIsPreviewMobile(false)} className={`flex-1 py-3 rounded-xl transition-all flex items-center justify-center gap-3 text-[10px] font-black tracking-widest ${!isPreviewMobile ? 'bg-zinc-950 text-white shadow-lg' : 'text-zinc-300 hover:text-zinc-950'}`}>
+                    <Monitor size={14} /> DESKTOP
+                 </button>
+                 <button onClick={() => setIsPreviewMobile(true)} className={`flex-1 py-3 rounded-xl transition-all flex items-center justify-center gap-3 text-[10px] font-black tracking-widest ${isPreviewMobile ? 'bg-zinc-950 text-white shadow-lg' : 'text-zinc-300 hover:text-zinc-950'}`}>
+                    <Smartphone size={14} /> MOBILE
+                 </button>
              </div>
 
-             <div className={`${isPreviewMobile ? 'w-[320px]' : 'w-full'} mx-auto bg-[#2b2d31] rounded-[2.5rem] shadow-2xl relative overflow-hidden group`}>
-                <div className="p-8 border-l-[6px] border-zinc-400 flex flex-col gap-6">
-                    <div className="space-y-4">
-                        <h4 className="text-white font-black text-xl tracking-tight">{title || "Structural Headline"}</h4>
-                        <p className="text-[#dbdee1] text-sm leading-relaxed font-medium">
-                            {content || "Payload description will materialize here after network sync."}
-                        </p>
-                    </div>
-                    {imageUrl && (
-                        <div className="rounded-2xl overflow-hidden shadow-inner border border-white/5">
-                            <img src={imageUrl} alt="Panel" className="w-full h-auto object-cover" />
+             <div className="flex-1 overflow-hidden relative group">
+                <div className={`h-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${isPreviewMobile ? 'max-w-[340px] mx-auto' : 'w-full'}`}>
+                    <div className="h-full bg-[#2b2d31] rounded-[2.5rem] shadow-2xl flex flex-col border border-white/5 overflow-hidden">
+                        <div className="flex-1 overflow-y-auto p-8 border-l-[6px] border-zinc-400 custom-scrollbar-discord space-y-8">
+                            <div className="space-y-4">
+                                <h4 className="text-white font-black text-2xl tracking-tighter leading-tight">{title || "Structural Headline"}</h4>
+                                <p className="text-[#dbdee1] text-sm leading-relaxed font-medium font-sans pr-4 opacity-90">
+                                    {content || "Payload description will materialize here after network sync. Calibrate the editor logic to populate this view."}
+                                </p>
+                            </div>
+                            
+                            {imageUrl && (
+                                <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/5 transition-transform hover:scale-[1.02]">
+                                    <img src={imageUrl} alt="Panel" className="w-full h-auto object-cover max-h-56" />
+                                </div>
+                            )}
+
+                            <div className="flex flex-wrap gap-2 pt-4">
+                                <button className="px-5 py-2.5 bg-[#4e5058] text-white text-[10px] font-black rounded-lg shadow-lg hover:bg-[#6d6f78] transition-all italic border-b-2 border-black/20">Open Ticket Handshake</button>
+                            </div>
                         </div>
-                    )}
-                    <div className="flex gap-2">
-                        <button className="px-5 py-2.5 bg-[#4e5058] text-white text-[10px] font-black rounded-lg shadow-lg">Primary Action</button>
+                        
+                        <div className="px-8 py-4 bg-black/20 flex items-center justify-between border-t border-white/5 shrink-0">
+                            <div className="flex items-center gap-3 opacity-30">
+                                <Bot size={14} className="text-zinc-400" />
+                                <span className="text-[8px] font-black text-white uppercase tracking-[0.4em] italic leading-none">HC-PROTOCOL v2</span>
+                            </div>
+                            <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
+                        </div>
                     </div>
-                </div>
-                <div className="px-8 py-4 bg-black/20 flex items-center justify-between border-t border-white/5">
-                    <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.4em]">High Core Payload</span>
-                    <Bot size={14} className="text-white/20" />
                 </div>
              </div>
+
+             <div className="mt-6 p-5 bg-zinc-950 text-white rounded-[2rem] text-[9px] font-black text-center uppercase tracking-[0.4em] shadow-2xl relative overflow-hidden group italic cursor-default shrink-0">
+                <div className="absolute inset-0 bg-white/5 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                <span className="flex items-center justify-center gap-3"><Eye size={12} className="animate-pulse" /> DISCORD_CLOUD_SYNC_ACTIVE</span>
+            </div>
         </div>
       </div>
     </div>

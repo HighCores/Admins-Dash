@@ -56,7 +56,7 @@ export default function TelegramOverviewPage() {
   };
 
   return (
-    <div className="w-full flex-1 flex flex-col min-h-0">
+    <div className="w-full h-full flex flex-col min-h-0 overflow-hidden text-zinc-950">
       
       {/* Header Area - Telegram Nexus */}
       <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
