@@ -37,9 +37,9 @@ export default function DashboardLayout({
         <div className="fixed inset-0 bg-zinc-950/20 backdrop-blur-sm z-40 md:hidden" onClick={() => setMobileMenuOpen(false)}></div>
       )}
       
-      {/* Main Content Area - Shifted past the 72 (288px) sidebar on desktop */}
+      {/* Main Content Area - Shifted past the sidebar on desktop */}
       <main className="flex-1 h-full overflow-y-auto bg-zinc-50/30 relative custom-scrollbar flex flex-col min-w-0 md:ml-72 mt-16 md:mt-0">
-        <div className="min-h-full w-full p-4 lg:p-8 flex flex-col relative z-10 flex-1">
+        <div className="min-h-full w-full p-4 lg:p-8 pb-48 flex flex-col relative z-10 flex-1">
           {children}
         </div>
         <CustomToaster />

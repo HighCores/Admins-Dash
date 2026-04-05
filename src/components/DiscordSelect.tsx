@@ -67,7 +67,7 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
   });
 
   return (
-    <div className="space-y-2 relative">
+    <div className="space-y-2 relative z-[50]">
       <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest px-1">
         {label}
       </label>
@@ -100,7 +100,7 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
         </button>
 
         {isOpen && (
-          <div className="absolute z-[9999] w-72 left-0 mt-2 bg-white border border-zinc-100 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+          <div className="absolute z-[10000] w-72 left-0 mt-2 bg-white border border-zinc-100 rounded-2xl shadow-2xl overflow-visible animate-in fade-in zoom-in-95 duration-200">
             {error ? (
                 <div className="p-8 text-center bg-red-50/50">
                     <AlertCircle size={24} className="mx-auto text-red-400 mb-3" />
@@ -157,7 +157,7 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
       {/* Backdrop for closing */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-[90]" 
+          className="fixed inset-0 z-[9000]" 
           onClick={() => setIsOpen(false)}
         />
       )}

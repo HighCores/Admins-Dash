@@ -82,7 +82,7 @@ export default function MessengerPage() {
     };
 
     return (
-        <div className="w-full flex flex-col h-full min-h-0 overflow-y-auto custom-scrollbar lg:pl-4">
+        <div className="w-full flex flex-col h-full overflow-visible lg:pl-4">
             
             {/* Header */}
             <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
