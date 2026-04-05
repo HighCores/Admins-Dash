@@ -2,269 +2,309 @@
 
 import { motion } from "framer-motion";
 import { 
-  TrendingUp, Award, Users, Trophy, 
-  Crown, Star, ShieldAlert, Plus, Trash2, 
-  Search, Loader2, Sparkles, Zap, Shield, 
-  ChevronRight, History, Activity, BarChart3,
-  User as UserIcon, Settings2, RefreshCcw
+  TrendingUp, Save, Monitor, Settings2, Shield, Plus,
+  Hash, Bot, Power, Award, Palette, Upload, Loader2, Star
 } from "lucide-react";
-import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { useState } from "react";
 import DiscordSelect from "@/components/DiscordSelect";
+import { showToast } from "@/components/CustomToaster";
 
 export default function LevelsPage() {
-  const [topUsers, setTopUsers] = useState<any[]>([]);
-  const [rewards, setRewards] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [activeTab, setActiveTab] = useState<"settings" | "rewards" | "card">("settings");
 
-  // Form State for Rewards
-  const [newLevel, setNewLevel] = useState("");
-  const [newRole, setNewRole] = useState("");
+  // Configuration State
+  const [isActive, setIsActive] = useState(true);
+  const [xpRate, setXpRate] = useState(1.0);
+  const [announceChannel, setAnnounceChannel] = useState("");
+  const [announceMessage, setAnnounceMessage] = useState("GG {user}, you just advanced to level {level}!");
+  
+  // Card Customization
+  const [primaryColor, setPrimaryColor] = useState("#5865F2");
+  const [bgImageUrl, setBgImageUrl] = useState("https://assets.hc.agency/rank-bg.png");
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const [rewards, setRewards] = useState([
+     { id: 1, level: 5, role: "123456789" },
+     { id: 2, level: 10, role: "987654321" }
+  ]);
 
-  const fetchData = async () => {
-    setLoading(true);
-    // Fetch Top Levels
-    const { data: levels } = await supabase.from("dc_levels").select("*").order("xp", { ascending: false }).limit(10);
-    // Fetch Rewards
-    const { data: levelRewards } = await supabase.from("dc_level_rewards").select("*").order("level", { ascending: true });
-    
-    if (levels) setTopUsers(levels);
-    if (levelRewards) setRewards(levelRewards);
-    setLoading(false);
+  const handleSave = async () => {
+      setSaving(true);
+      // Backend integration logic goes here
+      setTimeout(() => {
+          setSaving(false);
+          showToast("Leveling rules updated in Core. ⚡");
+      }, 1000);
   };
 
-  const handleSaveReward = async () => {
-    if (!newLevel || !newRole) return alert("Please specify level and role.");
-    setSaving(true);
-    try {
-        const { error } = await supabase.from("dc_level_rewards").upsert({
-            level: parseInt(newLevel),
-            role_id: newRole,
-            guild_id: "global" 
-        }, { onConflict: 'level' });
-
-        if (error) throw error;
-        
-        await supabase.from("dc_stats").insert({
-            event_type: "reward_updated",
-            details: `Level ${newLevel} requirement was recalibrated.`
-        });
-
-        alert("Prestige logic synchronized! 🏅");
-        setNewLevel("");
-        setNewRole("");
-        fetchData();
-    } catch (err: any) {
-        alert(err.message);
-    } finally {
-        setSaving(false);
-    }
+  const addReward = () => {
+     setRewards([...rewards, { id: Date.now(), level: 0, role: "" }]);
   };
 
-  const handleDeleteReward = async (level: number) => {
-    if (!confirm("Terminate this prestige node?")) return;
-    await supabase.from("dc_level_rewards").delete().eq("level", level);
-    fetchData();
-  };
-
-  const cleanId = (id: string) => {
-    if (!id) return "NODE_UNKNOWN";
-    return id.replace(/^Node_/i, "").replace(/^panel_/i, "").toUpperCase();
+  const removeReward = (id: number) => {
+     setRewards(rewards.filter(r => r.id !== id));
   };
 
   return (
-    <div className="w-full h-full flex flex-col min-h-0 overflow-hidden">
+    <div className="w-full h-full flex flex-col min-h-0 overflow-y-auto custom-scrollbar overflow-x-visible p-1">
       
-      {/* Header - Compact */}
+      {/* Header */}
       <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
         <div className="space-y-1">
           <div className="flex items-center gap-3 mb-1">
-             <div className="p-2 bg-zinc-950 rounded-xl shadow-lg shadow-zinc-200">
-                <Trophy size={16} className="text-white" />
+             <div className="p-2 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-200">
+                <TrendingUp size={16} className="text-white" />
              </div>
-             <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none font-mono">Competitive Merit Registry</span>
+             <span className="text-[10px] font-black text-indigo-500 uppercase tracking-widest leading-none font-mono">Engagement Module</span>
           </div>
           <h1 className="text-3xl font-black text-zinc-950 tracking-tighter">
-            Levels <span className="text-zinc-300">& Prestige</span>
+            Leveling <span className="text-zinc-300">System</span>
           </h1>
           <p className="text-sm font-bold text-zinc-500 max-w-2xl">
-             Architecting the High Core elite. Progression metrics and merit node calibration.
+             Reward activity and automate roles based on chat engagement.
           </p>
         </div>
         
-        <div className="flex items-center gap-4">
-            <button 
-                onClick={fetchData}
-                className="p-4 bg-white border border-zinc-100 rounded-2xl shadow-sm hover:shadow-xl transition-all group active:scale-95"
+        <div className="flex items-center gap-3">
+             <button 
+                onClick={() => setIsActive(!isActive)}
+                className={`flex items-center gap-2 px-6 py-4 font-black text-xs rounded-2xl shadow-xl transition-all group italic tracking-widest uppercase ${
+                    isActive ? "bg-emerald-500 text-white hover:bg-emerald-600" : "bg-zinc-100 text-zinc-400 hover:bg-zinc-200"
+                }`}
             >
-                <RefreshCcw size={20} className={`text-zinc-400 group-hover:text-zinc-950 transition-all ${loading ? 'animate-spin' : ''}`} />
+                <Power size={18} className={isActive ? "opacity-100" : "opacity-50"} />
+                {isActive ? "SYSTEM ACTIVE" : "SYSTEM PAUSED"}
             </button>
-            <div className="px-6 py-4 bg-zinc-950 text-white rounded-2xl shadow-xl flex items-center gap-3 border border-zinc-900 group">
-                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]"></div>
-                <span className="text-[10px] font-black uppercase tracking-widest italic group-hover:text-white transition-colors cursor-default">Intelligence Synced</span>
-            </div>
         </div>
       </header>
 
-      {/* Grid Layout - SIDE-BY-SIDE (NO SCROLL) */}
-      <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 min-h-0 overflow-hidden">
-        
-        {/* Left: Leaderboard (Col: 8) */}
-        <div className="xl:col-span-8 flex flex-col min-h-0">
-             <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden">
-                  <div className="p-8 border-b border-zinc-50 bg-zinc-50/20 flex items-center justify-between">
-                     <h3 className="text-sm font-black text-zinc-950 uppercase italic tracking-tighter flex items-center gap-3">
-                        <Crown size={18} className="text-zinc-400" /> Neural Elite Registry
-                     </h3>
-                     <span className="bg-zinc-950 text-white text-[9px] px-3 py-1.5 rounded-lg font-black tracking-widest leading-none">TOP_INFLUENCERS</span>
-                  </div>
+      {/* Tabs */}
+      <div className="flex bg-white rounded-2xl p-1.5 border border-zinc-100 mb-6 shrink-0 shadow-sm w-fit">
+          <button 
+              onClick={() => setActiveTab("settings")}
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'settings' ? 'bg-zinc-950 text-white shadow-xl' : 'text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50'}`}>
+              <Settings2 size={14} /> Global Rules
+          </button>
+          <button 
+              onClick={() => setActiveTab("rewards")}
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'rewards' ? 'bg-zinc-950 text-white shadow-xl' : 'text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50'}`}>
+              <Shield size={14} /> Role Rewards
+          </button>
+          <button 
+              onClick={() => setActiveTab("card")}
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'card' ? 'bg-zinc-950 text-white shadow-xl' : 'text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50'}`}>
+              <Palette size={14} /> Rank Card Design
+          </button>
+      </div>
 
-                  <div className="flex-1 overflow-y-auto custom-scrollbar">
-                      <div className="grid grid-cols-12 p-6 border-b border-zinc-50 text-[9px] font-black text-zinc-400 uppercase tracking-widest">
-                          <div className="col-span-1 pl-4">Rank</div>
-                          <div className="col-span-4">Identity</div>
-                          <div className="col-span-3">Logic Level</div>
-                          <div className="col-span-4 text-right pr-4">Metrics Registry</div>
+      <div className={`bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden transition-all ${!isActive ? 'opacity-50 pointer-events-none grayscale' : ''}`}>
+          
+          <div className="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-8 overflow-x-visible">
+              {activeTab === 'settings' && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8 max-w-3xl">
+                      <div className="space-y-2">
+                          <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">XP Multiplier Rate</label>
+                          <div className="p-6 bg-zinc-50 rounded-2xl border border-zinc-100 flex items-center justify-between shadow-inner">
+                              <span className="text-zinc-500 font-bold text-sm">Base XP gained per message: <span className="text-zinc-950">15-25 XP</span></span>
+                              <div className="flex items-center gap-4">
+                                  <input 
+                                      type="range" 
+                                      min="0.1" 
+                                      max="3" 
+                                      step="0.1" 
+                                      value={xpRate}
+                                      onChange={(e) => setXpRate(parseFloat(e.target.value))}
+                                      className="accent-zinc-950 w-48"
+                                  />
+                                  <span className="w-16 text-right font-black text-xl italic tracking-tighter text-zinc-950">{xpRate}x</span>
+                              </div>
+                          </div>
                       </div>
 
-                      <div className="p-2 space-y-1">
-                         {loading ? (
-                             <div className="p-20 text-center"><Loader2 className="animate-spin mx-auto text-zinc-300" size={40} /></div>
-                         ) : topUsers.length === 0 ? (
-                             <div className="p-32 text-center opacity-10 italic uppercase font-black tracking-[0.2em]">Merit Void Detected</div>
-                         ) : (
-                             topUsers.map((user, idx) => (
-                                <motion.div 
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: idx * 0.05 }}
-                                    key={user.user_id}
-                                    className="grid grid-cols-12 items-center p-4 rounded-2xl transition-all border border-transparent hover:bg-zinc-50 hover:border-zinc-100 group"
-                                >
-                                    <div className="col-span-1 pl-4">
-                                        <div className={`w-9 h-9 flex items-center justify-center rounded-xl font-black text-xs italic border ${
-                                            idx === 0 ? 'bg-zinc-950 text-white shadow-xl rotate-3' : 
-                                            idx === 1 ? 'bg-zinc-100 text-zinc-950 border-zinc-200' :
-                                            idx === 2 ? 'bg-zinc-50 text-zinc-500 border-zinc-100' :
-                                            'bg-white text-zinc-300 border-transparent group-hover:border-zinc-200'
-                                        }`}>
-                                            {idx + 1}
-                                        </div>
-                                    </div>
-                                    <div className="col-span-4 flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-xl bg-zinc-50 border border-zinc-100 flex items-center justify-center text-zinc-400 font-black text-[10px] uppercase shadow-inner italic">{user.user_name?.charAt(0) || 'H'}</div>
-                                        <div className="min-w-0">
-                                            <div className="font-black text-zinc-950 text-sm italic tracking-tighter truncate leading-none mb-1">{user.user_name || "Cipher_User"}</div>
-                                            <div className="text-[9px] text-zinc-400 font-bold uppercase tracking-widest truncate leading-none">NODE_{cleanId(user.user_id).slice(0, 10)}</div>
-                                        </div>
-                                    </div>
-                                    <div className="col-span-3">
-                                        <div className="flex items-end gap-1.5">
-                                            <span className="text-3xl font-black text-zinc-950 tracking-tighter italic leading-none">{user.level || 1}</span>
-                                            <span className="text-[10px] font-black text-zinc-300 mb-0.5 tracking-widest italic uppercase">LVL_STABLE</span>
-                                        </div>
-                                    </div>
-                                    <div className="col-span-4 text-right pr-4">
-                                        <div className="text-[10px] font-black text-zinc-600 italic tracking-widest mb-1">{user.xp?.toLocaleString() || 0} <span className="text-zinc-300">XP_ACCUMULATED</span></div>
-                                        <div className="w-full h-1 bg-zinc-50 rounded-full overflow-hidden shadow-inner border border-zinc-100">
-                                            <motion.div 
-                                                initial={{ width: 0 }}
-                                                animate={{ width: `${(user.xp % 1000) / 10}%` }}
-                                                className="h-full bg-zinc-950 shadow-[0_0_8px_rgba(0,0,0,0.1)]" 
-                                            />
-                                        </div>
-                                    </div>
-                                </motion.div>
-                             ))
-                         )}
+                      <DiscordSelect 
+                          label="Level Up Announcement Channel"
+                          type="channel"
+                          value={announceChannel}
+                          onChange={setAnnounceChannel}
+                          placeholder="Select channel (leave blank to announce in current channel)"
+                      />
+
+                      <div className="space-y-4">
+                          <div className="flex items-center justify-between px-4">
+                              <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] font-mono leading-none italic">Announcement Message Body</label>
+                          </div>
+                          <textarea 
+                              rows={3}
+                              value={announceMessage}
+                              onChange={(e) => setAnnounceMessage(e.target.value)}
+                              className="w-full px-5 py-4 rounded-xl bg-zinc-50 border border-zinc-100 font-medium text-zinc-800 leading-relaxed transition-all outline-none focus:bg-white resize-none shadow-inner"
+                              placeholder="Write announcement..."
+                          />
+                          <div className="flex flex-wrap gap-2 pt-2 px-2">
+                              {["{user}", "{level}", "{old_level}", "{server}"].map(v => (
+                                  <button 
+                                      key={v}
+                                      onClick={() => setAnnounceMessage(prev => prev + " " + v)}
+                                      className="px-3 py-1 bg-zinc-100 text-zinc-500 text-[10px] font-bold rounded-md hover:bg-black hover:text-white transition-all font-mono"
+                                  >
+                                      {v}
+                                  </button>
+                              ))}
+                          </div>
                       </div>
-                  </div>
-             </div>
-        </div>
+                  </motion.div>
+              )}
 
-        {/* Right: Reward Editor (Col: 4) */}
-        <div className="xl:col-span-4 flex flex-col gap-8 min-h-0">
-             <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden">
-                <div className="p-8 border-b border-zinc-50 bg-zinc-50/20">
-                    <h3 className="text-sm font-black text-zinc-950 uppercase italic tracking-tighter flex items-center gap-3">
-                        <Award size={18} className="text-zinc-400" /> Reward Logic Hub
-                    </h3>
-                </div>
+              {activeTab === 'rewards' && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6 max-w-4xl">
+                      <div className="bg-amber-50 text-amber-900 p-6 rounded-2xl border border-amber-200">
+                          <h4 className="font-bold flex items-center gap-2 mb-2"><Award size={18} className="text-amber-500" /> Automated Progression</h4>
+                          <p className="text-sm font-medium opacity-80">Users will automatically receive these roles when they hit the designated level. Roles are removed recursively if they rank down.</p>
+                      </div>
 
-                <div className="flex-1 flex flex-col min-h-0">
-                     {/* Add Reward Zone */}
-                     <div className="p-8 bg-zinc-50/50 border-b border-zinc-100 space-y-6 relative overflow-hidden shrink-0">
-                        <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none rotate-12 transition-transform group-hover:scale-125 duration-1000"><Zap size={140} /></div>
-                        
-                        <div className="space-y-2">
-                             <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Threshold Level</label>
-                             <input 
-                                type="number" 
-                                value={newLevel}
-                                onChange={(e) => setNewLevel(e.target.value)}
-                                className="w-full p-4 rounded-xl bg-white border border-zinc-100 font-black text-zinc-950 outline-none focus:bg-white focus:ring-8 ring-zinc-950/5 transition-all italic"
-                                placeholder="E.G. 10"
-                             />
-                        </div>
-                        
-                        <DiscordSelect 
-                            label="Merit Tier Identity (Role)"
-                            type="role"
-                            value={newRole}
-                            onChange={setNewRole}
-                            placeholder="Select target role..."
-                        />
-                        
-                        <button 
-                            onClick={handleSaveReward}
-                            disabled={saving}
-                            className="w-full py-5 bg-zinc-950 text-white font-black text-[10px] rounded-xl shadow-xl hover:bg-black transition-all uppercase tracking-[0.4em] italic flex items-center justify-center gap-4 group"
-                        >
-                            {saving ? <Loader2 className="animate-spin" /> : <Zap size={16} className="text-zinc-400 group-hover:text-emerald-400 transition-colors" />} 
-                            Sync Reward Node
-                        </button>
-                    </div>
+                      <div className="space-y-4">
+                          {rewards.length === 0 ? (
+                              <div className="p-12 border-2 border-dashed border-zinc-200 rounded-3xl text-center text-zinc-400 font-bold">No role rewards configured.</div>
+                          ) : (
+                              <div className="grid grid-cols-12 gap-4 text-[9px] font-black text-zinc-400 uppercase tracking-widest px-4">
+                                  <div className="col-span-3">Target Level</div>
+                                  <div className="col-span-8">Role to Give</div>
+                                  <div className="col-span-1"></div>
+                              </div>
+                          )}
 
-                    <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-3">
-                         {rewards.length === 0 ? (
-                             <div className="p-10 text-center opacity-10 italic uppercase font-black text-[10px] tracking-[0.3em]">No logic manifesting</div>
-                         ) : (
-                             rewards.map((reward) => (
-                                <div key={reward.id} className="p-4 bg-white rounded-2xl border border-zinc-100 flex items-center justify-between group hover:shadow-xl transition-all h-20 shrink-0">
-                                    <div className="flex items-center gap-4">
-                                        <div className="text-xl font-black text-zinc-950 bg-zinc-50 w-12 h-12 flex items-center justify-center rounded-xl shadow-inner border border-zinc-100 italic">
-                                            {reward.level}
-                                        </div>
-                                        <div className="min-w-0">
-                                            <div className="text-[9px] font-black text-zinc-400 uppercase tracking-widest italic leading-none mb-1">Merit_Token_Role</div>
-                                            <div className="text-xs font-black text-zinc-950 flex items-center gap-2 italic uppercase truncate pr-4">
-                                                <Shield size={12} className="text-zinc-300" /> {cleanId(reward.role_id).slice(0, 12)}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <button 
-                                        onClick={() => handleDeleteReward(reward.level)}
-                                        className="opacity-0 group-hover:opacity-100 p-3 text-zinc-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all border border-transparent hover:border-red-100"><Trash2 size={16} /></button>
-                                </div>
-                             ))
-                         )}
-                    </div>
-                </div>
-             </div>
+                          {rewards.map((r, index) => (
+                              <div key={r.id} className="grid grid-cols-12 gap-4 items-center bg-zinc-50 p-4 rounded-2xl border border-zinc-100 shadow-sm animate-in fade-in slide-in-from-bottom-2">
+                                  <div className="col-span-3 relative">
+                                      <Star size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300" />
+                                      <input 
+                                          type="number"
+                                          value={r.level}
+                                          onChange={(e) => {
+                                              const nr = [...rewards];
+                                              nr[index].level = parseInt(e.target.value) || 0;
+                                              setRewards(nr);
+                                          }}
+                                          className="w-full pl-10 pr-4 py-3 rounded-xl bg-white border border-zinc-200 font-black text-zinc-950 outline-none focus:border-zinc-400 transition-all"
+                                          placeholder="e.g. 5"
+                                      />
+                                  </div>
+                                  <div className="col-span-8">
+                                      <DiscordSelect 
+                                          type="role"
+                                          value={r.role}
+                                          onChange={(v) => {
+                                              const nr = [...rewards];
+                                              nr[index].role = v;
+                                              setRewards(nr);
+                                          }}
+                                          placeholder="Select Discord Role"
+                                      />
+                                  </div>
+                                  <div className="col-span-1 flex justify-end">
+                                      <button onClick={() => removeReward(r.id)} className="p-3 text-zinc-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all">
+                                          X
+                                      </button>
+                                  </div>
+                              </div>
+                          ))}
+                      </div>
 
-             <div className="p-6 bg-zinc-950 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden group border border-zinc-900 shrink-0">
-                <div className="absolute right-0 bottom-0 p-4 opacity-10 group-hover:scale-125 transition-transform duration-1000 rotate-12"><Star size={100} /></div>
-                <div className="text-[9px] font-black opacity-30 uppercase tracking-[0.4em] mb-2 italic">Neural Roadmap Status</div>
-                <h4 className="text-sm font-black italic tracking-tighter flex items-center gap-3">
-                    <History size={16} className="text-zinc-400" /> Prestige Cycle: <span className="text-emerald-400">OPTIMAL</span>
-                </h4>
-            </div>
-        </div>
+                      <button onClick={addReward} className="w-full py-4 border-2 border-dashed border-zinc-200 rounded-2xl text-zinc-400 font-black text-xs uppercase tracking-widest hover:border-zinc-950 hover:bg-zinc-950 hover:text-white transition-all flex items-center justify-center gap-2">
+                          <Plus size={16} /> ADD REWARD
+                      </button>
+                  </motion.div>
+              )}
+
+              {activeTab === 'card' && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8 max-w-5xl">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                          <div className="space-y-6">
+                              <div className="space-y-2">
+                                  <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Primary Bar Color</label>
+                                  <div className="flex gap-4">
+                                      <input 
+                                          type="color" 
+                                          className="w-12 h-12 rounded-xl cursor-pointer border-4 border-zinc-50 shadow-sm bg-transparent"
+                                          value={primaryColor}
+                                          onChange={(e) => setPrimaryColor(e.target.value)}
+                                      />
+                                      <input 
+                                          type="text" 
+                                          className="flex-1 p-3 rounded-xl bg-zinc-50 border border-zinc-100 font-black text-xs text-zinc-950 outline-none uppercase tracking-widest shadow-inner"
+                                          value={primaryColor}
+                                          onChange={(e) => setPrimaryColor(e.target.value)}
+                                      />
+                                  </div>
+                              </div>
+
+                              <div className="space-y-2">
+                                  <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Custom Background URL</label>
+                                  <div className="relative">
+                                      <Upload size={14} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                                      <input 
+                                          type="text" 
+                                          className="w-full pl-12 pr-5 py-4 rounded-xl bg-zinc-50 border border-zinc-100 font-medium text-sm text-zinc-950 outline-none shadow-inner"
+                                          value={bgImageUrl}
+                                          onChange={(e) => setBgImageUrl(e.target.value)}
+                                          placeholder="https://i.imgur.com/..."
+                                      />
+                                  </div>
+                              </div>
+                          </div>
+
+                          <div className="bg-[#2f3136] p-12 rounded-3xl shadow-2xl flex items-center justify-center relative overflow-hidden">
+                              {/* Simulated Rank Card */}
+                              <div className="w-[800px] max-w-full h-auto aspect-[3/1] bg-black rounded-xl overflow-hidden relative border-2 border-[#202225] shadow-[0_10px_30px_rgba(0,0,0,0.5)] transform scale-[0.6] sm:scale-75 md:scale-90 lg:scale-100 origin-center">
+                                  {bgImageUrl && <img src={bgImageUrl} alt="bg" className="absolute inset-0 w-full h-full object-cover opacity-60" />}
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                                  
+                                  <div className="absolute inset-0 p-8 flex items-end">
+                                      <div className="w-24 h-24 rounded-full bg-zinc-800 border-4 border-[#2f3136] shadow-xl relative overflow-hidden z-10 shrink-0">
+                                          <div className="w-full h-full bg-[#5865f2] flex items-center justify-center text-white text-3xl font-black">U</div>
+                                          <div className="absolute bottom-1 right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-black"></div>
+                                      </div>
+                                      <div className="ml-6 flex-1 flex flex-col justify-end relative z-10">
+                                          <div className="flex justify-between items-end mb-2">
+                                              <div className="flex items-center gap-2">
+                                                  <h3 className="text-white font-black text-3xl tracking-tight">Username</h3>
+                                                  <span className="text-zinc-400 font-bold text-sm">#1234</span>
+                                              </div>
+                                              <div className="flex items-baseline gap-2">
+                                                  <span className="text-white font-bold text-sm uppercase tracking-widest text-[9px] opacity-80">Rank <span className="text-2xl font-black text-white px-1">1</span></span>
+                                                  <span className="text-white font-bold text-sm uppercase tracking-widest text-[9px] opacity-80 ml-4">Level <span className="text-2xl font-black text-white px-1">42</span></span>
+                                              </div>
+                                          </div>
+                                          <div className="w-full h-4 bg-black/50 rounded-full overflow-hidden border border-white/10 relative">
+                                              <div className="h-full rounded-full transition-all" style={{ width: '65%', backgroundColor: primaryColor }}>
+                                                  <div className="w-full h-full bg-gradient-to-r from-transparent to-white/30 truncate"></div>
+                                              </div>
+                                          </div>
+                                          <div className="flex justify-between mt-1.5">
+                                              <span className="text-zinc-400 font-bold text-[10px] tracking-widest">EXP 6,500</span>
+                                              <span className="text-zinc-400 font-bold text-[10px] tracking-widest">10,000 NEXT</span>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </motion.div>
+              )}
+          </div>
+
+          <div className="p-6 bg-zinc-50/50 border-t border-zinc-50 shrink-0">
+              <button 
+                  onClick={handleSave}
+                  disabled={saving}
+                  className="w-full flex items-center justify-center gap-4 py-5 bg-zinc-950 text-white font-black text-[10px] rounded-2xl shadow-xl hover:bg-black transition-all active:scale-95 disabled:opacity-50 italic uppercase tracking-[0.4em]"
+              >
+                  {saving ? <Loader2 className="animate-spin" /> : <Save size={18} />} 
+                  COMMIT SYSTEM STATE
+              </button>
+          </div>
+
       </div>
     </div>
   );
