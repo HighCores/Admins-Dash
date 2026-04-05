@@ -244,7 +244,19 @@ export default function WelcomePage() {
                                     
                                     {messageType === "text" ? (
                                         <div className="text-[#dbdee1] text-[15px] leading-relaxed whitespace-pre-wrap mt-0.5">
-                                            {message.replace("{user}", "<@123456789>").replace("{server}", "High Core Server").replace("{member_count}", "1,452").replace(/\\n/g, '\n')}
+                                            {(() => {
+                                                const formatted = message
+                                                    .replace(/{user}/g, "@NewUser")
+                                                    .replace(/{server}/g, "High Core Server")
+                                                    .replace(/{member_count}/g, "1,452")
+                                                    .replace(/\\n/g, '\n');
+                                                return formatted.split(/(\*\*.*?\*\*)/g).map((part, i) => {
+                                                    if (part.startsWith('**') && part.endsWith('**')) {
+                                                        return <strong key={i} className="font-bold text-white">{part.slice(2, -2)}</strong>;
+                                                    }
+                                                    return part;
+                                                });
+                                            })()}
                                         </div>
                                     ) : (
                                         <div className="mt-1 flex max-w-full">
@@ -259,7 +271,19 @@ export default function WelcomePage() {
                                                             {embedTitle && <h3 className="text-white font-bold text-[15px] leading-tight pr-6">{embedTitle}</h3>}
                                                             {message && (
                                                                 <div className="text-[#dbdee1] text-[14px] leading-relaxed whitespace-pre-wrap break-words font-medium">
-                                                                    {message.replace("{user}", "@NewUser").replace("{server}", "High Core Server").replace("{member_count}", "1,452").replace(/\\n/g, '\n')}
+                                                                    {(() => {
+                                                                        const formatted = message
+                                                                            .replace(/{user}/g, "@NewUser")
+                                                                            .replace(/{server}/g, "High Core Server")
+                                                                            .replace(/{member_count}/g, "1,452")
+                                                                            .replace(/\\n/g, '\n');
+                                                                        return formatted.split(/(\*\*.*?\*\*)/g).map((part, i) => {
+                                                                            if (part.startsWith('**') && part.endsWith('**')) {
+                                                                                return <strong key={i} className="font-bold text-white">{part.slice(2, -2)}</strong>;
+                                                                            }
+                                                                            return part;
+                                                                        });
+                                                                    })()}
                                                                 </div>
                                                             )}
                                                         </div>

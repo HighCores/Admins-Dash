@@ -142,7 +142,8 @@ export default function ColorRolesPage() {
                                  animate={{ opacity: 1, x: 0 }}
                                  transition={{ delay: idx * 0.05 }}
                                  key={role.id}
-                                 className="grid grid-cols-12 items-center p-4 rounded-2xl transition-all border border-transparent hover:bg-zinc-50 hover:border-zinc-100 group"
+                                 onClick={() => setPreviewColor(role.color_hex)}
+                                 className="grid grid-cols-12 items-center p-4 rounded-2xl transition-all border border-transparent hover:bg-zinc-50 hover:border-zinc-100 group cursor-pointer"
                              >
                                  <div className="col-span-4 pl-4 flex items-center gap-6">
                                      <div 
@@ -210,18 +211,6 @@ export default function ColorRolesPage() {
                                 Omar
                             </div>
                             <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Active Role Visualizer</div>
-                        </div>
-                        <div className="flex flex-wrap justify-center gap-2 max-w-[240px]">
-                             {roles.slice(0, 4).map(r => (
-                                <button 
-                                    key={r.role_id} 
-                                    onClick={() => setPreviewColor(r.color_hex)}
-                                    className="px-5 py-2 rounded-full text-[9px] font-bold text-white shadow-lg uppercase tracking-widest flex items-center gap-2 hover:scale-110 transition-all active:scale-95" 
-                                    style={{ backgroundColor: r.color_hex }}
-                                >
-                                    <Shield size={10} /> {r.color_name}
-                                </button>
-                             ))}
                         </div>
                      </div>
                 </div>

@@ -120,34 +120,7 @@ export default function ModerationPage() {
 
       <div className="flex-1 space-y-8 pb-10">
         
-        {/* Horizontal Row 1: Access Control */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm p-8 flex flex-col gap-6">
-                <div className="flex items-center gap-4 border-b border-zinc-50 pb-6 mb-2">
-                    <div className="w-12 h-12 rounded-2xl bg-zinc-50 flex items-center justify-center text-zinc-400"><Lock size={20} /></div>
-                    <div>
-                        <h3 className="font-bold text-zinc-950 uppercase tracking-tight">Staff Hierarchy</h3>
-                        <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Administrator & Moderator Roles</p>
-                    </div>
-                </div>
-                
-                <div className="space-y-6">
-                    <DiscordSelect 
-                        label="Moderator Roles"
-                        type="role"
-                        value={modRoles[0] || ""}
-                        onChange={(v) => setModRoles([v])}
-                        placeholder="Select mod roles..."
-                    />
-                    <DiscordSelect 
-                        label="Administrator Roles"
-                        type="role"
-                        value={adminRoles[0] || ""}
-                        onChange={(v) => setAdminRoles([v])}
-                        placeholder="Select admin roles..."
-                    />
-                </div>
-            </div>
+        <div className="grid grid-cols-1 gap-8">
 
             <div className="bg-zinc-950 rounded-[2.5rem] p-8 text-white relative overflow-hidden flex flex-col justify-between group border border-white/5">
                 <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none rotate-12 group-hover:scale-125 transition-transform duration-1000"><ShieldAlert size={160} /></div>

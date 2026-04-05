@@ -502,7 +502,19 @@ export default function PanelsPage() {
                                         {title && <h3 className="text-white font-bold text-[15px] leading-tight">{title}</h3>}
                                         {content && (
                                             <div className="text-[#dbdee1] text-[14px] leading-relaxed whitespace-pre-wrap font-medium">
-                                                {content}
+                                                {(() => {
+                                                    const formatted = (content || "")
+                                                        .replace(/{user}/g, "@NewUser")
+                                                        .replace(/{server}/g, "High Core Server")
+                                                        .replace(/{member_count}/g, "1,452")
+                                                        .replace(/\\n/g, '\n');
+                                                    return formatted.split(/(\*\*.*?\*\*)/g).map((part, i) => {
+                                                        if (part.startsWith('**') && part.endsWith('**')) {
+                                                            return <strong key={i} className="font-bold text-white">{part.slice(2, -2)}</strong>;
+                                                        }
+                                                        return part;
+                                                    });
+                                                })()}
                                             </div>
                                         )}
                                         {imageUrl && (
