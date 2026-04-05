@@ -5,7 +5,7 @@ import {
   PanelsTopLeft, Plus, Image as ImageIcon, Link as LinkIcon, 
   MousePointer2, Save, Trash2, Eye, Layout, Monitor, Smartphone,
   Zap, Sparkles, Loader2, ChevronRight, X, Bot, Hash, Shield, 
-  Settings2, Activity, Terminal, RefreshCcw
+  Settings2, Activity, Terminal, RefreshCcw, CheckCircle2
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";

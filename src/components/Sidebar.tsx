@@ -8,7 +8,7 @@ import {
   TrendingUp, Coins, Crown, Palette, Settings, 
   LogOut, Send, Bot, MessageSquare, ShieldCheck, 
   Activity, ShieldAlert, Sparkles, History, Users,
-  ChevronDown, ChevronRight
+  ChevronDown, ChevronRight, Monitor
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
