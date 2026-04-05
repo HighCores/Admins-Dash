@@ -45,25 +45,25 @@ export default function WelcomePage() {
              <div className="p-2 bg-blue-600 rounded-xl shadow-lg shadow-blue-200">
                 <Users size={16} className="text-white" />
              </div>
-             <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest leading-none font-mono">Engagement Module</span>
+             <span className="text-xs font-bold text-blue-600">Engagement Module</span>
           </div>
           <h1 className="text-3xl font-black text-zinc-950 tracking-tighter">
             Welcome <span className="text-zinc-300">& Leave</span>
           </h1>
-          <p className="text-sm font-bold text-zinc-500 max-w-2xl">
-             Configure automated greetings and farewells for your community.
+          <p className="text-zinc-500 text-sm font-medium">
+            Configure greeting messages and embeds for new members.
           </p>
         </div>
         
         <div className="flex items-center gap-3">
              <button 
                 onClick={() => setIsActive(!isActive)}
-                className={`flex items-center gap-2 px-6 py-4 font-black text-xs rounded-2xl shadow-xl transition-all group italic tracking-widest uppercase ${
-                    isActive ? "bg-emerald-500 text-white hover:bg-emerald-600" : "bg-zinc-100 text-zinc-400 hover:bg-zinc-200"
+                className={`flex items-center gap-2 px-6 py-3 font-bold text-sm rounded-xl shadow-sm transition-all ${
+                    isActive ? "bg-emerald-500 text-white hover:bg-emerald-600" : "bg-zinc-100 text-zinc-500 hover:bg-zinc-200"
                 }`}
             >
-                <Power size={18} className={isActive ? "opacity-100" : "opacity-50"} />
-                {isActive ? "SYSTEM ACTIVE" : "SYSTEM PAUSED"}
+                <Power size={16} />
+                {isActive ? "System Active" : "System Paused"}
             </button>
         </div>
       </header>
@@ -75,7 +75,7 @@ export default function WelcomePage() {
         <div className="xl:col-span-7 flex flex-col min-h-0">
             <div className={`bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden transition-all ${!isActive ? 'opacity-50 pointer-events-none grayscale' : ''}`}>
                 <div className="p-6 border-b border-zinc-50 bg-zinc-50/20 flex items-center justify-between">
-                    <h3 className="text-sm font-black text-zinc-950 italic flex items-center gap-3 tracking-tighter uppercase">
+                    <h3 className="text-sm font-bold text-zinc-950 flex items-center gap-3">
                         <Settings2 size={18} className="text-blue-500" /> Welcome Configuration
                     </h3>
                 </div>
@@ -93,16 +93,16 @@ export default function WelcomePage() {
                     <div className="grid grid-cols-2 gap-4">
                         <button 
                             onClick={() => setMessageType("text")}
-                            className={`p-4 rounded-xl border-2 transition-all font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 ${
-                                messageType === "text" ? "border-zinc-950 bg-zinc-950 text-white" : "border-zinc-100 bg-white text-zinc-400 hover:border-zinc-200"
+                            className={`p-4 rounded-xl border-2 transition-all font-bold text-xs flex items-center justify-center gap-2 ${
+                                messageType === "text" ? "border-zinc-950 bg-zinc-950 text-white" : "border-zinc-100 bg-white text-zinc-500 hover:border-zinc-200"
                             }`}
                         >
                             <AlignLeft size={16} /> Plain Text
                         </button>
                         <button 
                             onClick={() => setMessageType("embed")}
-                            className={`p-4 rounded-xl border-2 transition-all font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 ${
-                                messageType === "embed" ? "border-zinc-950 bg-zinc-950 text-white" : "border-zinc-100 bg-white text-zinc-400 hover:border-zinc-200"
+                            className={`p-4 rounded-xl border-2 transition-all font-bold text-xs flex items-center justify-center gap-2 ${
+                                messageType === "embed" ? "border-zinc-950 bg-zinc-950 text-white" : "border-zinc-100 bg-white text-zinc-500 hover:border-zinc-200"
                             }`}
                         >
                             <Monitor size={16} /> Embed Message
@@ -113,14 +113,14 @@ export default function WelcomePage() {
                         <>
                             <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Embed Title</label>
+                                    <label className="text-xs font-bold text-zinc-500 px-1">Embed Title</label>
                                     <div className="relative">
                                         <BellRing size={14} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" />
                                         <input 
                                             type="text" 
                                             value={embedTitle}
                                             onChange={(e) => setEmbedTitle(e.target.value)}
-                                            className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-950 text-sm transition-all outline-none focus:bg-white shadow-inner"
+                                            className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-medium text-zinc-950 text-sm transition-all outline-none focus:bg-white shadow-inner"
                                             placeholder="Enter title (e.g. Welcome to the server!)"
                                         />
                                     </div>
@@ -128,7 +128,7 @@ export default function WelcomePage() {
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Accent Color</label>
+                                        <label className="text-xs font-bold text-zinc-500 px-1">Accent Color</label>
                                         <div className="flex gap-4">
                                             <input 
                                                 type="color" 
@@ -138,35 +138,35 @@ export default function WelcomePage() {
                                             />
                                             <input 
                                                 type="text" 
-                                                className="flex-1 p-3 rounded-xl bg-zinc-50 border border-zinc-100 font-black text-xs text-zinc-950 outline-none uppercase tracking-widest italic"
+                                                className="flex-1 p-3 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-xs text-zinc-950 outline-none"
                                                 value={color}
                                                 onChange={(e) => setColor(e.target.value)}
                                             />
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Thumbnail Image</label>
+                                        <label className="text-xs font-bold text-zinc-500 px-1">Thumbnail Image</label>
                                         <div className="relative">
                                             <ImageIcon size={14} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" />
                                             <input 
                                                 type="text" 
                                                 value={thumbnailUrl}
                                                 onChange={(e) => setThumbnailUrl(e.target.value)}
-                                                className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-500 text-xs transition-all outline-none focus:bg-white shadow-inner"
+                                                className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-medium text-zinc-500 text-xs transition-all outline-none focus:bg-white shadow-inner"
                                                 placeholder="{user_avatar} or URL"
                                             />
                                         </div>
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Large Background / Banner</label>
+                                    <label className="text-xs font-bold text-zinc-500 px-1">Large Background / Banner</label>
                                     <div className="relative">
                                         <LinkIcon size={14} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" />
                                         <input 
                                             type="text" 
                                             value={imageUrl}
                                             onChange={(e) => setImageUrl(e.target.value)}
-                                            className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-500 text-xs transition-all outline-none focus:bg-white shadow-inner"
+                                            className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-medium text-zinc-500 text-xs transition-all outline-none focus:bg-white shadow-inner"
                                             placeholder="URL to your welcome banner image"
                                         />
                                     </div>
@@ -177,7 +177,7 @@ export default function WelcomePage() {
 
                     <div className="space-y-2">
                         <div className="flex items-center justify-between px-4">
-                            <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] font-mono leading-none">Message Body</label>
+                            <label className="text-xs font-bold text-zinc-500">Message Body</label>
                         </div>
                         <textarea 
                             rows={6}
@@ -191,7 +191,7 @@ export default function WelcomePage() {
                                 <button 
                                     key={v}
                                     onClick={() => setMessage(prev => prev + " " + v)}
-                                    className="px-3 py-1 bg-zinc-100 text-zinc-500 text-[10px] font-bold rounded-md hover:bg-black hover:text-white transition-all font-mono"
+                                    className="px-3 py-1 bg-zinc-100 text-zinc-600 text-[10px] font-bold rounded-md hover:bg-zinc-200 transition-all"
                                 >
                                     {v}
                                 </button>
@@ -205,10 +205,10 @@ export default function WelcomePage() {
                     <button 
                         onClick={handleSave}
                         disabled={saving}
-                        className="w-full flex items-center justify-center gap-4 py-5 bg-blue-600 text-white font-black text-[10px] rounded-2xl shadow-xl hover:bg-blue-700 transition-all active:scale-95 disabled:opacity-50 italic uppercase tracking-[0.4em]"
+                        className="w-full flex items-center justify-center gap-3 py-4 bg-zinc-950 text-white font-bold text-sm rounded-xl shadow-md hover:bg-zinc-800 transition-all active:scale-95 disabled:opacity-50"
                     >
                         {saving ? <Loader2 className="animate-spin" /> : <Save size={18} />} 
-                        SAVE WELCOME CONFIG
+                        Save Settings
                     </button>
                 </div>
             </div>
@@ -218,11 +218,11 @@ export default function WelcomePage() {
         <div className="xl:col-span-5 flex flex-col min-h-0 overflow-hidden">
              {/* Device Switcher */}
              <div className="bg-white p-2 rounded-2xl border border-zinc-100 mb-6 flex justify-center gap-2 shrink-0">
-                 <button onClick={() => setIsPreviewMobile(false)} className={`flex-1 py-3 rounded-xl transition-all flex items-center justify-center gap-3 text-[10px] font-black tracking-widest ${!isPreviewMobile ? 'bg-zinc-950 text-white shadow-lg' : 'text-zinc-300 hover:text-zinc-950'}`}>
-                    <Monitor size={14} /> DESKTOP
+                 <button onClick={() => setIsPreviewMobile(false)} className={`flex-1 py-3 rounded-xl transition-all flex items-center justify-center gap-3 text-xs font-bold ${!isPreviewMobile ? 'bg-zinc-950 text-white shadow-lg' : 'text-zinc-400 hover:text-zinc-950'}`}>
+                    <Monitor size={14} /> Desktop
                  </button>
-                 <button onClick={() => setIsPreviewMobile(true)} className={`flex-1 py-3 rounded-xl transition-all flex items-center justify-center gap-3 text-[10px] font-black tracking-widest ${isPreviewMobile ? 'bg-zinc-950 text-white shadow-lg' : 'text-zinc-300 hover:text-zinc-950'}`}>
-                    <Smartphone size={14} /> MOBILE
+                 <button onClick={() => setIsPreviewMobile(true)} className={`flex-1 py-3 rounded-xl transition-all flex items-center justify-center gap-3 text-xs font-bold ${isPreviewMobile ? 'bg-zinc-950 text-white shadow-lg' : 'text-zinc-400 hover:text-zinc-950'}`}>
+                    <Smartphone size={14} /> Mobile
                  </button>
              </div>
  
@@ -248,31 +248,37 @@ export default function WelcomePage() {
                                         </div>
                                     ) : (
                                         <div className="mt-1 flex max-w-full">
-                                            <div className="bg-[#2b2d31] rounded-lg border-l-4 flex flex-col max-w-[400px] transition-colors" style={{ borderLeftColor: color || '#5865F2' }}>
-                                                <div className="p-4 flex gap-4 w-full">
-                                                    <div className="flex-1 flex flex-col gap-2 min-w-0">
-                                                        {embedTitle && <h3 className="text-white font-bold text-[15px]">{embedTitle}</h3>}
+                                            {/* Component v2 Embed */}
+                                            <div className="bg-[#2b2d31] rounded-[8px] flex flex-col max-w-[400px] overflow-hidden shrink-0 transition-colors relative">
+                                                {/* Embed Color Line */}
+                                                <div className="absolute left-0 top-0 bottom-0 w-1 flex-shrink-0 rounded-l-[8px]" style={{ backgroundColor: color || '#202225' }}></div>
+                                                
+                                                <div className="p-4 pl-5 flex flex-col gap-2 w-full">
+                                                    <div className="flex items-start gap-3 w-full">
+                                                        <div className="flex-1 flex flex-col gap-2 min-w-0">
+                                                            {embedTitle && <h3 className="text-white font-bold text-[15px] leading-tight pr-6">{embedTitle}</h3>}
+                                                            {message && (
+                                                                <div className="text-[#dbdee1] text-[14px] leading-relaxed whitespace-pre-wrap break-words font-medium">
+                                                                    {message.replace("{user}", "@NewUser").replace("{server}", "High Core Server").replace("{member_count}", "1,452").replace(/\\n/g, '\n')}
+                                                                </div>
+                                                            )}
+                                                        </div>
                                                         
-                                                        {message && (
-                                                            <div className="text-[#dbdee1] text-[14px] leading-relaxed whitespace-pre-wrap break-words">
-                                                                {message.replace("{user}", "@NewUser").replace("{server}", "High Core Server").replace("{member_count}", "1,452").replace(/\\n/g, '\n')}
+                                                        {thumbnailUrl && thumbnailUrl !== "{none}" && (
+                                                            <div className="w-[50px] h-[50px] shrink-0 rounded-md overflow-hidden bg-[#232428] ml-auto">
+                                                                {thumbnailUrl === "{user_avatar}" ? (
+                                                                    <div className="w-full h-full bg-indigo-500 flex items-center justify-center text-white font-bold text-lg">U</div>
+                                                                ) : (
+                                                                    <img src={thumbnailUrl} alt="Thumbnail" className="w-full h-full object-cover" />
+                                                                )}
                                                             </div>
                                                         )}
                                                     </div>
-                                                    
-                                                    {thumbnailUrl && thumbnailUrl !== "{none}" && (
-                                                        <div className="w-16 h-16 shrink-0 rounded-md overflow-hidden bg-[#232428]">
-                                                            {thumbnailUrl === "{user_avatar}" ? (
-                                                                <div className="w-full h-full bg-indigo-500 flex items-center justify-center text-white font-bold">U</div>
-                                                            ) : (
-                                                                <img src={thumbnailUrl} alt="Thumbnail" className="w-full h-full object-cover" />
-                                                            )}
-                                                        </div>
-                                                    )}
                                                 </div>
+                                                
                                                 {imageUrl && (
-                                                    <div className="mt-1 px-4 pb-4">
-                                                        <img src={imageUrl} alt="Banner" className="w-full h-auto rounded-lg" />
+                                                    <div className="px-4 pb-4">
+                                                        <img src={imageUrl} alt="Banner" className="w-full h-auto rounded-lg max-w-[400px]" />
                                                     </div>
                                                 )}
                                             </div>

@@ -156,10 +156,10 @@ export default function PanelsPage() {
             <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none font-mono">Architect Domain Console</span>
           </div>
           <h1 className="text-3xl font-black text-zinc-950 tracking-tighter">
-            System <span className="text-zinc-300">Panels</span>
+            System <span className="text-zinc-500">Panels</span>
           </h1>
-          <p className="text-sm font-bold text-zinc-500 max-w-2xl">
-             Design high-end interactive interfaces for the High Core network architecture.
+          <p className="text-zinc-500 text-sm font-medium max-w-md">
+            Design interactive interfaces and embeds for the bot.
           </p>
         </div>
         
@@ -443,17 +443,17 @@ export default function PanelsPage() {
                             <button 
                                 onClick={handleSave}
                                 disabled={saving}
-                                className="w-full flex items-center justify-center gap-4 py-5 bg-zinc-950 text-white font-black text-[10px] rounded-2xl shadow-xl hover:bg-black transition-all active:scale-95 disabled:opacity-50 italic uppercase tracking-[0.4em]"
+                                className="w-full flex items-center justify-center gap-3 py-4 bg-zinc-950 text-white font-bold text-sm rounded-xl shadow-md hover:bg-zinc-800 transition-all active:scale-95 disabled:opacity-50"
                             >
                                 {saving ? <Loader2 className="animate-spin" /> : <Save size={18} />} 
-                                DEPLOY TO NETWORK
+                                Save Panel
                             </button>
                         </div>
                     </motion.div>
                 ) : (
-                    <div className="flex-1 flex flex-col items-center justify-center p-20 bg-zinc-50/50 rounded-[2.5rem] text-center border-2 border-dashed border-zinc-200 opacity-20">
-                        <Terminal size={60} className="mb-10 text-zinc-400" />
-                        <h3 className="text-xl font-black text-zinc-950 tracking-tighter uppercase italic">Select node to initiate architect suite</h3>
+                    <div className="flex-1 flex flex-col items-center justify-center p-20 bg-zinc-50/50 rounded-[2.5rem] text-center border-2 border-dashed border-zinc-200 opacity-50">
+                        <Layout size={60} className="mb-6 text-zinc-400" />
+                        <h3 className="text-xl font-bold text-zinc-600">Select a panel to edit</h3>
                     </div>
                 )}
             </AnimatePresence>
@@ -495,19 +495,21 @@ export default function PanelsPage() {
                                 </div>
                             )}
 
-                            {/* Main Embed */}
+                            {/* Main Embed (Component v2 Styling) */}
                             <div className="flex pl-12 pr-1">
-                                <div className="bg-[#2b2d31] rounded-xl flex flex-col max-w-full overflow-hidden border-l-4 shrink-0 transition-colors" style={{ borderLeftColor: color || '#ffffff' }}>
-                                    <div className="p-4 flex flex-col gap-2">
-                                        {title && <h3 className="text-white font-bold text-[15px]">{title}</h3>}
+                                <div className="bg-[#2b2d31] rounded-[8px] flex flex-col max-w-full overflow-hidden shrink-0 transition-colors relative" style={{ minWidth: '300px' }}>
+                                    {/* Embed color pill (Modern v2 Style) */}
+                                    <div className="absolute left-0 top-0 bottom-0 w-1 flex-shrink-0 rounded-l-[8px]" style={{ backgroundColor: color || '#202225' }}></div>
+                                    <div className="p-4 pl-5 flex flex-col gap-2">
+                                        {title && <h3 className="text-white font-bold text-[15px] leading-tight">{title}</h3>}
                                         {content && (
-                                            <div className="text-[#dbdee1] text-[14px] leading-relaxed whitespace-pre-wrap">
+                                            <div className="text-[#dbdee1] text-[14px] leading-relaxed whitespace-pre-wrap font-medium">
                                                 {content}
                                             </div>
                                         )}
                                         {imageUrl && (
-                                            <div className="mt-3 rounded-lg overflow-hidden border border-white/5 opacity-90 transition-transform">
-                                                <img src={imageUrl} alt="Panel" className="object-cover max-w-[400px] max-h-[300px] w-auto h-auto rounded" />
+                                            <div className="mt-3 rounded-lg overflow-hidden opacity-95 transition-transform max-w-[400px]">
+                                                <img src={imageUrl} alt="Panel" className="object-cover w-full h-auto rounded-lg" />
                                             </div>
                                         )}
                                     </div>
@@ -547,9 +549,8 @@ export default function PanelsPage() {
                 </div>
              </div>
 
-             <div className="mt-6 p-5 bg-zinc-950 text-white rounded-[2rem] text-[9px] font-black text-center uppercase tracking-[0.4em] shadow-2xl relative overflow-hidden group italic cursor-default shrink-0">
-                <div className="absolute inset-0 bg-white/5 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-                <span className="flex items-center justify-center gap-3"><Eye size={12} className="animate-pulse shadow-[0_0_8px_rgba(255,255,255,0.5)]" /> DISCORD_CLOUD_SYNC_ACTIVE</span>
+             <div className="mt-6 p-4 bg-zinc-900 text-white rounded-2xl text-xs font-bold text-center shadow-lg relative overflow-hidden group cursor-default shrink-0">
+                <span className="flex items-center justify-center gap-2"><CheckCircle2 size={16} className="text-green-400" /> Discord Sync Active</span>
             </div>
         </div>
       </div>
