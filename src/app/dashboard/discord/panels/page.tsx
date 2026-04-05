@@ -23,6 +23,7 @@ export default function PanelsPage() {
   // Form State
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [topImageUrl, setTopImageUrl] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [channelId, setChannelId] = useState("");
   const [menuId, setMenuId] = useState("");
@@ -56,6 +57,7 @@ export default function PanelsPage() {
     setMenuId(menu.menu_id || "");
     setTitle(menu.title || "");
     setContent(menu.description || "");
+    setTopImageUrl(menu.top_image_url || "");
     setImageUrl(menu.image_url || "");
     setChannelId(menu.channel_id || "");
     setTriggerCommand(menu.trigger_command || "");
@@ -70,6 +72,7 @@ export default function PanelsPage() {
     setMenuId(newId);
     setTitle(newMenu.title);
     setContent(newMenu.description);
+    setTopImageUrl("");
     setImageUrl("");
     setChannelId("");
     setTriggerCommand("");
@@ -85,6 +88,7 @@ export default function PanelsPage() {
             menu_id: menuId,
             title: title,
             description: content,
+            top_image_url: topImageUrl,
             image_url: imageUrl,
             channel_id: channelId,
             trigger_command: triggerCommand,
@@ -103,6 +107,7 @@ export default function PanelsPage() {
             const buttonsToInsert = buttons.map((b, i) => ({
                 menu_id: menuId,
                 label: b.label,
+                emoji: b.emoji,
                 action_id: b.action_id,
                 button_style: b.button_style || 'PRIMARY',
                 position: i
@@ -128,7 +133,7 @@ export default function PanelsPage() {
   };
 
   const addButton = () => {
-    setButtons([...buttons, { label: 'New Action', action_id: 'open_ticket', button_style: 'PRIMARY' }]);
+    setButtons([...buttons, { label: 'New Action', action_id: 'open_ticket', button_style: 'PRIMARY', emoji: '' }]);
   };
 
   const removeButton = async (index: number, bId?: any) => {
@@ -315,17 +320,32 @@ export default function PanelsPage() {
                                 />
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Asset URL (Embed Cover)</label>
-                                <div className="relative">
-                                    <LinkIcon size={14} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" />
-                                    <input 
-                                        type="text" 
-                                        value={imageUrl}
-                                        onChange={(e) => setImageUrl(e.target.value)}
-                                        className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-500 text-xs transition-all outline-none focus:bg-white shadow-inner"
-                                        placeholder="https://assets.hc.agency/img.png"
-                                    />
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Top Banner URL</label>
+                                    <div className="relative">
+                                        <LinkIcon size={14} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                                        <input 
+                                            type="text" 
+                                            value={topImageUrl}
+                                            onChange={(e) => setTopImageUrl(e.target.value)}
+                                            className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-500 text-xs transition-all outline-none focus:bg-white shadow-inner"
+                                            placeholder="https://assets.hc.agency/top.png"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Bottom Banner URL</label>
+                                    <div className="relative">
+                                        <LinkIcon size={14} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                                        <input 
+                                            type="text" 
+                                            value={imageUrl}
+                                            onChange={(e) => setImageUrl(e.target.value)}
+                                            className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-500 text-xs transition-all outline-none focus:bg-white shadow-inner"
+                                            placeholder="https://assets.hc.agency/bottom.png"
+                                        />
+                                    </div>
                                 </div>
                             </div>
 
@@ -349,13 +369,24 @@ export default function PanelsPage() {
                                                     <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center font-black text-[9px]">{idx + 1}</div>
                                                     <input 
                                                         type="text"
+                                                        value={btn.emoji || ''}
+                                                        onChange={(e) => {
+                                                            const nb = [...buttons];
+                                                            nb[idx].emoji = e.target.value;
+                                                            setButtons(nb);
+                                                        }}
+                                                        className="w-8 text-center bg-black/20 rounded-md py-1 border-none outline-none text-[12px] placeholder:text-[8px] placeholder:opacity-50"
+                                                        placeholder="🚀"
+                                                    />
+                                                    <input 
+                                                        type="text"
                                                         value={btn.label}
                                                         onChange={(e) => {
                                                             const nb = [...buttons];
                                                             nb[idx].label = e.target.value;
                                                             setButtons(nb);
                                                         }}
-                                                        className="bg-transparent border-none outline-none text-[10px] font-bold italic tracking-tight text-white placeholder:opacity-20"
+                                                        className="bg-transparent border-none outline-none text-[10px] font-bold italic tracking-tight text-white placeholder:opacity-20 flex-1"
                                                         placeholder="Button Label..."
                                                     />
                                                 </div>
@@ -430,51 +461,75 @@ export default function PanelsPage() {
  
              <div className="flex-1 overflow-hidden relative group">
                 <div className={`h-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${isPreviewMobile ? 'max-w-[340px] mx-auto' : 'w-full'}`}>
-                    <div className="h-full bg-[#2b2d31] rounded-[2.5rem] shadow-2xl flex flex-col border border-white/5 overflow-hidden">
-                        <div className="flex-1 overflow-y-auto p-8 border-l-[6px] border-zinc-400 custom-scrollbar-discord space-y-8">
-                            <div className="space-y-4">
-                                <h4 className="text-white font-black text-2xl tracking-tighter leading-tight">{title || "Structural Headline"}</h4>
-                                <p className="text-[#dbdee1] text-sm leading-relaxed font-medium font-sans pr-4 opacity-90 whitespace-pre-wrap">
-                                    {(content || "").split("\\n").map((line, i, arr) => (
-                                        <span key={i}>
-                                            {line}
-                                            {i < arr.length - 1 && <br />}
-                                        </span>
-                                    )) || "Payload description will materialize here after network sync."}
-                                </p>
+                    {/* Realistic Discord UI background */}
+                    <div className="h-full bg-[#313338] rounded-[2.5rem] shadow-2xl flex flex-col border border-[#1e1f22] overflow-hidden !font-sans">
+                        
+                        <div className="flex-1 overflow-y-auto px-4 py-6 custom-scrollbar flex flex-col gap-3">
+                            {/* Discord Message Header Info */}
+                            <div className="flex items-center gap-3 px-1 mb-1">
+                                <div className="w-10 h-10 rounded-full bg-[#5865f2] flex items-center justify-center text-white"><Bot size={24} /></div>
+                                <div>
+                                    <h4 className="flex items-center gap-1 font-semibold text-white/90 leading-tight">High Core <span className="bg-[#5865F2] text-white text-[10px] px-1 rounded flex items-center font-bold">APP</span></h4>
+                                    <span className="text-[#949ba4] text-[11px]">Today at 12:00 PM</span>
+                                </div>
                             </div>
-                            
-                            {imageUrl && (
-                                <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/5 transition-transform hover:scale-[1.02]">
-                                    <img src={imageUrl} alt="Panel" className="w-full h-auto object-cover max-h-56" />
+
+                            {/* Top Banner Embed */}
+                            {topImageUrl && (
+                                <div className="flex pl-12 pr-1">
+                                    <div className="overflow-hidden bg-[#2b2d31] rounded-xl flex max-w-[85%] border-l-4 border-transparent">
+                                        <img src={topImageUrl} alt="Top Banner" className="w-[500px] h-auto object-cover max-h-[400px]" />
+                                    </div>
                                 </div>
                             )}
 
-                            <div className="flex flex-wrap gap-2 pt-4">
-                                {buttons.length === 0 ? (
-                                    <button className="px-3 py-1.5 bg-[#4e5058] text-[#dbdee1] text-sm font-medium rounded shadow-sm transition-all border border-[#2b2d31] opacity-50 cursor-default">No Action Nodes</button>
-                                ) : buttons.map((btn, idx) => (
-                                    <button 
-                                        key={idx}
-                                        className={`px-4 py-1.5 text-sm font-medium rounded transition-all flex items-center justify-center gap-2 ${
-                                            btn.button_style === 'SUCCESS' ? 'bg-[#248046] hover:bg-[#1a6334] text-white' :
-                                            btn.button_style === 'DANGER' ? 'bg-[#da373c] hover:bg-[#a12829] text-white' :
-                                            btn.button_style === 'SECONDARY' ? 'bg-[#4e5058] hover:bg-[#6d6f78] text-[#dbdee1]' :
-                                            'bg-[#5865f2] hover:bg-[#4752c4] text-white'
-                                        }`}
-                                    >
-                                        {btn.label || "Action Label"}
-                                    </button>
-                                ))}
+                            {/* Main Embed */}
+                            <div className="flex pl-12 pr-1">
+                                <div className="bg-[#2b2d31] rounded-xl flex flex-col max-w-full overflow-hidden border-l-4 shrink-0 transition-colors" style={{ borderLeftColor: color || '#ffffff' }}>
+                                    <div className="p-4 flex flex-col gap-2">
+                                        {title && <h3 className="text-white font-bold text-[15px]">{title}</h3>}
+                                        {content && (
+                                            <div className="text-[#dbdee1] text-[14px] leading-relaxed whitespace-pre-wrap">
+                                                {content}
+                                            </div>
+                                        )}
+                                        {imageUrl && (
+                                            <div className="mt-3 rounded-lg overflow-hidden border border-white/5 opacity-90 transition-transform">
+                                                <img src={imageUrl} alt="Panel" className="object-cover max-w-[400px] max-h-[300px] w-auto h-auto rounded" />
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
+
+                            {/* Buttons */}
+                            {buttons.length > 0 && (
+                                <div className="flex pl-12 pr-1 flex-wrap gap-2 pt-1 pb-4">
+                                    {buttons.map((btn, idx) => (
+                                        <button 
+                                            key={idx}
+                                            className={`px-[16px] h-[32px] text-[14px] font-medium rounded-[3px] transition-all flex items-center justify-center gap-1.5 ${
+                                                btn.button_style === 'SUCCESS' ? 'bg-[#248046] hover:bg-[#1a6334] text-white' :
+                                                btn.button_style === 'DANGER' ? 'bg-[#da373c] hover:bg-[#a12829] text-white' :
+                                                btn.button_style === 'SECONDARY' ? 'bg-[#4e5058] hover:bg-[#6d6f78] text-white' :
+                                                'bg-[#5865f2] hover:bg-[#4752c4] text-white'
+                                            }`}
+                                        >
+                                            {btn.emoji && <span>{btn.emoji}</span>}
+                                            {btn.label || "Action"}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                         
-                        <div className="px-8 py-4 bg-black/20 flex items-center justify-between border-t border-white/5 shrink-0">
-                            <div className="flex items-center gap-3 opacity-30">
-                                <Bot size={14} className="text-zinc-300" />
-                                <span className="text-[8px] font-black text-white uppercase tracking-[0.4em] italic leading-none">HC-PROTOCOL v2</span>
+                        <div className="px-6 py-4 bg-[#2b2d31] flex items-center gap-4 border-t border-[#1e1f22] shrink-0 pointer-events-none opacity-50">
+                            <div className="w-8 h-8 rounded-full bg-[#383a40] flex items-center justify-center">
+                                <Plus size={16} className="text-[#b5bac1]" />
                             </div>
-                            <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse shadow-[0_0_8px_rgba(59,130,246,1)]"></div>
+                            <div className="flex-1 bg-[#383a40] rounded-full h-10 px-4 flex items-center text-[#949ba4] text-[14px]">
+                                Message #general
+                            </div>
                         </div>
                     </div>
                 </div>

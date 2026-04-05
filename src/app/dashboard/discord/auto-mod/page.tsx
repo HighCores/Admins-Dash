@@ -2,7 +2,7 @@
 
 import { Terminal } from "lucide-react";
 
-export default function LogsPage() {
+export default function AutoModPage() {
   return (
     <div className="w-full h-full flex flex-col min-h-0">
       <header className="mb-8 flex flex-col justify-between gap-4 shrink-0">
@@ -14,10 +14,10 @@ export default function LogsPage() {
              <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none font-mono">Protection Module</span>
           </div>
           <h1 className="text-3xl font-black text-zinc-950 tracking-tighter">
-            Server <span className="text-zinc-300">Logs</span>
+            Auto <span className="text-zinc-300">Moderation</span>
           </h1>
           <p className="text-sm font-bold text-zinc-500 max-w-2xl">
-             Keep track of everything happening in your server with advanced audit channels.
+             Filter spam, block forbidden words, and enforce server safety autonomously.
           </p>
         </div>
       </header>

@@ -2,7 +2,7 @@
 
 import { Terminal } from "lucide-react";
 
-export default function LogsPage() {
+export default function WelcomePage() {
   return (
     <div className="w-full h-full flex flex-col min-h-0">
       <header className="mb-8 flex flex-col justify-between gap-4 shrink-0">
@@ -11,13 +11,13 @@ export default function LogsPage() {
              <div className="p-2 bg-zinc-950 rounded-xl shadow-lg shadow-zinc-200">
                 <Terminal size={16} className="text-white" />
              </div>
-             <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none font-mono">Protection Module</span>
+             <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none font-mono">Engagement Module</span>
           </div>
           <h1 className="text-3xl font-black text-zinc-950 tracking-tighter">
-            Server <span className="text-zinc-300">Logs</span>
+            Welcome <span className="text-zinc-300">& Leave</span>
           </h1>
           <p className="text-sm font-bold text-zinc-500 max-w-2xl">
-             Keep track of everything happening in your server with advanced audit channels.
+             Configure automated greetings and farewells for your community.
           </p>
         </div>
       </header>
