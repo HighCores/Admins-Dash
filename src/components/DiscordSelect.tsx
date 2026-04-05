@@ -65,8 +65,9 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
   const updateCoords = useCallback(() => {
     if (buttonRef.current && isOpen) {
         const rect = buttonRef.current.getBoundingClientRect();
+        // Use fixed positioning relative to viewport to escape all parents
         setCoords({
-            top: rect.bottom + 8,
+            top: rect.bottom,
             left: rect.left,
             width: rect.width
         });
@@ -76,6 +77,7 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
   useEffect(() => {
     if (isOpen) {
         updateCoords();
+        // Add listeners to parent scroll containers to ensure position stays sticky
         window.addEventListener('scroll', updateCoords, true);
         window.addEventListener('resize', updateCoords);
     }
@@ -134,10 +136,10 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
           <div 
             style={{ 
                 position: 'fixed',
-                top: coords.top,
+                top: coords.top + 8,
                 left: coords.left,
                 width: coords.width,
-                zIndex: 999999
+                zIndex: 9999999 // Ultimate priority
             }}
             className="bg-white border border-zinc-100 rounded-2xl shadow-2xl overflow-visible animate-in fade-in zoom-in-95 duration-200"
           >
@@ -198,7 +200,7 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
       {/* Backdrop for closing */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-[999998]" 
+          className="fixed inset-0 z-[9999998]" 
           onClick={() => setIsOpen(false)}
         />
       )}
