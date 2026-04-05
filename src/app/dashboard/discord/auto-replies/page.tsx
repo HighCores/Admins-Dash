@@ -85,7 +85,7 @@ export default function AutoRepliesPage() {
   const filteredReplies = replies.filter(r => r.keyword.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="w-full h-full flex flex-col min-h-0 overflow-hidden">
+    <div className="w-full h-full flex flex-col min-h-0 overflow-visible">
       
       {/* Header - Compact */}
       <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
@@ -132,11 +132,11 @@ export default function AutoRepliesPage() {
       </header>
 
       {/* Grid Layout - SIDE-BY-SIDE (NO SCROLL) */}
-      <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 min-h-0 overflow-hidden">
+      <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 min-h-0 overflow-visible">
         
         {/* Left: Trigger Flow (Col: 8) */}
         <div className="xl:col-span-8 flex flex-col min-h-0">
-             <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden">
+             <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-visible">
                   <div className="grid grid-cols-12 p-6 border-b border-zinc-50 bg-zinc-50/20 text-[9px] font-bold text-zinc-400 uppercase tracking-widest">
                       <div className="col-span-4 pl-4">Keyword</div>
                       <div className="col-span-6">Response Message</div>
@@ -194,7 +194,7 @@ export default function AutoRepliesPage() {
 
         {/* Right: Automation Console (Col: 4) */}
         <div className="xl:col-span-4 flex flex-col gap-6">
-             <div className="bg-zinc-950 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden group shrink-0">
+             <div className="bg-zinc-950 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-visible group shrink-0">
                 <div className="absolute right-0 bottom-0 p-8 opacity-10 rotate-12 group-hover:scale-125 transition-transform duration-1000 pointer-events-none"><Bot size={200} /></div>
                 <h3 className="text-xl font-black mb-6 flex items-center gap-4 tracking-tighter">
                     <Sparkles className="text-zinc-400" /> Trigger Core
@@ -212,7 +212,7 @@ export default function AutoRepliesPage() {
                 </div>
              </div>
 
-             <div className="bg-white p-8 rounded-[3rem] border border-zinc-100 shadow-sm relative overflow-hidden flex-1 group">
+             <div className="bg-white p-8 rounded-[3rem] border border-zinc-100 shadow-sm relative overflow-visible flex-1 group">
                 <div className="absolute top-0 right-0 p-8 opacity-10 rotate-12 group-hover:rotate-0 transition-transform duration-700 pointer-events-none"><ShieldCheck size={120} /></div>
                 <h4 className="font-black text-xl text-zinc-950 mb-6 flex items-center gap-3 italic tracking-tighter underline underline-offset-8 decoration-zinc-100 uppercase">
                     <History size={18} className="text-zinc-400" /> Neural Trace
@@ -240,7 +240,7 @@ export default function AutoRepliesPage() {
                 initial={{ scale: 0.95, opacity: 0, y: 20 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.95, opacity: 0, y: 20 }}
-                className="bg-white rounded-[3.5rem] w-full max-w-xl p-12 shadow-[0_40px_100px_rgba(0,0,0,0.1)] border border-white flex flex-col gap-8 relative overflow-hidden"
+                className="bg-white rounded-[3.5rem] w-full max-w-xl p-12 shadow-[0_40px_100px_rgba(0,0,0,0.1)] border border-white flex flex-col gap-8 relative overflow-visible"
              >
                 <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none rotate-45"><MessageSquare size={240} /></div>
                 

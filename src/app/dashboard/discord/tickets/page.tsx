@@ -89,7 +89,7 @@ export default function TicketsPage() {
   );
 
   return (
-    <div className="w-full h-full flex flex-col min-h-0 overflow-hidden">
+    <div className="w-full h-full flex flex-col min-h-0 overflow-visible">
       
       {/* Header - Compact */}
       <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
@@ -129,11 +129,11 @@ export default function TicketsPage() {
       </header>
 
       {/* Grid Layout - SIDE-BY-SIDE (NO SCROLL) */}
-      <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 min-h-0 overflow-hidden">
+      <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 min-h-0 overflow-visible">
         
         {/* Left: Ticket Stream (Col: 5) */}
         <div className="xl:col-span-5 flex flex-col min-h-0">
-             <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden">
+             <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-visible">
                   <div className="p-6 border-b border-zinc-50 bg-zinc-50/20 flex items-center justify-between">
                      <div className="flex gap-2">
                         {['all', 'open', 'closed'].map((f) => (
@@ -159,7 +159,7 @@ export default function TicketsPage() {
                              <motion.div 
                                  key={ticket.id}
                                  whileHover={{ scale: 1.01 }}
-                                 className={`w-full p-6 rounded-3xl border transition-all text-left flex flex-col gap-6 group relative overflow-hidden ${
+                                 className={`w-full p-6 rounded-3xl border transition-all text-left flex flex-col gap-6 group relative overflow-visible ${
                                     activeTicket?.id === ticket.id 
                                     ? "bg-zinc-950 text-white shadow-2xl border-transparent ring-2 ring-zinc-100" 
                                     : "bg-white border-zinc-100 hover:bg-zinc-50 text-zinc-900"
@@ -208,7 +208,7 @@ export default function TicketsPage() {
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -20 }}
-                        className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden"
+                        className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-visible"
                     >
                          <div className="p-8 border-b border-zinc-50 bg-zinc-50/20 flex flex-col gap-6">
                             <div className="flex items-center justify-between">

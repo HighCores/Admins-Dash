@@ -101,7 +101,7 @@ export default function MessengerPage() {
                     </p>
                 </div>
 
-                <div className="flex bg-zinc-100 p-1.5 rounded-2xl border border-zinc-200 shadow-sm overflow-hidden shrink-0">
+                <div className="flex bg-zinc-100 p-1.5 rounded-2xl border border-zinc-200 shadow-sm overflow-visible shrink-0">
                     <button 
                         onClick={() => setIsBroadcast(false)}
                         className={`flex items-center justify-center gap-3 px-8 py-3 rounded-xl font-bold text-xs transition-all duration-300 ${!isBroadcast ? 'bg-white text-zinc-950 shadow-md border border-zinc-100' : 'text-zinc-500 hover:text-zinc-900'}`}
@@ -122,7 +122,7 @@ export default function MessengerPage() {
                 <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-white rounded-[2.5rem] p-10 border border-zinc-100 shadow-sm relative overflow-hidden group"
+                    className="bg-white rounded-[2.5rem] p-10 border border-zinc-100 shadow-sm relative overflow-visible group"
                 >
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-10 relative z-10">
                         <div className="space-y-6">

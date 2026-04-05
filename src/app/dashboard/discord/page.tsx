@@ -57,7 +57,7 @@ export default function DiscordOverviewPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="glass-card p-6 rounded-3xl relative overflow-hidden group hover:-translate-y-1 transition-all">
+          <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="glass-card p-6 rounded-3xl relative overflow-visible group hover:-translate-y-1 transition-all">
             <div className="flex justify-between items-start mb-4">
               <div className="p-3 bg-blue-500/10 rounded-2xl text-blue-600"><Ticket size={24} /></div>
               <span className="text-xs font-bold px-2 py-1 bg-green-100 text-green-700 rounded-lg">Live</span>
@@ -66,7 +66,7 @@ export default function DiscordOverviewPage() {
             <p className="text-3xl font-bold text-sunset-900">{stats.totalTickets}</p>
           </motion.div>
 
-          <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }} className="glass-card p-6 rounded-3xl relative overflow-hidden group hover:-translate-y-1 transition-all">
+          <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }} className="glass-card p-6 rounded-3xl relative overflow-visible group hover:-translate-y-1 transition-all">
             <div className="flex justify-between items-start mb-4">
               <div className="p-3 bg-red-500/10 rounded-2xl text-red-600"><Activity size={24} /></div>
               <span className="text-xs font-bold px-2 py-1 bg-red-100 text-red-700 rounded-lg">Action Needed</span>
@@ -75,7 +75,7 @@ export default function DiscordOverviewPage() {
             <p className="text-3xl font-bold text-sunset-900">{stats.openTickets}</p>
           </motion.div>
 
-          <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }} className="glass-card p-6 rounded-3xl relative overflow-hidden group hover:-translate-y-1 transition-all">
+          <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }} className="glass-card p-6 rounded-3xl relative overflow-visible group hover:-translate-y-1 transition-all">
             <div className="flex justify-between items-start mb-4">
               <div className="p-3 bg-sunset-500/10 rounded-2xl text-sunset-600"><MessageSquare size={24} /></div>
             </div>
@@ -83,7 +83,7 @@ export default function DiscordOverviewPage() {
             <p className="text-3xl font-bold text-sunset-900">{stats.autoReplies}</p>
           </motion.div>
 
-          <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }} className="glass-card p-6 rounded-3xl relative overflow-hidden group hover:-translate-y-1 transition-all">
+          <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }} className="glass-card p-6 rounded-3xl relative overflow-visible group hover:-translate-y-1 transition-all">
             <div className="flex justify-between items-start mb-4">
               <div className="p-3 bg-indigo-500/10 rounded-2xl text-indigo-600"><Bot size={24} /></div>
               <span className="text-xs font-bold px-2 py-1 bg-green-100 text-green-700 rounded-lg">Online</span>

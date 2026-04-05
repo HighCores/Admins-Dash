@@ -48,7 +48,7 @@ export default function LogsPage() {
       </header>
 
       <div className="flex-1 px-4 pb-10">
-         <div className="bg-zinc-950 rounded-[2.5rem] p-10 text-white relative overflow-hidden flex flex-col group border border-white/5">
+         <div className="bg-zinc-950 rounded-[2.5rem] p-10 text-white relative overflow-visible flex flex-col group border border-white/5">
               <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none rotate-12 group-hover:scale-125 transition-transform duration-1000">
                   <ShieldAlert size={200} />
               </div>

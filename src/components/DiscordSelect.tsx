@@ -104,9 +104,9 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
             {error ? (
                 <div className="p-8 text-center bg-red-50/50">
                     <AlertCircle size={24} className="mx-auto text-red-400 mb-3" />
-                    <div className="text-[10px] font-black text-red-500 uppercase tracking-widest mb-1">Authorization Fault</div>
+                    <div className="text-[10px] font-black text-red-500 uppercase tracking-widest mb-1">Connection Error</div>
                     <div className="text-[9px] font-bold text-red-400/60 leading-relaxed uppercase">{error}</div>
-                    <div className="mt-4 text-[8px] font-black text-zinc-400 uppercase tracking-widest italic pt-4 border-t border-red-100">Restart Server Recommended</div>
+                    <div className="mt-4 text-[8px] font-black text-zinc-400 uppercase tracking-widest italic pt-4 border-t border-red-100">Check Bot API Status</div>
                 </div>
             ) : (
                 <>
@@ -117,7 +117,7 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
                             autoFocus
                             type="text" 
                             className="w-full pl-9 pr-4 py-2 bg-white rounded-lg text-xs font-bold focus:outline-none border border-zinc-100"
-                            placeholder="Search ledger..."
+                            placeholder="Search..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -126,7 +126,7 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
                     
                     <div className="max-h-60 overflow-y-auto p-1 custom-scrollbar">
                     {filteredItems.length === 0 ? (
-                        <div className="p-6 text-center text-[10px] font-black text-zinc-300 uppercase tracking-widest italic">No Data Nodes Found</div>
+                        <div className="p-6 text-center text-[10px] font-black text-zinc-300 uppercase tracking-widest italic">No results found</div>
                     ) : (
                         filteredItems.map((item) => (
                         <button

@@ -169,11 +169,11 @@ export default function SetupPage() {
       </header>
 
       {/* Grid Layout - SIDE-BY-SIDE (NO SCROLL) */}
-      <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 min-h-0 overflow-hidden">
+      <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 min-h-0 overflow-visible">
         
         {/* Left: Configuration Rack (Col: 8) */}
-        <div className="xl:col-span-8 flex flex-col min-h-0 overflow-hidden">
-             <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden">
+        <div className="xl:col-span-8 flex flex-col min-h-0 overflow-visible">
+             <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-visible">
                   <div className="p-8 border-b border-zinc-50 bg-zinc-50/20 flex items-center justify-between">
                      <h3 className="text-sm font-black text-zinc-950 uppercase italic tracking-tighter flex items-center gap-3">
                         <Terminal size={18} className="text-zinc-400" /> Core Calibrations
@@ -273,7 +273,7 @@ export default function SetupPage() {
 
         {/* Right: Operations Pulse (Col: 4) */}
         <div className="xl:col-span-4 flex flex-col gap-8 min-h-0">
-             <div className="bg-white p-10 rounded-[3rem] border border-zinc-100 shadow-sm relative overflow-hidden flex flex-col items-center justify-center group flex-1 shrink-0">
+             <div className="bg-white p-10 rounded-[3rem] border border-zinc-100 shadow-sm relative overflow-visible flex flex-col items-center justify-center group flex-1 shrink-0">
                 <div className="absolute top-0 right-0 p-8 opacity-10 rotate-12 group-hover:rotate-0 transition-transform duration-700 pointer-events-none"><Activity size={120} /></div>
                 <h3 className="text-xl font-black text-zinc-950 mb-10 flex items-center gap-3 italic tracking-tighter underline underline-offset-8 decoration-zinc-100 uppercase shrink-0">
                     <Activity size={18} className="text-zinc-400" /> Nexus Pulse
@@ -298,7 +298,7 @@ export default function SetupPage() {
                     <button 
                         disabled={seeding}
                         onClick={handleSeedDefaults}
-                        className="w-full flex flex-col items-center gap-4 p-8 bg-zinc-50 border-2 border-dashed border-zinc-200 rounded-[2.5rem] group hover:bg-zinc-950 hover:border-transparent transition-all shadow-inner relative overflow-hidden"
+                        className="w-full flex flex-col items-center gap-4 p-8 bg-zinc-50 border-2 border-dashed border-zinc-200 rounded-[2.5rem] group hover:bg-zinc-950 hover:border-transparent transition-all shadow-inner relative overflow-visible"
                     >
                         <Database size={24} className={`text-zinc-300 ${seeding ? 'animate-spin' : 'group-hover:text-emerald-400 group-hover:scale-125'} transition-all`} />
                         <div className="text-center">
@@ -309,7 +309,7 @@ export default function SetupPage() {
                 </div>
              </div>
 
-             <div className="p-8 bg-zinc-950 text-white rounded-[2.5rem] shadow-2xl relative overflow-hidden group border border-zinc-900 shrink-0">
+             <div className="p-8 bg-zinc-950 text-white rounded-[2.5rem] shadow-2xl relative overflow-visible group border border-zinc-900 shrink-0">
                 <div className="absolute right-0 bottom-0 p-4 opacity-10 group-hover:scale-125 transition-transform duration-1000 rotate-12 pointer-events-none"><Bell size={140} /></div>
                 <h4 className="text-sm font-black italic mb-2 tracking-tighter flex items-center gap-3 uppercase">
                    <ShieldAlert className="text-red-500 animate-pulse" size={18} /> Forced Shutdown

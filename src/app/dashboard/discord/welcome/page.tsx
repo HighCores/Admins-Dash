@@ -73,7 +73,7 @@ export default function WelcomePage() {
         
         {/* Architect Workspace (Editor) */}
         <div className="xl:col-span-7 flex flex-col min-h-0">
-            <div className={`bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden transition-all ${!isActive ? 'opacity-50 pointer-events-none grayscale' : ''}`}>
+            <div className={`bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-visible transition-all ${!isActive ? 'opacity-50 pointer-events-none grayscale' : ''}`}>
                 <div className="p-6 border-b border-zinc-50 bg-zinc-50/20 flex items-center justify-between">
                     <h3 className="text-sm font-bold text-zinc-950 flex items-center gap-3">
                         <Settings2 size={18} className="text-blue-500" /> Welcome Configuration
@@ -215,7 +215,7 @@ export default function WelcomePage() {
         </div>
 
         {/* Live Mirror (Preview) */}
-        <div className="xl:col-span-5 flex flex-col min-h-0 overflow-hidden">
+        <div className="xl:col-span-5 flex flex-col min-h-0 overflow-visible">
              {/* Device Switcher */}
              <div className="bg-white p-2 rounded-2xl border border-zinc-100 mb-6 flex justify-center gap-2 shrink-0">
                  <button onClick={() => setIsPreviewMobile(false)} className={`flex-1 py-3 rounded-xl transition-all flex items-center justify-center gap-3 text-xs font-bold ${!isPreviewMobile ? 'bg-zinc-950 text-white shadow-lg' : 'text-zinc-400 hover:text-zinc-950'}`}>
@@ -226,10 +226,10 @@ export default function WelcomePage() {
                  </button>
              </div>
  
-             <div className="flex-1 overflow-hidden relative group">
+             <div className="flex-1 overflow-visible relative group">
                 <div className={`h-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${isPreviewMobile ? 'max-w-[340px] mx-auto' : 'w-full'}`}>
                     {/* Realistic Discord UI background */}
-                    <div className="h-full bg-[#313338] rounded-[2.5rem] shadow-2xl flex flex-col border border-[#1e1f22] overflow-hidden !font-sans">
+                    <div className="h-full bg-[#313338] rounded-[2.5rem] shadow-2xl flex flex-col border border-[#1e1f22] overflow-visible !font-sans">
                         
                         <div className="flex-1 overflow-y-auto px-4 py-6 custom-scrollbar flex flex-col gap-3">
                             {/* Discord Message Header Info */}
@@ -262,7 +262,7 @@ export default function WelcomePage() {
                                     ) : (
                                         <div className="mt-1 flex max-w-full">
                                             {/* Component v2 Embed */}
-                                            <div className="bg-[#2b2d31] rounded-[8px] flex flex-col max-w-[400px] overflow-hidden shrink-0 transition-colors relative">
+                                            <div className="bg-[#2b2d31] rounded-[8px] flex flex-col max-w-[400px] overflow-visible shrink-0 transition-colors relative">
                                                 {/* Embed Color Line */}
                                                 <div className="absolute left-0 top-0 bottom-0 w-1 flex-shrink-0 rounded-l-[8px]" style={{ backgroundColor: color || '#202225' }}></div>
                                                 
@@ -291,7 +291,7 @@ export default function WelcomePage() {
                                                         </div>
                                                         
                                                         {thumbnailUrl && thumbnailUrl !== "{none}" && (
-                                                            <div className="w-[50px] h-[50px] shrink-0 rounded-md overflow-hidden bg-[#232428] ml-auto">
+                                                            <div className="w-[50px] h-[50px] shrink-0 rounded-md overflow-visible bg-[#232428] ml-auto">
                                                                 {thumbnailUrl === "{user_avatar}" ? (
                                                                     <div className="w-full h-full bg-indigo-500 flex items-center justify-center text-white font-bold text-lg">U</div>
                                                                 ) : (

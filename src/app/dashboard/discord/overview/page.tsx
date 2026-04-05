@@ -67,7 +67,7 @@ export default function OverviewPage() {
             </div>
 
             {/* Neural Graph Placeholder */}
-            <div className="flex-1 bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm overflow-hidden flex flex-col min-h-0">
+            <div className="flex-1 bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm overflow-visible flex flex-col min-h-0">
                <div className="p-6 border-b border-zinc-50">
                   <h3 className="text-sm font-black uppercase tracking-widest text-zinc-950 italic flex items-center gap-2">
                       <Activity size={16} className="text-zinc-400" /> Server Activity Matrix
@@ -81,7 +81,7 @@ export default function OverviewPage() {
 
          {/* Sidebar Content */}
          <div className="lg:col-span-4 flex flex-col gap-8 min-h-0">
-            <div className="bg-zinc-950 p-8 rounded-[3rem] text-white overflow-hidden relative shadow-2xl flex-1 flex flex-col min-h-0 group shrink-0 h-64">
+            <div className="bg-zinc-950 p-8 rounded-[3rem] text-white overflow-visible relative shadow-2xl flex-1 flex flex-col min-h-0 group shrink-0 h-64">
                 <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none rotate-12 group-hover:scale-110 transition-transform duration-700">
                     <ShieldCheck size={180} />
                 </div>

@@ -52,7 +52,7 @@ export default function AdminPointsPage() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col min-h-0 overflow-hidden">
+    <div className="w-full h-full flex flex-col min-h-0 overflow-visible">
       
       {/* Header - Compact */}
       <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
@@ -86,10 +86,10 @@ export default function AdminPointsPage() {
       </header>
 
       {/* Grid Layout - SIDE-BY-SIDE (NO SCROLL) */}
-      <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 min-h-0 overflow-hidden">
+      <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 min-h-0 overflow-visible">
         
         {/* Left: Honor Grid (Col: 8) */}
-        <div className="xl:col-span-8 flex flex-col min-h-0 overflow-hidden">
+        <div className="xl:col-span-8 flex flex-col min-h-0 overflow-visible">
              <div className="flex-1 overflow-y-auto custom-scrollbar">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-1">
                     {loading ? (
@@ -102,7 +102,7 @@ export default function AdminPointsPage() {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: idx * 0.05 }}
-                            className="bg-white p-8 rounded-[2.5rem] border border-zinc-100 shadow-sm relative overflow-hidden group hover:shadow-2xl hover:border-zinc-200 transition-all"
+                            className="bg-white p-8 rounded-[2.5rem] border border-zinc-100 shadow-sm relative overflow-visible group hover:shadow-2xl hover:border-zinc-200 transition-all"
                         >
                              <div className={`absolute top-6 right-6 w-11 h-11 flex flex-col items-center justify-center rounded-xl shadow-lg transform group-hover:scale-110 transition-transform ${
                                 idx === 0 ? 'bg-zinc-950 text-white rotate-3' : 'bg-zinc-50 text-zinc-400 border border-zinc-100'
@@ -137,7 +137,7 @@ export default function AdminPointsPage() {
 
                              <div className="space-y-2 px-1">
                                 <div className="flex justify-between text-[8px] font-black uppercase tracking-[0.3em] opacity-30 italic">Force Efficiency Proxy</div>
-                                <div className="w-full h-1 bg-zinc-50 rounded-full overflow-hidden shadow-inner border border-zinc-100">
+                                <div className="w-full h-1 bg-zinc-50 rounded-full overflow-visible shadow-inner border border-zinc-100">
                                     <motion.div 
                                         initial={{ width: 0 }}
                                         animate={{ width: `${Math.min(100, (staff.total / (totalActions / 2)) * 100)}%` }}
@@ -153,7 +153,7 @@ export default function AdminPointsPage() {
 
         {/* Right: Operational Audit (Col: 4) */}
         <div className="xl:col-span-4 flex flex-col gap-8 min-h-0">
-             <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden">
+             <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-visible">
                 <div className="p-8 border-b border-zinc-50 bg-zinc-50/20">
                     <h3 className="text-sm font-black text-zinc-950 uppercase italic tracking-tighter flex items-center gap-3">
                         <History size={18} className="text-zinc-400" /> Operational Audit
@@ -195,7 +195,7 @@ export default function AdminPointsPage() {
                 </div>
              </div>
 
-             <div className="p-8 bg-zinc-950 text-white rounded-[2.5rem] shadow-2xl relative overflow-hidden group border border-zinc-900 shrink-0">
+             <div className="p-8 bg-zinc-950 text-white rounded-[2.5rem] shadow-2xl relative overflow-visible group border border-zinc-900 shrink-0">
                 <div className="absolute right-0 bottom-0 p-4 opacity-10 group-hover:scale-125 transition-transform duration-1000 rotate-12 pointer-events-none"><Zap size={140} /></div>
                 <h4 className="text-sm font-black italic mb-2 tracking-tighter flex items-center gap-2">
                    <Target size={16} className="text-zinc-400" /> Merit Mutation

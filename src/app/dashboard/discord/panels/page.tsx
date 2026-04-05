@@ -185,7 +185,7 @@ export default function PanelsPage() {
         
         {/* Column 1: Interactive List Rack */}
         <div className="xl:col-span-3 flex flex-col min-h-0">
-          <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden">
+          <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-visible">
             <div className="p-6 border-b border-zinc-50 bg-zinc-50/20 flex items-center justify-between">
                 <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest leading-none">All Panels</h3>
                 <span className="text-[9px] font-bold bg-zinc-950 text-white px-2.5 py-1 rounded-lg tracking-widest leading-none">{menus.length} ACTIVE</span>
@@ -234,7 +234,7 @@ export default function PanelsPage() {
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 10 }}
-                        className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden"
+                        className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-visible"
                     >
                         <div className="p-6 border-b border-zinc-50 bg-zinc-50/20 flex items-center justify-between">
                             <h3 className="text-sm font-bold text-zinc-950 flex items-center gap-3 tracking-tighter uppercase">
@@ -349,7 +349,7 @@ export default function PanelsPage() {
                                 </div>
                             </div>
 
-                            <div className="bg-zinc-950 p-6 rounded-3xl text-white relative overflow-hidden group border border-white/5 transition-all hover:border-white/20">
+                            <div className="bg-zinc-950 p-6 rounded-3xl text-white relative overflow-visible group border border-white/5 transition-all hover:border-white/20">
                                 <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none rotate-12"><Activity size={80} /></div>
                                 <div className="flex items-center justify-between mb-4">
                                     <h4 className="font-bold text-[10px] tracking-widest flex items-center gap-2 uppercase">
@@ -458,7 +458,7 @@ export default function PanelsPage() {
         </div>
 
         {/* Column 3: Live Mirror (Preview) */}
-        <div className="xl:col-span-4 flex flex-col min-h-0 overflow-hidden">
+        <div className="xl:col-span-4 flex flex-col min-h-0 overflow-visible">
              {/* Device Switcher */}
              <div className="bg-white p-2 rounded-2xl border border-zinc-100 mb-6 flex justify-center gap-2 shrink-0">
                  <button onClick={() => setIsPreviewMobile(false)} className={`flex-1 py-3 rounded-xl transition-all flex items-center justify-center gap-3 text-xs font-bold ${!isPreviewMobile ? 'bg-zinc-950 text-white shadow-lg' : 'text-zinc-500 hover:text-zinc-950'}`}>
@@ -469,10 +469,10 @@ export default function PanelsPage() {
                  </button>
              </div>
  
-             <div className="flex-1 overflow-hidden relative group">
+             <div className="flex-1 overflow-visible relative group">
                 <div className={`h-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${isPreviewMobile ? 'max-w-[340px] mx-auto' : 'w-full'}`}>
                     {/* Realistic Discord UI background */}
-                    <div className="h-full bg-[#313338] rounded-[2.5rem] shadow-2xl flex flex-col border border-[#1e1f22] overflow-hidden !font-sans">
+                    <div className="h-full bg-[#313338] rounded-[2.5rem] shadow-2xl flex flex-col border border-[#1e1f22] overflow-visible !font-sans">
                         
                         <div className="flex-1 overflow-y-auto px-4 py-6 custom-scrollbar flex flex-col gap-3">
                             {/* Discord Message Header Info */}
@@ -487,7 +487,7 @@ export default function PanelsPage() {
                             {/* Top Banner Embed */}
                             {topImageUrl && (
                                 <div className="flex pl-12 pr-1">
-                                    <div className="overflow-hidden bg-[#2b2d31] rounded-xl flex max-w-[85%] border-l-4 border-transparent">
+                                    <div className="overflow-visible bg-[#2b2d31] rounded-xl flex max-w-[85%] border-l-4 border-transparent">
                                         <img src={topImageUrl} alt="Top Banner" className="w-[500px] h-auto object-cover max-h-[400px]" />
                                     </div>
                                 </div>
@@ -495,7 +495,7 @@ export default function PanelsPage() {
 
                             {/* Main Embed (Component v2 Styling) */}
                             <div className="flex pl-12 pr-1">
-                                <div className="bg-[#2b2d31] rounded-[8px] flex flex-col max-w-full overflow-hidden shrink-0 transition-colors relative" style={{ minWidth: '300px' }}>
+                                <div className="bg-[#2b2d31] rounded-[8px] flex flex-col max-w-full overflow-visible shrink-0 transition-colors relative" style={{ minWidth: '300px' }}>
                                     {/* Embed color pill (Modern v2 Style) */}
                                     <div className="absolute left-0 top-0 bottom-0 w-1 flex-shrink-0 rounded-l-[8px]" style={{ backgroundColor: color || '#202225' }}></div>
                                     <div className="p-4 pl-5 flex flex-col gap-2">
@@ -518,7 +518,7 @@ export default function PanelsPage() {
                                             </div>
                                         )}
                                         {imageUrl && (
-                                            <div className="mt-3 rounded-lg overflow-hidden opacity-95 transition-transform max-w-[400px]">
+                                            <div className="mt-3 rounded-lg overflow-visible opacity-95 transition-transform max-w-[400px]">
                                                 <img src={imageUrl} alt="Panel" className="object-cover w-full h-auto rounded-lg" />
                                             </div>
                                         )}
@@ -559,7 +559,7 @@ export default function PanelsPage() {
                 </div>
              </div>
 
-             <div className="mt-6 p-4 bg-zinc-900 text-white rounded-2xl text-xs font-bold text-center shadow-lg relative overflow-hidden group cursor-default shrink-0">
+             <div className="mt-6 p-4 bg-zinc-900 text-white rounded-2xl text-xs font-bold text-center shadow-lg relative overflow-visible group cursor-default shrink-0">
                 <span className="flex items-center justify-center gap-2"><CheckCircle2 size={16} className="text-green-400" /> Discord Sync Active</span>
             </div>
         </div>

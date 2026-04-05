@@ -98,7 +98,7 @@ export default function LevelsPage() {
           </button>
       </div>
 
-      <div className={`bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden transition-all ${!isActive ? 'opacity-50 pointer-events-none grayscale' : ''}`}>
+      <div className={`bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-visible transition-all ${!isActive ? 'opacity-50 pointer-events-none grayscale' : ''}`}>
           
           <div className="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-8 overflow-x-visible">
               {activeTab === 'settings' && (
@@ -255,14 +255,14 @@ export default function LevelsPage() {
                               </div>
                           </div>
 
-                          <div className="bg-[#2f3136] p-12 rounded-3xl shadow-2xl flex items-center justify-center relative overflow-hidden">
+                          <div className="bg-[#2f3136] p-12 rounded-3xl shadow-2xl flex items-center justify-center relative overflow-visible">
                               {/* Simulated Rank Card */}
-                              <div className="w-[800px] max-w-full h-auto aspect-[3/1] bg-black rounded-xl overflow-hidden relative border-2 border-[#202225] shadow-[0_10px_30px_rgba(0,0,0,0.5)] transform scale-[0.6] sm:scale-75 md:scale-90 lg:scale-100 origin-center">
+                              <div className="w-[800px] max-w-full h-auto aspect-[3/1] bg-black rounded-xl overflow-visible relative border-2 border-[#202225] shadow-[0_10px_30px_rgba(0,0,0,0.5)] transform scale-[0.6] sm:scale-75 md:scale-90 lg:scale-100 origin-center">
                                   {bgImageUrl && <img src={bgImageUrl} alt="bg" className="absolute inset-0 w-full h-full object-cover opacity-60" />}
                                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
                                   
                                   <div className="absolute inset-0 p-8 flex items-end">
-                                      <div className="w-24 h-24 rounded-full bg-zinc-800 border-4 border-[#2f3136] shadow-xl relative overflow-hidden z-10 shrink-0">
+                                      <div className="w-24 h-24 rounded-full bg-zinc-800 border-4 border-[#2f3136] shadow-xl relative overflow-visible z-10 shrink-0">
                                           <div className="w-full h-full bg-[#5865f2] flex items-center justify-center text-white text-3xl font-black">U</div>
                                           <div className="absolute bottom-1 right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-black"></div>
                                       </div>
@@ -277,7 +277,7 @@ export default function LevelsPage() {
                                                   <span className="text-white font-bold text-sm uppercase tracking-widest text-[9px] opacity-80 ml-4">Level <span className="text-2xl font-black text-white px-1">42</span></span>
                                               </div>
                                           </div>
-                                          <div className="w-full h-4 bg-black/50 rounded-full overflow-hidden border border-white/10 relative">
+                                          <div className="w-full h-4 bg-black/50 rounded-full overflow-visible border border-white/10 relative">
                                               <div className="h-full rounded-full transition-all" style={{ width: '65%', backgroundColor: primaryColor }}>
                                                   <div className="w-full h-full bg-gradient-to-r from-transparent to-white/30 truncate"></div>
                                               </div>
