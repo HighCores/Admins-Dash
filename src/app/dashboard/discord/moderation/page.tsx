@@ -168,7 +168,6 @@ export default function ModerationPage() {
                             value={logChannelId}
                             onChange={setLogChannelId}
                             placeholder="Select log channel..."
-                            dark={true}
                         />
                     </div>
                 </div>
