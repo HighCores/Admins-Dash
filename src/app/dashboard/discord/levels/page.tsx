@@ -192,6 +192,7 @@ export default function LevelsPage() {
                                   </div>
                                   <div className="col-span-8">
                                       <DiscordSelect 
+                                          label=""
                                           type="role"
                                           value={r.role}
                                           onChange={(v) => {
