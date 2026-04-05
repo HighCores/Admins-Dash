@@ -64,8 +64,7 @@ export default function CommandsPage() {
     if (!name || !response) return showToast("All logic nodes must be populated.", true);
     setSaving(true);
     try {
-        const { error } = await supabase.from("dc_commands").upsert({
-            id: editingCommand?.id,
+        const payload: any = {
             name: name.replace(/\//g, ''),
             response_text: response,
             permission: permission,
@@ -74,7 +73,10 @@ export default function CommandsPage() {
             action_value: actionValue,
             platform: "discord",
             updated_at: new Date().toISOString()
-        }, { onConflict: 'name' });
+        };
+        if (editingCommand?.id) payload.id = editingCommand.id;
+
+        const { error } = await supabase.from("dc_commands").upsert(payload, { onConflict: 'name' });
 
         if (error) throw error;
 
