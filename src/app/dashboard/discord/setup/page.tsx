@@ -40,16 +40,21 @@ export default function SetupPage() {
   
   const [botPrefix, setBotPrefix] = useState("!");
 
+  const GUILD_ID = "global";
+
   useEffect(() => {
     fetchSettings();
   }, []);
 
   const fetchSettings = async () => {
     setLoading(true);
-    const { data } = await supabase.from("dc_settings").select("*");
+    // Fetch specifically for the 'global' guild to match Bot sync service
+    const { data } = await supabase.from("dc_settings").select("*").eq("guild_id", GUILD_ID);
+    
     if (data) {
         setSettings(data);
-        const find = (key: string) => data.find(s => s.key === key)?.value || "";
+        const find = (k: string) => data.find(s => s.key.toUpperCase() === k.toUpperCase())?.value || "";
+        
         setWelcomeChannel(find("WELCOME_CHANNEL_ID"));
         setLogCategory(find("LOG_CATEGORY_ID"));
         setTicketCategory(find("TICKET_CATEGORY_ID"));
@@ -74,31 +79,33 @@ export default function SetupPage() {
     setSaving(true);
     try {
         const updates = [
-            { key: "WELCOME_CHANNEL_ID", value: welcomeChannel },
-            { key: "LOG_CATEGORY_ID", value: logCategory },
-            { key: "TICKET_CATEGORY_ID", value: ticketCategory },
-            { key: "TRANSCRIPT_CHANNEL_ID", value: transcriptChannel },
+            { guild_id: GUILD_ID, key: "WELCOME_CHANNEL_ID", value: welcomeChannel },
+            { guild_id: GUILD_ID, key: "LOG_CATEGORY_ID", value: logCategory },
+            { guild_id: GUILD_ID, key: "TICKET_CATEGORY_ID", value: ticketCategory },
+            { guild_id: GUILD_ID, key: "TRANSCRIPT_CHANNEL_ID", value: transcriptChannel },
             
-            { key: "ROLE_HIGH", value: roleHigh },
-            { key: "ROLE_FOUNDER", value: roleFounder },
-            { key: "ROLE_MODERATOR", value: roleMod },
-            { key: "ROLE_STAFF", value: roleStaff },
+            { guild_id: GUILD_ID, key: "ROLE_HIGH", value: roleHigh },
+            { guild_id: GUILD_ID, key: "ROLE_FOUNDER", value: roleFounder },
+            { guild_id: GUILD_ID, key: "ROLE_MODERATOR", value: roleMod },
+            { guild_id: GUILD_ID, key: "ROLE_STAFF", value: roleStaff },
             
-            { key: "CH_STARTUP", value: chStartup },
-            { key: "CH_ORDER", value: chOrder },
-            { key: "CH_UPDATES", value: chUpdates },
-            { key: "CH_TICKET", value: chTicket },
+            { guild_id: GUILD_ID, key: "CH_STARTUP", value: chStartup },
+            { guild_id: GUILD_ID, key: "CH_ORDER", value: chOrder },
+            { guild_id: GUILD_ID, key: "CH_UPDATES", value: chUpdates },
+            { guild_id: GUILD_ID, key: "CH_TICKET", value: chTicket },
             
-            { key: "BOT_PREFIX", value: botPrefix },
+            { guild_id: GUILD_ID, key: "BOT_PREFIX", value: botPrefix },
         ];
 
-        for (const update of updates) {
-            await supabase.from("dc_settings").upsert(update, { onConflict: 'key' });
-        }
+        // Batch UPSERT into a single robust call
+        const { error } = await supabase.from("dc_settings").upsert(updates, { onConflict: 'key,guild_id' });
 
-        showToast("Settings saved successfully! ⚡");
+        if (error) throw error;
+
+        await fetchSettings(); // Refresh from DB
+        showToast("Settings synchronized! ⚡");
     } catch (err: any) {
-        showToast("Failed to save: " + err.message, true);
+        showToast("Sync Failed: " + err.message, true);
     } finally {
         setSaving(false);
     }
@@ -108,15 +115,14 @@ export default function SetupPage() {
     setSeeding(true);
     try {
         const defaultCommands = [
-            { name: 'ping', response_text: 'Bot Latency: **STABLE**', permission: 'everyone', platform: 'discord' },
-            { name: 'help', response_text: '### Commands\n- `/setup`: Bot Settings\n- `/messenger`: Send Messages', permission: 'everyone', platform: 'discord' }
+            { name: 'ping', response_text: 'Latency: **STABLE**', permission: 'everyone', platform: 'discord' },
+            { name: 'help', response_text: '### Agency Commands\n- `/setup`: Bot Settings\n- `/messenger`: Broadcaster', permission: 'everyone', platform: 'discord' }
         ];
 
-        for (const cmd of defaultCommands) {
-            await supabase.from("dc_commands").upsert(cmd, { onConflict: 'name' });
-        }
+        const { error } = await supabase.from("dc_commands").upsert(defaultCommands, { onConflict: 'name' });
+        if (error) throw error;
 
-        showToast("Default settings loaded! ⚡");
+        showToast("Logic defaults injected! ⚡");
     } catch (err: any) {
         showToast(`Error: ${err.message}`, true);
     } finally {
@@ -248,7 +254,7 @@ export default function SetupPage() {
                                 placeholder="Select role..."
                             />
                             
-                            <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.4em] mt-8 mb-4 italic">Operational Portals</h4>
+                            <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.4em] mt-8 mb-4 italic">Operational Channels</h4>
                             <DiscordSelect 
                                 label="Startup Signal (CH_STARTUP)"
                                 type="channel"

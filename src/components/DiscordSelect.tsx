@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { Hash, Shield, Search, Loader2, ChevronDown, Layout, AlertCircle } from "lucide-react";
 
 interface DiscordSelectProps {
@@ -18,6 +19,8 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
   const [error, setError] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [coords, setCoords] = useState({ top: 0, left: 0, width: 0 });
 
   const CACHE_DURATION = 5 * 60 * 1000;
 
@@ -59,6 +62,33 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
     fetchData();
   }, [type]);
 
+  const updateCoords = useCallback(() => {
+    if (buttonRef.current && isOpen) {
+        const rect = buttonRef.current.getBoundingClientRect();
+        setCoords({
+            top: rect.bottom + 8,
+            left: rect.left,
+            width: rect.width
+        });
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen) {
+        updateCoords();
+        window.addEventListener('scroll', updateCoords, true);
+        window.addEventListener('resize', updateCoords);
+    }
+    return () => {
+        window.removeEventListener('scroll', updateCoords, true);
+        window.removeEventListener('resize', updateCoords);
+    };
+  }, [isOpen, updateCoords]);
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
   const selectedItem = items.find((i) => i.id === value);
   const filteredItems = items.filter((i) => {
     const name = i?.name || i?.label || "Unknown Node";
@@ -67,15 +97,16 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
   });
 
   return (
-    <div className="space-y-2 relative z-[50]">
+    <div className="space-y-2 relative">
       <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest px-1">
         {label}
       </label>
       
       <div className="relative">
         <button
+          ref={buttonRef}
           type="button"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={toggleDropdown}
           className={`w-full h-11 flex items-center justify-between px-4 bg-zinc-50 border rounded-xl font-bold transition-all hover:bg-white focus:ring-2 ring-zinc-950/5 outline-none ${
             error ? "border-red-200 bg-red-50/30" : "border-zinc-100"
           }`}
@@ -99,8 +130,17 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
           <ChevronDown size={14} className={`text-zinc-300 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
         </button>
 
-        {isOpen && (
-          <div className="absolute z-[10000] w-72 left-0 mt-2 bg-white border border-zinc-100 rounded-2xl shadow-2xl overflow-visible animate-in fade-in zoom-in-95 duration-200">
+        {isOpen && typeof document !== "undefined" && createPortal(
+          <div 
+            style={{ 
+                position: 'fixed',
+                top: coords.top,
+                left: coords.left,
+                width: coords.width,
+                zIndex: 999999
+            }}
+            className="bg-white border border-zinc-100 rounded-2xl shadow-2xl overflow-visible animate-in fade-in zoom-in-95 duration-200"
+          >
             {error ? (
                 <div className="p-8 text-center bg-red-50/50">
                     <AlertCircle size={24} className="mx-auto text-red-400 mb-3" />
@@ -150,14 +190,15 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
                     </div>
                 </>
             )}
-          </div>
+          </div>,
+          document.body
         )}
       </div>
       
       {/* Backdrop for closing */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-[9000]" 
+          className="fixed inset-0 z-[999998]" 
           onClick={() => setIsOpen(false)}
         />
       )}
