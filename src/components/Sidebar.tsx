@@ -28,6 +28,7 @@ const NavigationGroups = [
       { name: "Leveling System", icon: TrendingUp, href: "/dashboard/discord/levels" },
       { name: "Points & Economy", icon: Coins, href: "/dashboard/discord/points" },
       { name: "High Admin Points", icon: Crown, href: "/dashboard/discord/admin-points" },
+      { name: "Messenger & BC", icon: Send, href: "/dashboard/discord/messenger" },
     ]
   },
   {
