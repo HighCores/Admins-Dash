@@ -118,8 +118,7 @@ export default function ModerationPage() {
         </button>
       </header>
 
-
-
+      <div className="flex-1 space-y-8 pb-10">
         {/* Horizontal Row 3: Punishment Protocol */}
         <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm p-8 flex flex-col lg:flex-row gap-12">
              <div className="flex-1 space-y-6">
