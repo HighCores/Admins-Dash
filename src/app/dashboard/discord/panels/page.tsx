@@ -394,7 +394,7 @@ export default function PanelsPage() {
                                                     <Trash2 size={12} />
                                                 </button>
                                             </div>
-                                            <div className="grid grid-cols-2 gap-2">
+                                            <div className="grid grid-cols-12 gap-2">
                                                 <input 
                                                     type="text"
                                                     value={btn.action_id}
@@ -403,8 +403,19 @@ export default function PanelsPage() {
                                                         nb[idx].action_id = e.target.value;
                                                         setButtons(nb);
                                                     }}
-                                                    className="bg-black/40 px-3 py-1.5 rounded-lg text-[8px] font-mono text-zinc-400 border border-white/5 outline-none"
+                                                    className="col-span-4 bg-black/40 px-3 py-1.5 rounded-lg text-[8px] font-mono text-zinc-400 border border-white/5 outline-none"
                                                     placeholder="action_id..."
+                                                />
+                                                <input 
+                                                    type="text"
+                                                    value={btn.emoji || ""}
+                                                    onChange={(e) => {
+                                                        const nb = [...buttons];
+                                                        nb[idx].emoji = e.target.value;
+                                                        setButtons(nb);
+                                                    }}
+                                                    className="col-span-3 bg-black/40 px-3 py-1.5 rounded-lg text-[8px] font-mono text-zinc-400 border border-white/5 outline-none"
+                                                    placeholder="Emoji..."
                                                 />
                                                 <select 
                                                     value={btn.button_style}
@@ -413,12 +424,13 @@ export default function PanelsPage() {
                                                         nb[idx].button_style = e.target.value;
                                                         setButtons(nb);
                                                     }}
-                                                    className="bg-black/40 px-3 py-1.5 rounded-lg text-[8px] font-mono text-zinc-400 border border-white/5 outline-none"
+                                                    className="col-span-5 bg-black/40 px-3 py-1.5 rounded-lg text-[8px] font-mono text-zinc-400 border border-white/5 outline-none"
                                                 >
                                                     <option value="PRIMARY">PRIMARY</option>
                                                     <option value="SECONDARY">SECONDARY</option>
                                                     <option value="SUCCESS">SUCCESS</option>
                                                     <option value="DANGER">DANGER</option>
+                                                    <option value="LINK">LINK (URL)</option>
                                                 </select>
                                             </div>
                                         </div>
