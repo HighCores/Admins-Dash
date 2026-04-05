@@ -23,6 +23,7 @@ export default function ColorRolesPage() {
   const [name, setName] = useState("");
   const [roleId, setRoleId] = useState("");
   const [hex, setHex] = useState("#ffffff");
+  const [previewColor, setPreviewColor] = useState<string | null>(null);
 
   useEffect(() => {
     fetchRoles();
@@ -91,11 +92,11 @@ export default function ColorRolesPage() {
              </div>
              <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none font-mono">Identity Mirror Canvas</span>
           </div>
-          <h1 className="text-3xl font-black text-zinc-950 tracking-tighter">
-            Color <span className="text-zinc-300">Spectrum</span>
+          <h1 className="text-3xl font-black text-zinc-950 tracking-tighter uppercase">
+            Color <span className="text-zinc-300">Roles</span>
           </h1>
           <p className="text-sm font-bold text-zinc-500 max-w-2xl">
-             Calibrating identity color nodes and administrative tiers across the High Core relay.
+             Manage and preview identity colors for different server ranks.
           </p>
         </div>
         
@@ -108,10 +109,10 @@ export default function ColorRolesPage() {
             </button>
             <button 
                 onClick={() => handleEdit({ color_name: '', role_id: '', color_hex: '#3b82f6' })}
-                className="flex items-center gap-4 px-8 py-4 bg-zinc-950 text-white font-black text-xs rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all group italic tracking-widest uppercase"
+                className="flex items-center gap-4 px-8 py-4 bg-zinc-950 text-white font-bold text-xs rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all group tracking-widest uppercase"
             >
                 <Plus size={18} className="group-hover:rotate-90 transition-transform" />
-                Inject Node
+                Add Color
             </button>
         </div>
       </header>
@@ -122,11 +123,11 @@ export default function ColorRolesPage() {
         {/* Left: Color Rack (Col: 8) */}
         <div className="xl:col-span-8 flex flex-col min-h-0 overflow-hidden">
              <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden">
-                  <div className="grid grid-cols-12 p-6 border-b border-zinc-50 bg-zinc-50/20 text-[9px] font-black text-zinc-400 uppercase tracking-widest">
-                      <div className="col-span-4 pl-4">Visual Anchor</div>
-                      <div className="col-span-3">Logical Label</div>
-                      <div className="col-span-3">Role Mapping</div>
-                      <div className="col-span-2 text-right pr-4">Metrics</div>
+                  <div className="grid grid-cols-12 p-6 border-b border-zinc-50 bg-zinc-50/20 text-[9px] font-bold text-zinc-400 uppercase tracking-widest">
+                      <div className="col-span-4 pl-4">Color Preview</div>
+                      <div className="col-span-3">Label</div>
+                      <div className="col-span-3">Assigned Role</div>
+                      <div className="col-span-2 text-right pr-4">Actions</div>
                   </div>
 
                   <div className="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-2">
@@ -151,11 +152,11 @@ export default function ColorRolesPage() {
                                      <code className="text-[10px] font-black text-zinc-400 bg-white px-3 py-1.5 rounded-lg border border-zinc-100 shadow-inner">{role.color_hex}</code>
                                  </div>
                                  <div className="col-span-3">
-                                     <span className="font-black text-zinc-950 uppercase italic tracking-tighter text-lg leading-none">{role.color_name}</span>
+                                     <span className="font-bold text-zinc-950 uppercase tracking-tighter text-lg leading-none">{role.color_name}</span>
                                  </div>
                                  <div className="col-span-3 flex items-center gap-2">
                                      <Shield size={14} className="text-zinc-300" />
-                                     <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest truncate max-w-[140px] italic">NODE_{cleanId(role.role_id)}</span>
+                                     <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest truncate max-w-[140px]">ROLE: {cleanId(role.role_id)}</span>
                                  </div>
                                  <div className="col-span-2 text-right pr-4 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
                                      <button 
@@ -176,8 +177,8 @@ export default function ColorRolesPage() {
         <div className="xl:col-span-4 flex flex-col gap-8 min-h-0">
              <div className="bg-zinc-950 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden group shrink-0">
                 <div className="absolute right-0 bottom-0 p-8 opacity-10 rotate-12 group-hover:scale-125 transition-transform duration-1000 pointer-events-none"><Sparkles size={200} /></div>
-                <h3 className="text-xl font-black mb-6 flex items-center gap-4 italic tracking-tighter">
-                    <Palette className="text-zinc-400" /> Spectrum Core
+                <h3 className="text-xl font-bold mb-6 flex items-center gap-4 tracking-tighter uppercase">
+                    <Palette className="text-zinc-400" /> Color Hub
                 </h3>
                 
                 <div className="space-y-4 relative z-10">
@@ -194,7 +195,7 @@ export default function ColorRolesPage() {
 
              <div className="bg-white p-8 rounded-[3rem] border border-zinc-100 shadow-sm relative overflow-hidden flex-1 flex flex-col min-h-0 group">
                 <div className="absolute top-0 right-0 p-8 opacity-10 rotate-12 group-hover:rotate-0 transition-transform duration-700 pointer-events-none"><Bot size={120} /></div>
-                <h4 className="font-black text-xl text-zinc-950 mb-8 flex items-center gap-3 italic tracking-tighter underline underline-offset-8 decoration-zinc-100 uppercase shrink-0">
+                 <h4 className="font-bold text-xl text-zinc-950 mb-8 flex items-center gap-3 tracking-tighter underline underline-offset-8 decoration-zinc-100 uppercase shrink-0">
                     <History size={18} className="text-zinc-400" /> Identity Mirror
                 </h4>
                 
@@ -202,14 +203,24 @@ export default function ColorRolesPage() {
                      <div className="flex flex-col items-center gap-6 text-center relative z-10">
                         <div className="w-20 h-20 rounded-full bg-zinc-200 border-8 border-white shadow-2xl flex items-center justify-center text-zinc-400 group-hover:scale-110 transition-transform"><Bot size={32} /></div>
                         <div className="space-y-1">
-                            <div className="text-xl font-black text-zinc-950 tracking-tighter italic">HighCore_Agent_01</div>
-                            <div className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] italic">Operational Status: STABLE</div>
+                            <div 
+                                className="text-xl font-black tracking-tighter transition-colors duration-300"
+                                style={{ color: previewColor || '#09090b' }}
+                            >
+                                Omar
+                            </div>
+                            <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Active Role Visualizer</div>
                         </div>
                         <div className="flex flex-wrap justify-center gap-2 max-w-[240px]">
                              {roles.slice(0, 4).map(r => (
-                                <div key={r.role_id} className="px-5 py-2 rounded-full text-[9px] font-black text-white shadow-lg uppercase tracking-widest italic flex items-center gap-2" style={{ backgroundColor: r.color_hex }}>
+                                <button 
+                                    key={r.role_id} 
+                                    onClick={() => setPreviewColor(r.color_hex)}
+                                    className="px-5 py-2 rounded-full text-[9px] font-bold text-white shadow-lg uppercase tracking-widest flex items-center gap-2 hover:scale-110 transition-all active:scale-95" 
+                                    style={{ backgroundColor: r.color_hex }}
+                                >
                                     <Shield size={10} /> {r.color_name}
-                                </div>
+                                </button>
                              ))}
                         </div>
                      </div>
@@ -290,10 +301,10 @@ export default function ColorRolesPage() {
                     <button 
                         onClick={handleSave}
                         disabled={saving}
-                        className="w-full py-6 bg-zinc-950 text-white font-black text-[10px] rounded-2xl shadow-xl hover:bg-black transition-all flex items-center justify-center gap-4 uppercase tracking-[0.4em] italic disabled:opacity-50"
+                        className="w-full py-6 bg-zinc-950 text-white font-bold text-[10px] rounded-2xl shadow-xl hover:bg-black transition-all flex items-center justify-center gap-4 uppercase tracking-[0.4em] disabled:opacity-50"
                     >
                         {saving ? <Loader2 className="animate-spin" /> : <RefreshCcw size={20} />} 
-                        Align Spectrum Node
+                        Save Color
                     </button>
                 </div>
              </motion.div>

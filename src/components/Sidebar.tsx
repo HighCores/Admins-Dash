@@ -113,7 +113,7 @@ export default function Sidebar() {
                   onClick={() => toggleCategory(group.category)}
                   className="w-full flex items-center justify-between text-xs font-bold text-zinc-400 hover:text-zinc-600 transition-colors py-2"
                 >
-                  <span className="uppercase">{group.category}</span>
+                  <span className="uppercase">{group.category === "PROTECTION" ? "Moderation" : group.category}</span>
                   <ChevronDown size={14} className={`transition-transform ${isCollapsed ? 'rotate-180' : ''}`} />
                 </button>
                 

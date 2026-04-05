@@ -155,11 +155,11 @@ export default function PanelsPage() {
             <Zap size={18} className="text-zinc-400" />
             <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none font-mono">Architect Domain Console</span>
           </div>
-          <h1 className="text-3xl font-black text-zinc-950 tracking-tighter">
-            System <span className="text-zinc-500">Panels</span>
+          <h1 className="text-3xl font-black text-zinc-950 tracking-tighter uppercase">
+            Bot <span className="text-zinc-500">Panels</span>
           </h1>
           <p className="text-zinc-500 text-sm font-medium max-w-md">
-            Design interactive interfaces and embeds for the bot.
+            Design and manage interactive messages for your community.
           </p>
         </div>
         
@@ -172,10 +172,10 @@ export default function PanelsPage() {
             </button>
             <button 
                 onClick={createNewMenu}
-                className="flex items-center gap-4 px-8 py-4 bg-zinc-950 text-white font-black text-xs rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all group italic tracking-widest uppercase"
+                className="flex items-center gap-4 px-8 py-4 bg-zinc-950 text-white font-bold text-xs rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all group tracking-widest uppercase"
             >
                 <Plus size={18} className="group-hover:rotate-90 transition-transform" />
-                INITIATE NEW NODE
+                New Panel
             </button>
         </div>
       </header>
@@ -187,8 +187,8 @@ export default function PanelsPage() {
         <div className="xl:col-span-3 flex flex-col min-h-0">
           <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden">
             <div className="p-6 border-b border-zinc-50 bg-zinc-50/20 flex items-center justify-between">
-                <h3 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest italic leading-none">Global Rack</h3>
-                <span className="text-[9px] font-black bg-zinc-950 text-white px-2.5 py-1 rounded-lg tracking-widest leading-none">{menus.length} ACTIVE</span>
+                <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest leading-none">All Panels</h3>
+                <span className="text-[9px] font-bold bg-zinc-950 text-white px-2.5 py-1 rounded-lg tracking-widest leading-none">{menus.length} ACTIVE</span>
             </div>
 
             <div className="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-2">
@@ -211,9 +211,9 @@ export default function PanelsPage() {
                             <div className="flex items-center gap-3">
                                 <Layout size={16} className={activeMenu?.menu_id === menu.menu_id ? "text-zinc-400" : "text-zinc-300"} />
                                 <div className="min-w-0">
-                                    <span className="font-black italic text-sm leading-none block mb-1 truncate">{menu.title || "Untitled"}</span>
-                                    <span className={`text-[9px] font-black uppercase tracking-widest truncate block ${activeMenu?.menu_id === menu.menu_id ? "text-zinc-500" : "text-zinc-300"}`}>
-                                        {menu.menu_id.replace("panel_", "")}
+                                    <span className="font-bold text-sm leading-none block mb-1 truncate">{menu.title || "Untitled"}</span>
+                                    <span className={`text-[9px] font-bold uppercase tracking-widest truncate block ${activeMenu?.menu_id === menu.menu_id ? "text-zinc-500" : "text-zinc-300"}`}>
+                                        ID: {menu.menu_id.replace("panel_", "")}
                                     </span>
                                 </div>
                             </div>
@@ -237,8 +237,8 @@ export default function PanelsPage() {
                         className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden"
                     >
                         <div className="p-6 border-b border-zinc-50 bg-zinc-50/20 flex items-center justify-between">
-                            <h3 className="text-sm font-black text-zinc-950 italic flex items-center gap-3 tracking-tighter uppercase">
-                                <Sparkles size={18} className="text-zinc-400" /> Architect: <span className="text-zinc-400 truncate max-w-[200px]">{title}</span>
+                            <h3 className="text-sm font-bold text-zinc-950 flex items-center gap-3 tracking-tighter uppercase">
+                                <Sparkles size={18} className="text-zinc-400" /> Designer: <span className="text-zinc-400 truncate max-w-[200px]">{title}</span>
                             </h3>
                             <button 
                                 onClick={() => handleDelete(activeMenu.menu_id)}
@@ -248,24 +248,24 @@ export default function PanelsPage() {
                         <div className="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-6 overflow-x-visible">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Internal ID</label>
+                                    <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest px-1">Panel ID</label>
                                     <input 
                                         type="text" 
                                         value={menuId} 
                                         onChange={(e) => setMenuId(e.target.value)}
-                                        className="w-full px-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-black text-zinc-950 transition-all outline-none focus:bg-white shadow-inner"
-                                        placeholder="panel_unique_id"
+                                        className="w-full px-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-950 transition-all outline-none focus:bg-white shadow-inner"
+                                        placeholder="panel_main"
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Command Trigger</label>
+                                    <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest px-1">Bot Command</label>
                                     <div className="relative">
                                         <Terminal size={14} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" />
                                         <input 
                                             type="text" 
                                             value={triggerCommand} 
                                             onChange={(e) => setTriggerCommand(e.target.value)}
-                                            className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-black text-zinc-950 transition-all outline-none focus:bg-white shadow-inner"
+                                            className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-950 transition-all outline-none focus:bg-white shadow-inner"
                                             placeholder="support"
                                         />
                                     </div>
@@ -273,11 +273,11 @@ export default function PanelsPage() {
                             </div>
 
                             <DiscordSelect 
-                                label="Network Relay Channel"
+                                label="Send to Channel"
                                 type="channel"
                                 value={channelId}
                                 onChange={setChannelId}
-                                placeholder="Select target route..."
+                                placeholder="Select channel..."
                             />
 
                             <div className="space-y-2">
@@ -299,24 +299,24 @@ export default function PanelsPage() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Headline Content</label>
+                                <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest px-1">Embed Title</label>
                                 <input 
                                     type="text" 
                                     value={title} 
                                     onChange={(e) => setTitle(e.target.value)}
-                                    className="w-full px-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-black text-zinc-950 transition-all outline-none focus:bg-white shadow-inner"
-                                    placeholder="Enter structural title..."
+                                    className="w-full px-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-950 transition-all outline-none focus:bg-white shadow-inner"
+                                    placeholder="Enter title..."
                                 />
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none">Payload Description</label>
+                                <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest px-1">Embed Message</label>
                                 <textarea 
                                     rows={3}
                                     value={content}
                                     onChange={(e) => setContent(e.target.value)}
-                                    className="w-full px-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-zinc-800 leading-relaxed transition-all outline-none focus:bg-white resize-none shadow-inner"
-                                    placeholder="Detailed payload data..."
+                                    className="w-full px-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-medium text-zinc-800 leading-relaxed transition-all outline-none focus:bg-white shadow-inner"
+                                    placeholder="Type message..."
                                 />
                             </div>
 
@@ -352,21 +352,19 @@ export default function PanelsPage() {
                             <div className="bg-zinc-950 p-6 rounded-3xl text-white relative overflow-hidden group border border-white/5 transition-all hover:border-white/20">
                                 <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none rotate-12"><Activity size={80} /></div>
                                 <div className="flex items-center justify-between mb-4">
-                                    <h4 className="font-black text-[10px] italic tracking-widest flex items-center gap-2 uppercase">
-                                        <Bot size={12} className="text-zinc-400" /> Action Nodes
+                                    <h4 className="font-bold text-[10px] tracking-widest flex items-center gap-2 uppercase">
+                                        <Bot size={12} className="text-zinc-400" /> Buttons
                                     </h4>
                                     <button 
                                         onClick={addButton}
-                                        className="px-3 py-1.5 bg-white text-zinc-950 text-[8px] font-black rounded-lg hover:scale-105 transition-all uppercase tracking-widest">
-                                        ADD_LOGIC
-                                    </button>
+                                        className="px-3 py-1.5 bg-white text-zinc-950 text-[10px] font-bold rounded-lg hover:scale-105 transition-all">+ Add Button</button>
                                 </div>
                                 <div className="space-y-2">
                                     {buttons.map((btn, idx) => (
                                         <div key={idx} className="p-3 bg-white/5 rounded-xl border border-white/5 flex flex-col gap-3 group/btn hover:bg-white/10 transition-all">
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center font-black text-[9px]">{idx + 1}</div>
+                                                    <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center font-bold text-[10px]">{idx + 1}</div>
                                                     <input 
                                                         type="text"
                                                         value={btn.emoji || ''}
@@ -386,7 +384,7 @@ export default function PanelsPage() {
                                                             nb[idx].label = e.target.value;
                                                             setButtons(nb);
                                                         }}
-                                                        className="bg-transparent border-none outline-none text-[10px] font-bold italic tracking-tight text-white placeholder:opacity-20 flex-1"
+                                                        className="bg-transparent border-none outline-none text-[12px] font-bold tracking-tight text-white placeholder:opacity-20 flex-1"
                                                         placeholder="Button Label..."
                                                     />
                                                 </div>
@@ -463,11 +461,11 @@ export default function PanelsPage() {
         <div className="xl:col-span-4 flex flex-col min-h-0 overflow-hidden">
              {/* Device Switcher */}
              <div className="bg-white p-2 rounded-2xl border border-zinc-100 mb-6 flex justify-center gap-2 shrink-0">
-                 <button onClick={() => setIsPreviewMobile(false)} className={`flex-1 py-3 rounded-xl transition-all flex items-center justify-center gap-3 text-[10px] font-black tracking-widest ${!isPreviewMobile ? 'bg-zinc-950 text-white shadow-lg' : 'text-zinc-300 hover:text-zinc-950'}`}>
-                    <Monitor size={14} /> DESKTOP
+                 <button onClick={() => setIsPreviewMobile(false)} className={`flex-1 py-3 rounded-xl transition-all flex items-center justify-center gap-3 text-xs font-bold ${!isPreviewMobile ? 'bg-zinc-950 text-white shadow-lg' : 'text-zinc-500 hover:text-zinc-950'}`}>
+                    <Monitor size={14} /> Desktop
                  </button>
-                 <button onClick={() => setIsPreviewMobile(true)} className={`flex-1 py-3 rounded-xl transition-all flex items-center justify-center gap-3 text-[10px] font-black tracking-widest ${isPreviewMobile ? 'bg-zinc-950 text-white shadow-lg' : 'text-zinc-300 hover:text-zinc-950'}`}>
-                    <Smartphone size={14} /> MOBILE
+                 <button onClick={() => setIsPreviewMobile(true)} className={`flex-1 py-3 rounded-xl transition-all flex items-center justify-center gap-3 text-xs font-bold ${isPreviewMobile ? 'bg-zinc-950 text-white shadow-lg' : 'text-zinc-500 hover:text-zinc-950'}`}>
+                    <Smartphone size={14} /> Mobile
                  </button>
              </div>
  

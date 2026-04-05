@@ -94,13 +94,13 @@ export default function AutoRepliesPage() {
              <div className="p-2 bg-zinc-950 rounded-xl shadow-lg shadow-zinc-200">
                 <MessageSquare size={16} className="text-white" />
              </div>
-             <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none font-mono">Semantic Trigger Matrix</span>
+             <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest leading-none">Response Automation</span>
           </div>
-          <h1 className="text-3xl font-black text-zinc-950 tracking-tighter">
-            Neural <span className="text-zinc-300">Automations</span>
+          <h1 className="text-3xl font-black text-zinc-950 tracking-tighter uppercase">
+            Auto <span className="text-zinc-300">Replies</span>
           </h1>
           <p className="text-sm font-bold text-zinc-500 max-w-2xl">
-             Design intelligent keyword Pattern-match triggers for the High Core environment.
+             Design automatic responses for specific keywords in your server.
           </p>
         </div>
         
@@ -109,8 +109,8 @@ export default function AutoRepliesPage() {
                 <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
                 <input 
                     type="text" 
-                    placeholder="Scan keywords..."
-                    className="pl-12 pr-6 py-4 bg-white border border-zinc-100 rounded-2xl shadow-sm outline-none focus:ring-8 ring-zinc-950/5 transition-all font-bold text-sm w-72 italic"
+                    placeholder="Search keywords..."
+                    className="pl-12 pr-6 py-4 bg-white border border-zinc-100 rounded-2xl shadow-sm outline-none focus:ring-8 ring-zinc-950/5 transition-all font-bold text-sm w-72"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                 />
@@ -123,10 +123,10 @@ export default function AutoRepliesPage() {
             </button>
             <button 
                 onClick={() => handleEdit({ keyword: '', response_text: '', is_active: true })}
-                className="flex items-center gap-4 px-8 py-4 bg-zinc-950 text-white font-black text-xs rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all group italic tracking-widest uppercase"
+                className="flex items-center gap-4 px-8 py-4 bg-zinc-950 text-white font-bold text-xs rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all group tracking-widest uppercase"
             >
                 <Plus size={18} className="group-hover:rotate-90 transition-transform" />
-                Inject Trigger
+                Add Reply
             </button>
         </div>
       </header>
@@ -137,9 +137,9 @@ export default function AutoRepliesPage() {
         {/* Left: Trigger Flow (Col: 8) */}
         <div className="xl:col-span-8 flex flex-col min-h-0">
              <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden">
-                  <div className="grid grid-cols-12 p-6 border-b border-zinc-50 bg-zinc-50/20 text-[9px] font-black text-zinc-400 uppercase tracking-widest">
-                      <div className="col-span-4 pl-4">Pattern Anchor</div>
-                      <div className="col-span-6">Payload Output</div>
+                  <div className="grid grid-cols-12 p-6 border-b border-zinc-50 bg-zinc-50/20 text-[9px] font-bold text-zinc-400 uppercase tracking-widest">
+                      <div className="col-span-4 pl-4">Keyword</div>
+                      <div className="col-span-6">Response Message</div>
                       <div className="col-span-2 text-right pr-4">Metrics</div>
                   </div>
 
@@ -149,7 +149,7 @@ export default function AutoRepliesPage() {
                      ) : filteredReplies.length === 0 ? (
                          <div className="p-32 text-center opacity-10">
                             <Sparkles size={60} className="mx-auto mb-6" />
-                            <h3 className="text-2xl font-black tracking-tighter uppercase italic">Neural Silence. No active triggers.</h3>
+                            <h3 className="text-2xl font-black tracking-tighter uppercase">No active triggers.</h3>
                          </div>
                      ) : (
                          filteredReplies.map((reply, idx) => (
@@ -165,15 +165,15 @@ export default function AutoRepliesPage() {
                                          <Zap size={14} />
                                      </div>
                                      <div className="min-w-0">
-                                         <span className="font-black text-zinc-950 text-sm italic tracking-tighter uppercase truncate block">{reply.keyword}</span>
+                                         <span className="font-bold text-zinc-950 text-sm tracking-tighter uppercase truncate block">{reply.keyword}</span>
                                          <div className="flex items-center gap-1.5 mt-0.5">
                                              <div className={`w-1.5 h-1.5 rounded-full ${reply.is_active ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-red-500'}`}></div>
-                                             <span className="text-[8px] font-black text-zinc-300 uppercase tracking-widest leading-none">{reply.is_active ? 'Active' : 'Disabled'}</span>
+                                             <span className="text-[8px] font-bold text-zinc-300 uppercase tracking-widest leading-none">{reply.is_active ? 'Active' : 'Disabled'}</span>
                                          </div>
                                      </div>
                                  </div>
                                  <div className="col-span-6">
-                                     <p className="text-xs font-bold text-zinc-500 leading-relaxed pr-10 truncate italic">
+                                     <p className="text-xs font-bold text-zinc-500 leading-relaxed pr-10 truncate">
                                          "{reply.response_text}"
                                      </p>
                                  </div>
@@ -196,18 +196,18 @@ export default function AutoRepliesPage() {
         <div className="xl:col-span-4 flex flex-col gap-6">
              <div className="bg-zinc-950 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden group shrink-0">
                 <div className="absolute right-0 bottom-0 p-8 opacity-10 rotate-12 group-hover:scale-125 transition-transform duration-1000 pointer-events-none"><Bot size={200} /></div>
-                <h3 className="text-xl font-black mb-6 flex items-center gap-4 italic tracking-tighter">
-                    <Sparkles className="text-zinc-400" /> Pattern Core
+                <h3 className="text-xl font-black mb-6 flex items-center gap-4 tracking-tighter">
+                    <Sparkles className="text-zinc-400" /> Trigger Core
                 </h3>
                 
                 <div className="space-y-4 relative z-10">
                     <div className="flex justify-between items-center bg-white/5 p-5 rounded-2xl border border-white/5">
-                        <span className="text-[9px] font-black opacity-30 uppercase italic tracking-widest leading-none">Active Matrix</span>
-                        <span className="text-2xl font-black italic tracking-tighter leading-none">{replies.length}</span>
+                        <span className="text-[9px] font-bold opacity-30 uppercase tracking-widest leading-none">Total Replies</span>
+                        <span className="text-2xl font-bold tracking-tighter leading-none">{replies.length}</span>
                     </div>
                     <div className="flex justify-between items-center bg-white/5 p-5 rounded-2xl border border-white/5">
-                        <span className="text-[9px] font-black opacity-30 uppercase italic tracking-widest leading-none">Frequency</span>
-                        <span className="text-xs font-black bg-emerald-400 text-emerald-950 px-3 py-1.5 rounded-lg shadow-lg italic leading-none">HIGH-SYD</span>
+                        <span className="text-[9px] font-bold opacity-30 uppercase tracking-widest leading-none">Sync Status</span>
+                        <span className="text-xs font-bold bg-emerald-400 text-emerald-950 px-3 py-1.5 rounded-lg shadow-lg leading-none">CONNECTED</span>
                     </div>
                 </div>
              </div>
@@ -245,8 +245,8 @@ export default function AutoRepliesPage() {
                 <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none rotate-45"><MessageSquare size={240} /></div>
                 
                 <div className="flex justify-between items-center">
-                    <h3 className="text-2xl font-black text-zinc-950 italic tracking-tighter uppercase flex items-center gap-4 py-2 border-b-2 border-zinc-950">
-                        <Zap className="text-zinc-950" size={24} /> Calibration
+                    <h3 className="text-2xl font-bold text-zinc-950 tracking-tighter uppercase flex items-center gap-4 py-2 border-b-2 border-zinc-950">
+                        <Zap className="text-zinc-950" size={24} /> Configuration
                     </h3>
                     <button onClick={() => setEditingReply(null)} className="p-4 text-zinc-300 hover:text-zinc-950 bg-zinc-50 rounded-2xl transition-all"><X size={20} /></button>
                 </div>

@@ -47,7 +47,7 @@ export default function WelcomePage() {
              </div>
              <span className="text-xs font-bold text-blue-600">Engagement Module</span>
           </div>
-          <h1 className="text-3xl font-black text-zinc-950 tracking-tighter">
+          <h1 className="text-3xl font-black text-zinc-950 tracking-tighter uppercase">
             Welcome <span className="text-zinc-300">& Leave</span>
           </h1>
           <p className="text-zinc-500 text-sm font-medium">
