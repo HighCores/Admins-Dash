@@ -41,7 +41,7 @@ const NavigationGroups = [
     ]
   },
   {
-    category: "PROTECTION",
+    category: "SECURITY",
     items: [
       { name: "Moderation", icon: ShieldCheck, href: "/dashboard/discord/moderation" },
       { name: "Auto Mod", icon: ShieldAlert, href: "/dashboard/discord/auto-mod" },

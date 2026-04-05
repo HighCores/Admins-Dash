@@ -245,11 +245,12 @@ export default function WelcomePage() {
                                     {messageType === "text" ? (
                                         <div className="text-[#dbdee1] text-[15px] leading-relaxed whitespace-pre-wrap mt-0.5">
                                             {(() => {
-                                                const formatted = message
+                                                const formatted = (message || "")
                                                     .replace(/{user}/g, "@NewUser")
                                                     .replace(/{server}/g, "High Core Server")
                                                     .replace(/{member_count}/g, "1,452")
-                                                    .replace(/\\n/g, '\n');
+                                                    .replace(/\\n/g, '\n')
+                                                    .replace(/^(#+)\s*(.*?)$/gm, '**$2**');
                                                 return formatted.split(/(\*\*.*?\*\*)/g).map((part, i) => {
                                                     if (part.startsWith('**') && part.endsWith('**')) {
                                                         return <strong key={i} className="font-bold text-white">{part.slice(2, -2)}</strong>;
@@ -276,7 +277,8 @@ export default function WelcomePage() {
                                                                             .replace(/{user}/g, "@NewUser")
                                                                             .replace(/{server}/g, "High Core Server")
                                                                             .replace(/{member_count}/g, "1,452")
-                                                                            .replace(/\\n/g, '\n');
+                                                                            .replace(/\\n/g, '\n')
+                                                                            .replace(/^(#+)\s*(.*?)$/gm, '**$2**');
                                                                         return formatted.split(/(\*\*.*?\*\*)/g).map((part, i) => {
                                                                             if (part.startsWith('**') && part.endsWith('**')) {
                                                                                 return <strong key={i} className="font-bold text-white">{part.slice(2, -2)}</strong>;
