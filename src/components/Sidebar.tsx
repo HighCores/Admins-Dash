@@ -13,7 +13,6 @@ import {
 import { signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
 
-// Categorized Navigation based on Vetox/ProBot architecture
 const NavigationGroups = [
   {
     category: "CORE",
@@ -25,20 +24,20 @@ const NavigationGroups = [
     category: "ENGAGEMENT",
     items: [
       { name: "Welcome & Leave", icon: Users, href: "/dashboard/discord/welcome" },
-      { name: "Leveling System", icon: TrendingUp, href: "/dashboard/discord/levels" },
-      { name: "Points & Economy", icon: Coins, href: "/dashboard/discord/points" },
-      { name: "High Admin Points", icon: Crown, href: "/dashboard/discord/admin-points" },
+      { name: "Levels", icon: TrendingUp, href: "/dashboard/discord/levels" },
+      { name: "Economy", icon: Coins, href: "/dashboard/discord/points" },
+      { name: "Admin Points", icon: Crown, href: "/dashboard/discord/admin-points" },
       { name: "Messenger & BC", icon: Send, href: "/dashboard/discord/messenger" },
     ]
   },
   {
     category: "AUTOMATION",
     items: [
-      { name: "Custom Commands", icon: Command, href: "/dashboard/discord/commands" },
-      { name: "Auto Responder", icon: MessageSquare, href: "/dashboard/discord/auto-replies" },
+      { name: "Commands", icon: Command, href: "/dashboard/discord/commands" },
+      { name: "Auto Response", icon: MessageSquare, href: "/dashboard/discord/auto-replies" },
       { name: "Embed Builder", icon: PanelsTopLeft, href: "/dashboard/discord/panels" },
-      { name: "Ticket System", icon: Ticket, href: "/dashboard/discord/tickets" },
-      { name: "Color Roles", icon: Palette, href: "/dashboard/discord/colors" },
+      { name: "Tickets", icon: Ticket, href: "/dashboard/discord/tickets" },
+      { name: "Colors", icon: Palette, href: "/dashboard/discord/colors" },
     ]
   },
   {
@@ -46,13 +45,13 @@ const NavigationGroups = [
     items: [
       { name: "Moderation", icon: ShieldCheck, href: "/dashboard/discord/moderation" },
       { name: "Auto Mod", icon: ShieldAlert, href: "/dashboard/discord/auto-mod" },
-      { name: "Server Logs", icon: History, href: "/dashboard/discord/logs" },
+      { name: "Logs", icon: History, href: "/dashboard/discord/logs" },
     ]
   },
   {
     category: "SETTINGS",
     items: [
-      { name: "Bot Config", icon: Settings, href: "/dashboard/discord/setup" },
+      { name: "Setup", icon: Settings, href: "/dashboard/discord/setup" },
     ]
   }
 ];
@@ -60,7 +59,6 @@ const NavigationGroups = [
 export default function Sidebar() {
   const pathname = usePathname();
   const [platform, setPlatform] = useState<"discord" | "telegram">("discord");
-  // Keep track of collapsed categories
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
@@ -84,7 +82,7 @@ export default function Sidebar() {
               </div>
               <div className="flex flex-col leading-none">
                   <span>High</span>
-                  <span className="text-sm text-zinc-500 font-bold">Core Agency</span>
+                  <span className="text-sm text-zinc-500 font-bold tracking-tight">Core Agency</span>
               </div>
           </h2>
       </div>
@@ -112,10 +110,10 @@ export default function Sidebar() {
               <div key={group.category} className="space-y-2">
                 <button 
                   onClick={() => toggleCategory(group.category)}
-                  className="w-full flex items-center justify-between text-xs font-bold text-zinc-400 hover:text-zinc-600 transition-colors py-2"
+                  className="w-full flex items-center justify-between text-[10px] font-black text-zinc-400 hover:text-zinc-600 transition-colors py-2 tracking-widest uppercase italic"
                 >
-                  <span className="uppercase">{group.category === "PROTECTION" ? "Moderation" : group.category}</span>
-                  <ChevronDown size={14} className={`transition-transform ${isCollapsed ? 'rotate-180' : ''}`} />
+                  <span>{group.category}</span>
+                  <ChevronDown size={12} className={`transition-transform ${isCollapsed ? 'rotate-180' : ''}`} />
                 </button>
                 
                 <AnimatePresence initial={false}>
@@ -149,14 +147,9 @@ export default function Sidebar() {
                                   >
                                       <div className="flex items-center gap-3">
                                           <item.icon size={18} className={isActive ? "text-zinc-950" : "text-zinc-400 group-hover:text-zinc-600"} />
-                                          <div className="flex items-center gap-2">
-                                              <span className={`text-sm ${isActive ? "font-bold text-zinc-950" : "font-semibold"}`}>
-                                                  {item.name}
-                                              </span>
-                                              {item.name === "Messenger & BC" && (
-                                                  <span className="text-[8px] font-black bg-zinc-950 text-white px-1.5 py-0.5 rounded-md shadow-lg animate-pulse tracking-tighter">NEW</span>
-                                              )}
-                                          </div>
+                                          <span className={`text-sm ${isActive ? "font-bold text-zinc-950" : "font-semibold"}`}>
+                                              {item.name}
+                                          </span>
                                       </div>
                                       {isActive && (
                                           <div className={`w-1.5 h-1.5 rounded-full ${platform === 'discord' ? 'bg-zinc-950' : 'bg-blue-500'}`}></div>
@@ -174,14 +167,6 @@ export default function Sidebar() {
       </nav>
 
       <div className="mt-4 pt-6 border-t border-zinc-100 px-2 shrink-0">
-        <div className="flex items-center gap-3 mb-4 p-3 bg-zinc-50 rounded-2xl border border-zinc-100">
-            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold shadow-sm">OM</div>
-            <div className="flex flex-col min-w-0">
-                <span className="text-sm font-bold text-zinc-950 truncate">Omar</span>
-                <span className="text-xs text-zinc-500">Root Admin</span>
-            </div>
-        </div>
-
         <button 
             onClick={() => signOut()}
             className="w-full flex items-center justify-between p-4 bg-zinc-950 text-white font-bold text-sm rounded-xl hover:bg-zinc-800 transition-all shadow-md"

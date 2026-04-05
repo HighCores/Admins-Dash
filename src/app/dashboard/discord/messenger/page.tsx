@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
     Send, Users, MessageSquare, Image as ImageIcon, 
     Zap, Sparkles, Loader2, AlertCircle, CheckCircle2,
-    LayoutDashboard, Megaphone, Terminal, Trash2, Plus
+    Megaphone, Trash2, Plus
 } from "lucide-react";
 import { useState } from "react";
 import DiscordSelect from "@/components/DiscordSelect";
@@ -21,7 +21,7 @@ export default function MessengerPage() {
     const [attachments, setAttachments] = useState<string[]>([""]);
 
     const BOT_API = "http://localhost:8080/api";
-    const API_KEY = "secret_key"; // Matches Config.API_KEY default
+    const API_KEY = "secret_key"; 
 
     const addAttachment = () => {
         if (attachments.length < 3) setAttachments([...attachments, ""]);
@@ -38,8 +38,8 @@ export default function MessengerPage() {
     };
 
     const handleSend = async () => {
-        if (!message) return showToast("يرجى كتابة نص الرسالة أولاً.", true);
-        if (!isBroadcast && !channelId) return showToast("يرجى اختيار القناة أولاً.", true);
+        if (!message) return showToast("Please enter a message.", true);
+        if (!isBroadcast && !channelId) return showToast("Please select a target channel.", true);
 
         setLoading(true);
         try {
@@ -68,14 +68,14 @@ export default function MessengerPage() {
 
             if (!response.ok) {
                 const err = await response.json();
-                throw new Error(err.error || "Failed to communicate with bot.");
+                throw new Error(err.error || "Failed to communicate with bot server.");
             }
 
-            showToast(isBroadcast ? "تم بدء عملية البرودكاست بنجاح! 🚀" : "تم إرسال الرسالة بنجاح! ✅");
-            if (!isBroadcast) setMessage(""); // Clear message if simple send
+            showToast(isBroadcast ? "Broadcast sequence started successfully!" : "Message sent successfully!");
+            if (!isBroadcast) setMessage(""); 
             
         } catch (err: any) {
-            showToast(`فشل الإرسال: ${err.message}`, true);
+            showToast(`Error: ${err.message}`, true);
         } finally {
             setLoading(false);
         }
@@ -91,162 +91,144 @@ export default function MessengerPage() {
                         <div className="p-2 bg-zinc-950 rounded-xl shadow-lg">
                             <Send size={18} className="text-white" />
                         </div>
-                        <span className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.3em] font-mono leading-none">Highcore Messenger Hub</span>
+                        <span className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.3em] font-mono leading-none">Highcore Agency Messenger</span>
                     </div>
-                    <h1 className="text-4xl font-black text-zinc-950 tracking-tighter">
-                        Bot <span className="text-zinc-300">Messenger</span>
+                    <h1 className="text-4xl font-black text-zinc-950 tracking-tight">
+                        Bot <span className="text-zinc-300 font-medium">Messenger</span>
                     </h1>
-                    <p className="text-sm font-bold text-zinc-500 max-w-2xl">
-                        ارسل رسائل احترافية بضغطة زر. يدعم الإيموجي والمنشن والمرفقات المتعددة.
+                    <p className="text-sm font-semibold text-zinc-500 max-w-2xl">
+                        Send custom messages or global broadcasts with attachments and smart emoji support.
                     </p>
                 </div>
 
-                <div className="flex bg-zinc-950 p-2 rounded-[1.8rem] shadow-2xl relative overflow-hidden group">
-                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                <div className="flex bg-zinc-100 p-1.5 rounded-2xl border border-zinc-200 shadow-sm overflow-hidden shrink-0">
                     <button 
                         onClick={() => setIsBroadcast(false)}
-                        className={`relative z-10 flex items-center justify-center gap-4 px-10 py-4 rounded-[1.3rem] font-black text-sm tracking-tighter transition-all duration-500 ${!isBroadcast ? 'bg-white text-zinc-950 shadow-[0_10px_30px_rgba(0,0,0,0.1)]' : 'text-zinc-500 hover:text-white'}`}
+                        className={`flex items-center justify-center gap-3 px-8 py-3 rounded-xl font-bold text-xs transition-all duration-300 ${!isBroadcast ? 'bg-white text-zinc-950 shadow-md border border-zinc-100' : 'text-zinc-500 hover:text-zinc-900'}`}
                     >
-                        <MessageSquare size={18} className={!isBroadcast ? 'text-zinc-950' : 'text-zinc-600'} /> 
-                        <span className="italic uppercase">\u0631\u0633\u0627\u0644\u0629 \u0628\u0633\u064a\u0637\u0629</span>
+                        <MessageSquare size={16} /> Direct Message
                     </button>
                     <button 
                         onClick={() => setIsBroadcast(true)}
-                        className={`relative z-10 flex items-center justify-center gap-4 px-10 py-4 rounded-[1.3rem] font-black text-sm tracking-tighter transition-all duration-500 ${isBroadcast ? 'bg-zinc-900 border border-white/10 text-white shadow-[0_10px_30px_rgba(0,0,0,0.3)]' : 'text-zinc-500 hover:text-white'}`}
+                        className={`flex items-center justify-center gap-3 px-8 py-3 rounded-xl font-bold text-xs transition-all duration-300 ${isBroadcast ? 'bg-zinc-950 text-white shadow-lg' : 'text-zinc-500 hover:text-zinc-900'}`}
                     >
-                        <Megaphone size={18} className={isBroadcast ? 'text-emerald-400' : 'text-zinc-600'} /> 
-                        <span className="italic uppercase">\u0628\u0631\u0648\u062f\u0643\u0627\u0633\u062a \u0639\u0627\u0645</span>
-                        {isBroadcast && <div className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full animate-ping"></div>}
+                        <Megaphone size={16} /> Global Broadcast
                     </button>
                 </div>
             </header>
 
-            {/* Content Grid */}
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 flex-1 min-h-0 pb-10">
-                
-                {/* Left: Editor (8 cols) */}
-                <div className="xl:col-span-12 flex flex-col gap-8">
-                    <motion.div 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="bg-white rounded-[3rem] p-10 border border-zinc-100 shadow-sm relative overflow-hidden group"
-                    >
-                        <div className="absolute top-0 right-0 p-12 opacity-[0.02] pointer-events-none group-hover:scale-110 transition-transform duration-1000 rotate-12">
-                            {isBroadcast ? <Megaphone size={200} /> : <MessageSquare size={200} />}
+            {/* Content Card */}
+            <div className="flex-1 pb-10">
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-white rounded-[2.5rem] p-10 border border-zinc-100 shadow-sm relative overflow-hidden group"
+                >
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-10 relative z-10">
+                        <div className="space-y-6">
+                            <DiscordSelect 
+                                label={isBroadcast ? "Target Role (Optional)" : "Target Channel"}
+                                type={isBroadcast ? "role" : "channel"} 
+                                value={isBroadcast ? roleId : channelId}
+                                onChange={isBroadcast ? setRoleId : setChannelId}
+                                placeholder={isBroadcast ? "Send to everyone..." : "Search for a channel..."}
+                            />
+
+                            {isBroadcast && (
+                                <div className="flex items-start gap-3 p-4 bg-amber-50 rounded-2xl border border-amber-100 animate-in fade-in slide-in-from-top-2 duration-500">
+                                    <AlertCircle size={18} className="text-amber-600 mt-1 shrink-0" />
+                                    <p className="text-[11px] font-bold text-amber-800 leading-relaxed uppercase tracking-tight">
+                                        Safety Notice: Broadcasts are sent with a 7-second interval to protect the bot instance. Do not disconnect until finalized.
+                                    </p>
+                                </div>
+                            )}
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10 relative z-10">
-                            <div className="space-y-4">
-                                <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block pl-4 italic">
-                                    {isBroadcast ? "\u0631\u062a\u0628\u0629 \u0627\u0644\u0645\u0633\u062a\u0647\u062f\u0641\u064a\u0646 (\u0627\u062e\u062a\u064a\u0627\u0631\u064a)" : "\u0627\u062e\u062a\u064a\u0627\u0631 \u0627\u0644\u0642\u0646\u0627\u0629"}
-                                </label>
-                                <DiscordSelect 
-                                    label={isBroadcast ? "\u0631\u062a\u0628\u0629 \u0627\u0644\u0645\u0633\u062a\u0647\u062f\u0641\u064a\u0646" : "\u0627\u062e\u062a\u064a\u0627\u0631 \u0627\u0644\u0642\u0646\u0627\u0629"}
-                                    type={isBroadcast ? "role" : "channel"} 
-                                    value={isBroadcast ? roleId : channelId}
-                                    onChange={isBroadcast ? setRoleId : setChannelId}
-                                    placeholder={isBroadcast ? "ارسل للجميع (بدون تحديد)" : "ابحث عن قناة..."}
-                                />
-                                {isBroadcast && (
-                                    <div className="flex items-start gap-3 p-4 bg-amber-50 rounded-2xl border border-amber-100 mt-4 animate-in fade-in slide-in-from-top-2 duration-500">
-                                        <AlertCircle size={18} className="text-amber-600 mt-1 shrink-0" />
-                                        <p className="text-[11px] font-bold text-amber-800 leading-relaxed">
-                                            تحذير: سيتم إرسال هذا البرودكاست لجميع الأعضاء بفارق 7 ثوانٍ لضمان سلامة البوت. لا تغلق الصفحة حتى تتأكد من بدء العملية.
-                                        </p>
+                        <div className="space-y-6">
+                            <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block pl-2 font-mono">Attachment URLs (Optional)</label>
+                            <div className="space-y-3">
+                                {attachments.map((att, i) => (
+                                    <div key={i} className="flex items-center gap-3">
+                                        <div className="relative flex-1">
+                                            <ImageIcon size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
+                                            <input 
+                                                type="text" 
+                                                placeholder="https://image-url.png/image.jpg"
+                                                value={att}
+                                                onChange={(e) => updateAttachment(i, e.target.value)}
+                                                className="w-full pl-10 pr-4 py-3.5 bg-zinc-50 border border-zinc-100 rounded-xl focus:bg-white outline-none transition-all font-semibold text-xs"
+                                            />
+                                        </div>
+                                        {attachments.length > 1 && (
+                                            <button 
+                                                onClick={() => removeAttachment(i)}
+                                                className="p-3 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all shadow-sm"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        )}
                                     </div>
+                                ))}
+                                {attachments.length < 3 && (
+                                    <button 
+                                        onClick={addAttachment}
+                                        className="flex items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest hover:text-zinc-950 transition-colors pl-2"
+                                    >
+                                        <Plus size={14} /> Add another attachment
+                                    </button>
                                 )}
                             </div>
+                        </div>
+                    </div>
 
-                            <div className="space-y-4">
-                                <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block pl-4 italic">
-                                    روابط المرفقات (صور)
-                                </label>
-                                <div className="space-y-3">
-                                    {attachments.map((att, i) => (
-                                        <div key={i} className="flex items-center gap-3 group/item">
-                                            <div className="relative flex-1">
-                                                <ImageIcon size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-hover/item:text-zinc-950 transition-colors" />
-                                                <input 
-                                                    type="text" 
-                                                    placeholder="https://image-url.png"
-                                                    value={att}
-                                                    onChange={(e) => updateAttachment(i, e.target.value)}
-                                                    className="w-full pl-12 pr-4 py-4 bg-zinc-50 border border-zinc-100 rounded-xl focus:bg-white outline-none transition-all font-bold text-xs italic"
-                                                />
-                                            </div>
-                                            {attachments.length > 1 && (
-                                                <button 
-                                                    onClick={() => removeAttachment(i)}
-                                                    className="p-3 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all shadow-sm"
-                                                >
-                                                    <Trash2 size={16} />
-                                                </button>
-                                            )}
-                                        </div>
-                                    ))}
-                                    {attachments.length < 3 && (
-                                        <button 
-                                            onClick={addAttachment}
-                                            className="flex items-center gap-3 text-[10px] font-black text-zinc-300 uppercase tracking-widest hover:text-zinc-950 transition-colors italic px-4 group"
-                                        >
-                                            <Plus size={14} className="group-hover:rotate-90 transition-transform" /> {attachments.length === 0 ? "\u0625\u0636\u0627\u0641\u0629 \u0645\u0631\u0641\u0642" : "\u0625\u0636\u0627\u0641\u0629 \u0645\u0631\u0641\u0642 \u0622\u062e\u0631"}
-                                        </button>
-                                    )}
+                    <div className="space-y-4 relative z-10">
+                        <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block pl-2 font-mono">Message Content</label>
+                        <div className="relative group">
+                            <textarea 
+                                rows={10} 
+                                placeholder="Type your message here... (Use {user} to mention and {name} for member names)"
+                                value={message}
+                                onChange={(e) => setMessage(e.target.value)}
+                                className="w-full p-8 bg-zinc-50 border border-zinc-100 rounded-[2rem] focus:bg-white outline-none transition-all font-bold text-zinc-900 leading-relaxed shadow-inner resize-none overflow-y-auto custom-scrollbar"
+                            />
+                            <div className="absolute bottom-6 right-8 flex items-center gap-6 opacity-30 group-hover:opacity-100 transition-opacity">
+                                <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest">
+                                    <Zap size={14} className="text-zinc-400" /> Emojis Enabled
+                                </div>
+                                <div className="text-[9px] font-black uppercase tracking-widest flex items-center gap-2">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Live Status
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div className="space-y-4 relative z-10">
-                            <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block pl-4 italic">
-                                محتوى الرسالة
-                            </label>
-                            <div className="relative group">
-                                <textarea 
-                                    rows={10} 
-                                    placeholder="Type your message here... (Use {user} to mention and {name} for name)"
-                                    value={message}
-                                    onChange={(e) => setMessage(e.target.value)}
-                                    className="w-full p-8 bg-zinc-50 border border-zinc-100 rounded-[2rem] focus:bg-white outline-none transition-all font-bold text-zinc-900 leading-relaxed italic shadow-inner resize-none overflow-hidden"
-                                />
-                                <div className="absolute bottom-6 right-8 flex items-center gap-6 opacity-30 group-hover:opacity-100 transition-opacity">
-                                    <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest">
-                                        <Zap size={14} className="text-zinc-400" /> Smart Emoji Active
-                                    </div>
-                                    <div className="text-[9px] font-black uppercase tracking-widest flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Markdown Support
-                                    </div>
-                                </div>
+                    <div className="mt-12 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10 border-t border-zinc-50 pt-10">
+                        <div className="flex items-center gap-8">
+                            <div className="flex flex-col">
+                                <span className="text-[10px] font-bold text-zinc-400 uppercase leading-none mb-1">Transmission Speed</span>
+                                <span className="text-sm font-black text-zinc-950 tracking-tight">
+                                    {isBroadcast ? "Slow (7s Sync)" : "Instant (<1s)"}
+                                </span>
+                            </div>
+                            <div className="w-[1px] h-8 bg-zinc-100" />
+                            <div className="flex flex-col">
+                                <span className="text-[10px] font-bold text-zinc-400 uppercase leading-none mb-1">Target Mode</span>
+                                <span className="text-sm font-black text-zinc-950 tracking-tight">
+                                    {isBroadcast ? "Global Outreach" : "Channel Direct"}
+                                </span>
                             </div>
                         </div>
 
-                        <div className="mt-12 flex items-center justify-between relative z-10">
-                            <div className="flex items-center gap-6">
-                                <div className="flex flex-col">
-                                    <span className="text-[9px] font-black text-zinc-300 uppercase leading-none mb-1">Estimated Delay</span>
-                                    <span className="text-sm font-black text-zinc-950 italic tracking-tighter">
-                                        {isBroadcast ? "~7 seconds per message" : "Instant (<1s)"}
-                                    </span>
-                                </div>
-                                <div className="w-[1px] h-8 bg-zinc-100 hidden md:block" />
-                                <div className="flex flex-col hidden md:flex">
-                                    <span className="text-[9px] font-black text-zinc-300 uppercase leading-none mb-1">Target Registry</span>
-                                    <span className="text-sm font-black text-zinc-950 italic tracking-tighter">
-                                        {isBroadcast ? (roleId ? "Segmented Role Rank" : "Global User Index") : (channelId ? "Specific Signal Node" : "Waiting for Node ID...")}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <button 
-                                onClick={handleSend}
-                                disabled={loading || (!message && !isBroadcast)}
-                                className={`flex items-center gap-6 px-12 py-6 rounded-[1.5rem] font-black uppercase tracking-[0.3em] italic text-sm transition-all shadow-xl active:scale-95 disabled:opacity-50 ${isBroadcast ? 'bg-zinc-950 text-white hover:bg-black shadow-zinc-400/20' : 'bg-zinc-50 text-zinc-950 hover:bg-zinc-100 shadow-zinc-100'}`}
-                            >
-                                {loading ? <Loader2 className="animate-spin" size={20} /> : <Zap size={20} className={isBroadcast ? 'text-zinc-400' : 'text-zinc-600'} />}
-                                {isBroadcast ? "\u0641\u062a\u062d \u0642\u0646\u0627\u0629 \u0627\u0644\u0628\u0631\u0648\u062f\u0643\u0627\u0633\u062a" : "\u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u0625\u0634\u0627\u0631\u0629"}
-                            </button>
-                        </div>
-                    </motion.div>
-                </div>
+                        <button 
+                            onClick={handleSend}
+                            disabled={loading || (!message && !isBroadcast)}
+                            className={`min-w-[240px] flex items-center justify-center gap-4 px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-xl active:scale-95 disabled:opacity-50 ${isBroadcast ? 'bg-zinc-950 text-white hover:bg-black shadow-zinc-400/20' : 'bg-white text-zinc-950 border border-zinc-100 hover:bg-zinc-50 shadow-sm'}`}
+                        >
+                            {loading ? <Loader2 className="animate-spin" size={20} /> : <Send size={18} />}
+                            {isBroadcast ? "Start Broadcast" : "Send Message"}
+                        </button>
+                    </div>
+                </motion.div>
             </div>
         </div>
     );
