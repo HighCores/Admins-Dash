@@ -149,9 +149,14 @@ export default function Sidebar() {
                                   >
                                       <div className="flex items-center gap-3">
                                           <item.icon size={18} className={isActive ? "text-zinc-950" : "text-zinc-400 group-hover:text-zinc-600"} />
-                                          <span className={`text-sm ${isActive ? "font-bold text-zinc-950" : "font-semibold"}`}>
-                                              {item.name}
-                                          </span>
+                                          <div className="flex items-center gap-2">
+                                              <span className={`text-sm ${isActive ? "font-bold text-zinc-950" : "font-semibold"}`}>
+                                                  {item.name}
+                                              </span>
+                                              {item.name === "Messenger & BC" && (
+                                                  <span className="text-[8px] font-black bg-zinc-950 text-white px-1.5 py-0.5 rounded-md shadow-lg animate-pulse tracking-tighter">NEW</span>
+                                              )}
+                                          </div>
                                       </div>
                                       {isActive && (
                                           <div className={`w-1.5 h-1.5 rounded-full ${platform === 'discord' ? 'bg-zinc-950' : 'bg-blue-500'}`}></div>

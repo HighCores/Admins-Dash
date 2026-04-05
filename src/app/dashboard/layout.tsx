@@ -1,6 +1,7 @@
 "use client";
 
 import Sidebar from "@/components/Sidebar";
+import DashboardTabs from "@/components/DashboardTabs";
 import CustomToaster from "@/components/CustomToaster";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
@@ -40,6 +41,7 @@ export default function DashboardLayout({
       {/* Main Content Area - Shifted past the 72 (288px) sidebar on desktop */}
       <main className="flex-1 h-full overflow-y-auto bg-zinc-50/30 relative custom-scrollbar flex flex-col min-w-0 md:ml-72 mt-16 md:mt-0">
         <div className="min-h-full w-full p-4 lg:p-8 flex flex-col relative z-10 flex-1">
+          <DashboardTabs />
           {children}
         </div>
         <CustomToaster />

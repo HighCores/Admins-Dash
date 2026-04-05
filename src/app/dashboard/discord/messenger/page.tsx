@@ -101,18 +101,22 @@ export default function MessengerPage() {
                     </p>
                 </div>
 
-                <div className="flex items-center gap-4 bg-zinc-50 p-2 rounded-2xl border border-zinc-100">
+                <div className="flex bg-zinc-950 p-2 rounded-[1.8rem] shadow-2xl relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                     <button 
                         onClick={() => setIsBroadcast(false)}
-                        className={`flex items-center gap-3 px-6 py-3 rounded-xl font-black text-xs transition-all ${!isBroadcast ? 'bg-white text-zinc-950 shadow-md border border-zinc-100' : 'text-zinc-400 hover:text-zinc-600'}`}
+                        className={`relative z-10 flex items-center justify-center gap-4 px-10 py-4 rounded-[1.3rem] font-black text-sm tracking-tighter transition-all duration-500 ${!isBroadcast ? 'bg-white text-zinc-950 shadow-[0_10px_30px_rgba(0,0,0,0.1)]' : 'text-zinc-500 hover:text-white'}`}
                     >
-                        <MessageSquare size={16} /> رسالة بسيطة
+                        <MessageSquare size={18} className={!isBroadcast ? 'text-zinc-950' : 'text-zinc-600'} /> 
+                        <span className="italic uppercase">\u0631\u0633\u0627\u0644\u0629 \u0628\u0633\u064a\u0637\u0629</span>
                     </button>
                     <button 
                         onClick={() => setIsBroadcast(true)}
-                        className={`flex items-center gap-3 px-6 py-3 rounded-xl font-black text-xs transition-all ${isBroadcast ? 'bg-zinc-950 text-white shadow-xl' : 'text-zinc-400 hover:text-zinc-600'}`}
+                        className={`relative z-10 flex items-center justify-center gap-4 px-10 py-4 rounded-[1.3rem] font-black text-sm tracking-tighter transition-all duration-500 ${isBroadcast ? 'bg-zinc-900 border border-white/10 text-white shadow-[0_10px_30px_rgba(0,0,0,0.3)]' : 'text-zinc-500 hover:text-white'}`}
                     >
-                        <Megaphone size={16} /> برودكاست شامل
+                        <Megaphone size={18} className={isBroadcast ? 'text-emerald-400' : 'text-zinc-600'} /> 
+                        <span className="italic uppercase">\u0628\u0631\u0648\u062f\u0643\u0627\u0633\u062a \u0639\u0627\u0645</span>
+                        {isBroadcast && <div className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full animate-ping"></div>}
                     </button>
                 </div>
             </header>
@@ -137,6 +141,7 @@ export default function MessengerPage() {
                                     {isBroadcast ? "\u0631\u062a\u0628\u0629 \u0627\u0644\u0645\u0633\u062a\u0647\u062f\u0641\u064a\u0646 (\u0627\u062e\u062a\u064a\u0627\u0631\u064a)" : "\u0627\u062e\u062a\u064a\u0627\u0631 \u0627\u0644\u0642\u0646\u0627\u0629"}
                                 </label>
                                 <DiscordSelect 
+                                    label={isBroadcast ? "\u0631\u062a\u0628\u0629 \u0627\u0644\u0645\u0633\u062a\u0647\u062f\u0641\u064a\u0646" : "\u0627\u062e\u062a\u064a\u0627\u0631 \u0627\u0644\u0642\u0646\u0627\u0629"}
                                     type={isBroadcast ? "role" : "channel"} 
                                     value={isBroadcast ? roleId : channelId}
                                     onChange={isBroadcast ? setRoleId : setChannelId}
