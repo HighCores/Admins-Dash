@@ -16,6 +16,7 @@ import { useState, useEffect } from "react";
 const NavigationGroups = [
   {
     category: "CORE",
+    platforms: ["discord", "telegram"],
     items: [
       { name: "Overview", icon: LayoutDashboard, href: "/dashboard" },
       { name: "Node Stats", icon: BarChart, href: "/dashboard/stats" },
@@ -23,24 +24,27 @@ const NavigationGroups = [
   },
   {
     category: "ENGAGEMENT",
+    platforms: ["discord", "telegram"],
     items: [
-      { name: "Broadcast", icon: Send, href: "/dashboard/discord/messenger" },
-      { name: "Identity", icon: Users, href: "/dashboard/discord/welcome" },
-      { name: "Merit (XP)", icon: TrendingUp, href: "/dashboard/discord/levels" },
-      { name: "Currency", icon: Coins, href: "/dashboard/discord/points" },
+      { name: "Broadcast", icon: Send, href: "/dashboard/discord/messenger", platforms: ["discord", "telegram"] },
+      { name: "Identity", icon: Users, href: "/dashboard/discord/welcome", platforms: ["discord"] },
+      { name: "Merit (XP)", icon: TrendingUp, href: "/dashboard/discord/levels", platforms: ["discord"] },
+      { name: "Currency", icon: Coins, href: "/dashboard/discord/points", platforms: ["discord"] },
     ]
   },
   {
     category: "AUTOMATION",
+    platforms: ["discord", "telegram"],
     items: [
-      { name: "Protocols", icon: Command, href: "/dashboard/discord/commands" },
-      { name: "Auto Reply", icon: MessageSquare, href: "/dashboard/discord/auto-replies" },
-      { name: "Terminal UI", icon: PanelsTopLeft, href: "/dashboard/discord/panels" },
-      { name: "Tickets", icon: Ticket, href: "/dashboard/discord/tickets" },
+      { name: "Protocols", icon: Command, href: "/dashboard/discord/commands", platforms: ["discord"] },
+      { name: "Auto Reply", icon: MessageSquare, href: "/dashboard/discord/auto-replies", platforms: ["discord", "telegram"] },
+      { name: "Terminal UI", icon: PanelsTopLeft, href: "/dashboard/discord/panels", platforms: ["discord"] },
+      { name: "Tickets", icon: Ticket, href: "/dashboard/discord/tickets", platforms: ["discord", "telegram"] },
     ]
   },
   {
     category: "SECURITY",
+    platforms: ["discord"],
     items: [
       { name: "Moderation", icon: ShieldCheck, href: "/dashboard/discord/moderation" },
       { name: "Audit Log", icon: History, href: "/dashboard/discord/logs" },
@@ -48,6 +52,7 @@ const NavigationGroups = [
   },
   {
     category: "SYSTEM",
+    platforms: ["discord", "telegram"],
     items: [
       { name: "Setup", icon: Settings, href: "/dashboard/discord/setup" },
     ]

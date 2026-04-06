@@ -4,10 +4,10 @@ import { motion } from "framer-motion";
 import { 
   Users, Save, Image as ImageIcon, MessageSquare, 
   Terminal, Monitor, Smartphone, Settings2, BellRing,
-  Hash, Bot, Power, AlignLeft, AtSign, Loader2, Link as LinkIcon, Plus
+  Hash, Bot, Power, AlignLeft, AtSign, Loader2, Link as LinkIcon, Plus, Zap, Cpu, History
 } from "lucide-react";
 import { useState, useEffect } from "react";
-// import { supabase } from "@/lib/supabase"; // For future backend usage
+import { supabase } from "@/lib/supabase";
 import DiscordSelect from "@/components/DiscordSelect";
 import { showToast } from "@/components/CustomToaster";
 
@@ -21,177 +21,195 @@ export default function WelcomePage() {
   const [channelId, setChannelId] = useState("");
   const [messageType, setMessageType] = useState<"text" | "embed">("embed");
   const [message, setMessage] = useState("Welcome {user} to **{server}**! 🎉\\nYou are our {member_count}th member.");
-  const [color, setColor] = useState("#5865F2");
-  const [embedTitle, setEmbedTitle] = useState("A new member approached!");
+  const [color, setColor] = useState("#10b981");
+  const [embedTitle, setEmbedTitle] = useState("A NEW_ENTITY HAS APPROACHED");
   const [imageUrl, setImageUrl] = useState("https://assets.hc.agency/welcome-banner.png");
   const [thumbnailUrl, setThumbnailUrl] = useState("{user_avatar}");
 
   const handleSave = async () => {
       setSaving(true);
-      // await supabase logic here...
-      setTimeout(() => {
+      try {
+          // Sync to Supabase dc_settings or similar
+          const updates = [
+              { guild_id: 'global', key: 'WELCOME_ACTIVE', value: isActive.toString() },
+              { guild_id: 'global', key: 'WELCOME_CHANNEL', value: channelId },
+              { guild_id: 'global', key: 'WELCOME_TYPE', value: messageType },
+              { guild_id: 'global', key: 'WELCOME_MSG', value: message },
+              { guild_id: 'global', key: 'WELCOME_COLOR', value: color },
+              { guild_id: 'global', key: 'WELCOME_TITLE', value: embedTitle },
+              { guild_id: 'global', key: 'WELCOME_IMAGE', value: imageUrl },
+              { guild_id: 'global', key: 'WELCOME_THUMBNAIL', value: thumbnailUrl },
+          ];
+          
+          const { error } = await supabase.from("dc_settings").upsert(updates, { onConflict: 'key,guild_id' });
+          if (error) throw error;
+          
+          showToast("Handshake logic synchronized! 🧠⚡");
+      } catch (err: any) {
+          showToast(err.message, true);
+      } finally {
           setSaving(false);
-          showToast("Welcome logic synchronized. ⚡");
-      }, 1000);
+      }
   };
 
   return (
-    <div className="w-full h-full flex flex-col min-h-0 overflow-y-auto custom-scrollbar overflow-x-visible p-1">
+    <div className="w-full h-full flex flex-col min-h-0 overflow-hidden text-zinc-300 selection:bg-emerald-500/30 selection:text-emerald-400">
       
-      {/* Header */}
-      <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
+      {/* Header Area - Terminal Navigation */}
+      <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/5 shrink-0">
         <div className="space-y-1">
-          <div className="flex items-center gap-3 mb-1">
-             <div className="p-2 bg-blue-600 rounded-xl shadow-lg shadow-blue-200">
-                <Users size={16} className="text-white" />
+          <div className="flex items-center gap-3 mb-1 font-mono">
+             <div className="p-2 bg-emerald-500/10 rounded-xl shadow-lg border border-emerald-500/20">
+                <Users size={18} className="text-emerald-500 crt-glow" />
              </div>
-             <span className="text-xs font-bold text-blue-600">Engagement Module</span>
+             <span className="text-[10px] font-black text-emerald-500/60 uppercase tracking-widest leading-none">Subsystem // Neural Engagement Handshake</span>
           </div>
-          <h1 className="text-3xl font-black text-zinc-950 tracking-tighter uppercase">
-            Welcome <span className="text-zinc-300">& Leave</span>
+          <h1 className="text-3xl lg:text-4xl font-black text-white tracking-tighter uppercase italic">
+            Welcome <span className="text-emerald-500 crt-glow">Protocols</span>
           </h1>
-          <p className="text-zinc-500 text-sm font-medium">
-            Configure greeting messages and embeds for new members.
+          <p className="text-sm font-medium text-zinc-500 max-w-xl font-mono">
+             Calibrating onboarding sequences and greeting embeds for identified entities entering the Highcore relay.
           </p>
         </div>
         
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 font-mono">
              <button 
                 onClick={() => setIsActive(!isActive)}
-                className={`flex items-center gap-2 px-6 py-3 font-bold text-sm rounded-xl shadow-sm transition-all ${
-                    isActive ? "bg-emerald-500 text-white hover:bg-emerald-600" : "bg-zinc-100 text-zinc-500 hover:bg-zinc-200"
+                className={`flex items-center gap-3 px-8 py-4 font-black text-[10px] rounded-2xl shadow-xl transition-all border uppercase tracking-widest italic group ${
+                    isActive ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20 crt-glow" : "bg-red-500/5 text-red-500 border-red-500/20"
                 }`}
             >
-                <Power size={16} />
-                {isActive ? "System Active" : "System Paused"}
+                <Power size={16} className={isActive ? 'crt-glow' : ''} />
+                {isActive ? "ACTIVE_SYNC" : "SYNC_SEVERED"}
             </button>
         </div>
       </header>
 
       {/* Main Workspace */}
-      <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 min-h-0 overflow-y-auto xl:overflow-visible p-1">
+      <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-10 min-h-0 overflow-hidden pb-10">
         
         {/* Architect Workspace (Editor) */}
-        <div className="xl:col-span-7 flex flex-col min-h-0">
-            <div className={`bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-visible transition-all ${!isActive ? 'opacity-50 pointer-events-none grayscale' : ''}`}>
-                <div className="p-6 border-b border-zinc-50 bg-zinc-50/20 flex items-center justify-between">
-                    <h3 className="text-sm font-bold text-zinc-950 flex items-center gap-3">
-                        <Settings2 size={18} className="text-blue-500" /> Welcome Configuration
+        <div className="xl:col-span-7 flex flex-col min-h-0 h-full overflow-hidden">
+            <div className={`terminal-card flex-1 flex flex-col overflow-hidden bg-zinc-950/40 rounded-[2.5rem] transition-all relative ${!isActive ? 'opacity-30 p-20' : ''}`}>
+                <div className="p-8 border-b border-white/5 bg-white/5 flex items-center justify-between font-mono">
+                    <h3 className="text-sm font-black text-white flex items-center gap-3 uppercase italic tracking-tighter">
+                        <Settings2 size={18} className="text-emerald-500" /> Configuration Rack
                     </h3>
+                    {!isActive && <div className="absolute inset-0 z-50 flex items-center justify-center font-black text-red-500 text-3xl tracking-[0.5em] uppercase italic bg-black/40 backdrop-blur-sm">PROTOCOL_PAUSED</div>}
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-8 overflow-x-visible">
+                <div className="flex-1 overflow-y-auto p-10 custom-scrollbar space-y-10 font-mono">
                     
                     <DiscordSelect 
-                        label="Greeting Channel"
+                        label="GREETING_TARGET_NODE"
                         type="channel"
                         value={channelId}
                         onChange={setChannelId}
-                        placeholder="Select welcome channel..."
+                        placeholder="SELECT_CH..."
                     />
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-6 uppercase tracking-widest italic">
                         <button 
                             onClick={() => setMessageType("text")}
-                            className={`p-4 rounded-xl border-2 transition-all font-bold text-xs flex items-center justify-center gap-2 ${
-                                messageType === "text" ? "border-zinc-950 bg-zinc-950 text-white" : "border-zinc-100 bg-white text-zinc-500 hover:border-zinc-200"
+                            className={`p-5 rounded-2xl border transition-all font-black text-[9px] flex items-center justify-center gap-4 ${
+                                messageType === "text" ? "bg-emerald-500 text-black border-emerald-500 shadow-lg crt-glow" : "bg-black/40 text-zinc-600 border-white/5 hover:border-emerald-500/20"
                             }`}
                         >
-                            <AlignLeft size={16} /> Plain Text
+                            <AlignLeft size={16} /> PLAIN_TEXT_DATA
                         </button>
                         <button 
                             onClick={() => setMessageType("embed")}
-                            className={`p-4 rounded-xl border-2 transition-all font-bold text-xs flex items-center justify-center gap-2 ${
-                                messageType === "embed" ? "border-zinc-950 bg-zinc-950 text-white" : "border-zinc-100 bg-white text-zinc-500 hover:border-zinc-200"
+                            className={`p-5 rounded-2xl border transition-all font-black text-[9px] flex items-center justify-center gap-4 ${
+                                messageType === "embed" ? "bg-emerald-500 text-black border-emerald-500 shadow-lg crt-glow" : "bg-black/40 text-zinc-600 border-white/5 hover:border-emerald-500/20"
                             }`}
                         >
-                            <Monitor size={16} /> Embed Message
+                            <Monitor size={16} /> NEURAL_EMBED_FLOW
                         </button>
                     </div>
 
                     {messageType === "embed" && (
-                        <>
+                        <div className="p-8 bg-black/40 rounded-[2.5rem] border border-white/5 space-y-8">
                             <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-zinc-500 px-1">Embed Title</label>
+                                    <label className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] px-4 leading-none italic">Embed Header</label>
                                     <div className="relative">
-                                        <BellRing size={14} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                                        <BellRing size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-700" />
                                         <input 
                                             type="text" 
                                             value={embedTitle}
                                             onChange={(e) => setEmbedTitle(e.target.value)}
-                                            className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-medium text-zinc-950 text-sm transition-all outline-none focus:bg-white shadow-inner"
-                                            placeholder="Enter title (e.g. Welcome to the server!)"
+                                            className="w-full pl-14 pr-6 py-5 rounded-2xl bg-black border border-white/5 font-black text-white text-[11px] transition-all outline-none focus:border-emerald-500/30 uppercase italic placeholder:text-zinc-800"
+                                            placeholder="GREETING_HEX..."
                                         />
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold text-zinc-500 px-1">Accent Color</label>
+                                        <label className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] px-4 leading-none italic">Neural Accent</label>
                                         <div className="flex gap-4">
                                             <input 
                                                 type="color" 
-                                                className="w-12 h-12 rounded-xl cursor-pointer border-4 border-white shadow-lg bg-transparent"
+                                                className="w-16 h-16 rounded-2xl cursor-pointer bg-transparent border-0"
                                                 value={color}
                                                 onChange={(e) => setColor(e.target.value)}
                                             />
                                             <input 
                                                 type="text" 
-                                                className="flex-1 p-3 rounded-xl bg-zinc-50 border border-zinc-100 font-bold text-xs text-zinc-950 outline-none"
+                                                className="flex-1 p-5 rounded-2xl bg-black border border-white/5 font-black text-xs text-white outline-none uppercase italic"
                                                 value={color}
                                                 onChange={(e) => setColor(e.target.value)}
                                             />
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold text-zinc-500 px-1">Thumbnail Image</label>
+                                        <label className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] px-4 leading-none italic">Asset Pointer</label>
                                         <div className="relative">
-                                            <ImageIcon size={14} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                                            <ImageIcon size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-700" />
                                             <input 
                                                 type="text" 
                                                 value={thumbnailUrl}
                                                 onChange={(e) => setThumbnailUrl(e.target.value)}
-                                                className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-medium text-zinc-500 text-xs transition-all outline-none focus:bg-white shadow-inner"
+                                                className="w-full pl-14 pr-6 py-5 rounded-2xl bg-black border border-white/5 font-black text-zinc-400 text-[10px] transition-all outline-none focus:border-emerald-500/30 uppercase italic placeholder:text-zinc-800"
                                                 placeholder="{user_avatar} or URL"
                                             />
                                         </div>
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-zinc-500 px-1">Large Background / Banner</label>
+                                    <label className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] px-4 leading-none italic">Global Banner Link</label>
                                     <div className="relative">
-                                        <LinkIcon size={14} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                                        <LinkIcon size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-700" />
                                         <input 
                                             type="text" 
                                             value={imageUrl}
                                             onChange={(e) => setImageUrl(e.target.value)}
-                                            className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-zinc-50 border border-zinc-100 font-medium text-zinc-500 text-xs transition-all outline-none focus:bg-white shadow-inner"
-                                            placeholder="URL to your welcome banner image"
+                                            className="w-full pl-14 pr-6 py-5 rounded-2xl bg-black border border-white/5 font-black text-zinc-400 text-[10px] transition-all outline-none focus:border-emerald-500/30 uppercase italic placeholder:text-zinc-800"
+                                            placeholder="URL_TO_BANNER..."
                                         />
                                     </div>
                                 </div>
                             </div>
-                        </>
+                        </div>
                     )}
 
-                    <div className="space-y-2">
+                    <div className="space-y-4">
                         <div className="flex items-center justify-between px-4">
-                            <label className="text-xs font-bold text-zinc-500">Message Body</label>
+                            <label className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] leading-none italic">Neural Payload</label>
                         </div>
                         <textarea 
-                            rows={6}
+                            rows={5}
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
-                            className="w-full px-5 py-4 rounded-xl bg-zinc-50 border border-zinc-100 font-medium text-zinc-800 leading-relaxed transition-all outline-none focus:bg-white resize-none shadow-inner"
-                            placeholder="Type your welcome message..."
+                            className="w-full px-8 py-6 rounded-[2.5rem] bg-black border border-white/5 font-medium text-zinc-300 leading-relaxed transition-all outline-none focus:border-emerald-500/20 resize-none font-sans text-sm"
+                            placeholder="TRANSMIT_GREETING_HERE..."
                         />
-                        <div className="flex flex-wrap gap-2 pt-2">
-                            {["{user}", "{user.tag}", "{server}", "{member_count}", "{user_avatar}"].map(v => (
+                        <div className="flex flex-wrap gap-2 pt-2 px-4 italic">
+                            {["{user}", "{server}", "{member_count}", "{user_avatar}"].map(v => (
                                 <button 
                                     key={v}
                                     onClick={() => setMessage(prev => prev + " " + v)}
-                                    className="px-3 py-1 bg-zinc-100 text-zinc-600 text-[10px] font-bold rounded-md hover:bg-zinc-200 transition-all"
+                                    className="px-3 py-1.5 bg-emerald-500/5 text-emerald-500/40 text-[8px] font-black rounded-lg border border-emerald-500/10 hover:text-emerald-500 transition-all uppercase tracking-widest"
                                 >
                                     {v}
                                 </button>
@@ -201,39 +219,36 @@ export default function WelcomePage() {
 
                 </div>
 
-                <div className="p-6 bg-zinc-50/50 border-t border-zinc-50">
+                <div className="p-8 border-t border-white/5 bg-white/5 font-mono">
                     <button 
                         onClick={handleSave}
                         disabled={saving}
-                        className="w-full flex items-center justify-center gap-3 py-4 bg-zinc-950 text-white font-bold text-sm rounded-xl shadow-md hover:bg-zinc-800 transition-all active:scale-95 disabled:opacity-50"
+                        className="w-full flex items-center justify-center gap-4 py-6 bg-emerald-500 text-black font-black text-[11px] rounded-[1.5rem] shadow-[0_0_25px_#10b981] hover:scale-[1.02] hover:shadow-[0_0_35px_#10b981] transition-all active:scale-95 disabled:opacity-50 uppercase tracking-[0.4em] italic"
                     >
-                        {saving ? <Loader2 className="animate-spin" /> : <Save size={18} />} 
-                        Save Settings
+                        {saving ? <Loader2 className="animate-spin" /> : <Save size={20} />} 
+                        Sync_Handshake
                     </button>
                 </div>
             </div>
         </div>
 
         {/* Live Mirror (Preview) */}
-        <div className="xl:col-span-5 flex flex-col min-h-0 overflow-visible">
+        <div className="xl:col-span-5 flex flex-col min-h-0 h-full overflow-hidden">
              {/* Device Switcher */}
-             <div className="bg-white p-2 rounded-2xl border border-zinc-100 mb-6 flex justify-center gap-2 shrink-0">
-                 <button onClick={() => setIsPreviewMobile(false)} className={`flex-1 py-3 rounded-xl transition-all flex items-center justify-center gap-3 text-xs font-bold ${!isPreviewMobile ? 'bg-zinc-950 text-white shadow-lg' : 'text-zinc-400 hover:text-zinc-950'}`}>
-                    <Monitor size={14} /> Desktop
+             <div className="bg-zinc-900/40 p-2 rounded-[2rem] border border-white/5 mb-8 flex justify-center gap-4 shrink-0 font-mono">
+                 <button onClick={() => setIsPreviewMobile(false)} className={`flex-1 py-4 rounded-2xl transition-all flex items-center justify-center gap-3 text-[9px] font-black uppercase tracking-widest italic ${!isPreviewMobile ? 'bg-white text-black shadow-lg scale-105' : 'text-zinc-600 hover:text-zinc-300'}`}>
+                    <Monitor size={14} /> Desktop_View
                  </button>
-                 <button onClick={() => setIsPreviewMobile(true)} className={`flex-1 py-3 rounded-xl transition-all flex items-center justify-center gap-3 text-xs font-bold ${isPreviewMobile ? 'bg-zinc-950 text-white shadow-lg' : 'text-zinc-400 hover:text-zinc-950'}`}>
-                    <Smartphone size={14} /> Mobile
+                 <button onClick={() => setIsPreviewMobile(true)} className={`flex-1 py-4 rounded-2xl transition-all flex items-center justify-center gap-3 text-[9px] font-black uppercase tracking-widest italic ${isPreviewMobile ? 'bg-emerald-500 text-black shadow-lg scale-105' : 'text-zinc-600 hover:text-zinc-300'}`}>
+                    <Smartphone size={14} /> Mobile_Link
                  </button>
              </div>
  
              <div className="flex-1 overflow-visible relative group">
-                <div className={`h-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${isPreviewMobile ? 'max-w-[340px] mx-auto' : 'w-full'}`}>
-                    {/* Realistic Discord UI background */}
-                    <div className="h-full bg-[#313338] rounded-[2.5rem] shadow-2xl flex flex-col border border-[#1e1f22] overflow-visible !font-sans">
-                        
-                        <div className="flex-1 overflow-y-auto px-4 py-6 custom-scrollbar flex flex-col gap-3">
-                            {/* Discord Message Header Info */}
-                            <div className="flex items-start gap-3 px-1 mb-1 mt-4">
+                <div className={`h-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${isPreviewMobile ? 'max-w-[320px] mx-auto' : 'w-full'}`}>
+                    <div className="h-full bg-[#1e1f22] rounded-[3rem] shadow-2xl flex flex-col border border-[#0b0b0c] overflow-hidden !font-sans pb-10">
+                        <div className="flex-1 overflow-y-auto px-6 py-10 custom-scrollbar flex flex-col gap-6">
+                            <div className="flex items-start gap-4 px-1 mb-1 mt-4">
                                 <div className="w-10 h-10 rounded-full bg-[#5865f2] shrink-0 flex items-center justify-center text-white"><Bot size={24} /></div>
                                 <div className="flex-1 flex flex-col min-w-0">
                                     <div className="flex items-center gap-2 baseline">
@@ -243,57 +258,33 @@ export default function WelcomePage() {
                                     </div>
                                     
                                     {messageType === "text" ? (
-                                        <div className="text-[#dbdee1] text-[15px] leading-relaxed whitespace-pre-wrap mt-0.5">
+                                        <div className="text-[#dbdee1] text-[14px] leading-relaxed whitespace-pre-wrap mt-1">
                                             {(() => {
                                                 const formatted = (message || "")
                                                     .replace(/{user}/g, "@NewUser")
-                                                    .replace(/{server}/g, "High Core Server")
+                                                    .replace(/{server}/g, "HighCore Agency")
                                                     .replace(/{member_count}/g, "1,452")
-                                                    .replace(/\\n/g, '\n')
-                                                    .replace(/^(#+)\s*(.*?)$/gm, '**$2**');
-                                                return formatted.split(/(\*\*.*?\*\*)/g).map((part, i) => {
-                                                    if (part.startsWith('**') && part.endsWith('**')) {
-                                                        return <strong key={i} className="font-bold text-white">{part.slice(2, -2)}</strong>;
-                                                    }
-                                                    return part;
-                                                });
+                                                    .replace(/\\n/g, '\n');
+                                                return formatted;
                                             })()}
                                         </div>
                                     ) : (
-                                        <div className="mt-1 flex max-w-full">
-                                            {/* Component v2 Embed */}
-                                            <div className="bg-[#2b2d31] rounded-[8px] flex flex-col max-w-[400px] overflow-visible shrink-0 transition-colors relative">
-                                                {/* Embed Color Line */}
-                                                <div className="absolute left-0 top-0 bottom-0 w-1 flex-shrink-0 rounded-l-[8px]" style={{ backgroundColor: color || '#202225' }}></div>
-                                                
-                                                <div className="p-4 pl-5 flex flex-col gap-2 w-full">
-                                                    <div className="flex items-start gap-3 w-full">
-                                                        <div className="flex-1 flex flex-col gap-2 min-w-0">
-                                                            {embedTitle && <h3 className="text-white font-bold text-[15px] leading-tight pr-6">{embedTitle}</h3>}
+                                        <div className="mt-2 flex max-w-full">
+                                            <div className="bg-[#2b2d31] rounded-[8px] flex flex-col max-w-[400px] overflow-hidden shrink-0 transition-colors relative border-l-4" style={{ borderLeftColor: color || '#10b981' }}>
+                                                <div className="p-4 flex flex-col gap-2 w-full">
+                                                    <div className="flex items-start gap-4 w-full">
+                                                        <div className="flex-1 flex flex-col gap-1.5 min-w-0">
+                                                            {embedTitle && <h3 className="text-white font-bold text-[15px] leading-tight pr-10">{embedTitle}</h3>}
                                                             {message && (
-                                                                <div className="text-[#dbdee1] text-[14px] leading-relaxed whitespace-pre-wrap break-words font-medium">
-                                                                    {(() => {
-                                                                        const formatted = message
-                                                                            .replace(/{user}/g, "@NewUser")
-                                                                            .replace(/{server}/g, "High Core Server")
-                                                                            .replace(/{member_count}/g, "1,452")
-                                                                            .replace(/\\n/g, '\n')
-                                                                            .replace(/^(#+)\s*(.*?)$/gm, '**$2**');
-                                                                        return formatted.split(/(\*\*.*?\*\*)/g).map((part, i) => {
-                                                                            if (part.startsWith('**') && part.endsWith('**')) {
-                                                                                return <strong key={i} className="font-bold text-white">{part.slice(2, -2)}</strong>;
-                                                                            }
-                                                                            return part;
-                                                                        });
-                                                                    })()}
+                                                                <div className="text-[#dbdee1] text-[13px] leading-relaxed whitespace-pre-wrap break-words font-medium opacity-90">
+                                                                    {message.replace(/{user}/g, "@NewUser").replace(/{server}/g, "HighCore Agency").replace(/{member_count}/g, "1,452")}
                                                                 </div>
                                                             )}
                                                         </div>
-                                                        
                                                         {thumbnailUrl && thumbnailUrl !== "{none}" && (
-                                                            <div className="w-[50px] h-[50px] shrink-0 rounded-md overflow-visible bg-[#232428] ml-auto">
+                                                            <div className="w-[60px] h-[60px] shrink-0 rounded-md overflow-hidden bg-[#232428] ml-auto">
                                                                 {thumbnailUrl === "{user_avatar}" ? (
-                                                                    <div className="w-full h-full bg-indigo-500 flex items-center justify-center text-white font-bold text-lg">U</div>
+                                                                    <div className="w-full h-full bg-emerald-500 flex items-center justify-center text-white font-bold text-xl">U</div>
                                                                 ) : (
                                                                     <img src={thumbnailUrl} alt="Thumbnail" className="w-full h-full object-cover" />
                                                                 )}
@@ -301,10 +292,9 @@ export default function WelcomePage() {
                                                         )}
                                                     </div>
                                                 </div>
-                                                
                                                 {imageUrl && (
                                                     <div className="px-4 pb-4">
-                                                        <img src={imageUrl} alt="Banner" className="w-full h-auto rounded-lg max-w-[400px]" />
+                                                        <img src={imageUrl} alt="Banner" className="w-full h-auto rounded-lg" />
                                                     </div>
                                                 )}
                                             </div>
@@ -313,14 +303,9 @@ export default function WelcomePage() {
                                 </div>
                             </div>
                         </div>
-                        
-                        <div className="px-6 py-4 bg-[#2b2d31] flex items-center gap-4 border-t border-[#1e1f22] shrink-0 pointer-events-none opacity-50">
-                            <div className="w-8 h-8 rounded-full bg-[#383a40] flex items-center justify-center">
-                                <Plus size={16} className="text-[#b5bac1]" />
-                            </div>
-                            <div className="flex-1 bg-[#383a40] rounded-full h-10 px-4 flex items-center text-[#949ba4] text-[14px]">
-                                Message #welcome
-                            </div>
+                        <div className="px-6 py-4 bg-[#2b2d31] flex items-center gap-4 opacity-10 pointer-events-none">
+                            <div className="w-8 h-8 rounded-full bg-[#383a40]" />
+                            <div className="flex-1 bg-[#383a40] rounded-full h-10" />
                         </div>
                     </div>
                 </div>

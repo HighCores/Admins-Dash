@@ -48,7 +48,6 @@ export default function SetupPage() {
 
   const fetchSettings = async () => {
     setLoading(true);
-    // Fetch specifically for the 'global' guild to match Bot sync service
     const { data } = await supabase.from("dc_settings").select("*").eq("guild_id", GUILD_ID);
     
     if (data) {
@@ -97,12 +96,11 @@ export default function SetupPage() {
             { guild_id: GUILD_ID, key: "BOT_PREFIX", value: botPrefix },
         ];
 
-        // Batch UPSERT into a single robust call
         const { error } = await supabase.from("dc_settings").upsert(updates, { onConflict: 'key,guild_id' });
 
         if (error) throw error;
 
-        await fetchSettings(); // Refresh from DB
+        await fetchSettings();
         showToast("Settings synchronized! ⚡");
     } catch (err: any) {
         showToast("Sync Failed: " + err.message, true);
@@ -131,130 +129,130 @@ export default function SetupPage() {
   };
 
   return (
-    <div className="w-full flex flex-col h-full overflow-visible">
+    <div className="w-full flex flex-col h-full overflow-hidden text-zinc-300 selection:bg-emerald-500/30 selection:text-emerald-400">
       
-      {/* Header - Minimalist */}
-      <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 shrink-0 lg:px-4">
+      {/* Header Area - Terminal Navigation */}
+      <header className="mb-10 flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-white/5 shrink-0">
         <div className="space-y-1">
-          <div className="flex items-center gap-3 mb-2">
-             <div className="p-2 bg-zinc-950 rounded-xl shadow-lg">
-                <Settings size={18} className="text-white" />
+          <div className="flex items-center gap-3 mb-1 font-mono">
+             <div className="p-2 bg-emerald-500/10 rounded-xl shadow-lg border border-emerald-500/20">
+                <Settings size={18} className="text-emerald-500 crt-glow" />
              </div>
-             <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none font-mono">Agency Bot Setup</span>
+             <span className="text-[10px] font-black text-emerald-500/60 uppercase tracking-widest leading-none">Subsystem // Global Configuration Hub</span>
           </div>
-          <h1 className="text-4xl font-black text-zinc-950 tracking-tight">
-            Bot <span className="text-zinc-300">Settings</span>
+          <h1 className="text-3xl lg:text-4xl font-black text-white tracking-tighter uppercase italic">
+            Bot <span className="text-emerald-500 crt-glow">Settings</span>
           </h1>
-          <p className="text-sm font-semibold text-zinc-500 max-w-2xl">
-             Manage global configurations, channels, and roles for your agency bot.
+          <p className="text-sm font-medium text-zinc-500 max-w-xl font-mono">
+             Calibrating global architectural parameters, communication relays, and authority nodes for the Highcore Bot.
           </p>
         </div>
         
         <div className="flex items-center gap-4">
             <button 
                 onClick={fetchSettings}
-                className="p-4 bg-white border border-zinc-100 rounded-2xl shadow-sm hover:shadow-xl transition-all group active:scale-95"
+                className="p-4 bg-zinc-900 border border-white/5 rounded-2xl shadow-xl hover:border-emerald-500/30 transition-all group active:scale-95"
             >
-                <RefreshCcw size={20} className={`text-zinc-300 group-hover:text-zinc-950 transition-all ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCcw size={20} className={`text-zinc-500 group-hover:text-emerald-500 transition-all ${loading ? 'animate-spin' : ''}`} />
             </button>
             <button 
                 disabled={saving}
                 onClick={handleSave}
-                className="flex items-center gap-5 px-10 py-5 bg-zinc-950 text-white font-black text-xs rounded-2xl shadow-xl hover:scale-105 active:scale-95 group disabled:opacity-50 tracking-widest uppercase italic"
+                className="flex items-center gap-6 px-10 py-5 bg-emerald-500 text-black font-black text-[11px] rounded-2xl shadow-[0_0_25px_#10b981] hover:scale-[1.02] hover:shadow-[0_0_35px_#10b981] transition-all group disabled:opacity-50 uppercase tracking-[0.2em] italic"
             >
                 {saving ? <Loader2 className="animate-spin" /> : <Save size={20} />}
-                Sync Settings
+                Sync_Settings
             </button>
         </div>
       </header>
 
       {/* Grid Layout */}
-      <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-10 min-h-0 overflow-visible lg:px-4 pb-20">
+      <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-10 min-h-0 overflow-hidden pb-10">
         
         {/* Left: Configuration Rack */}
-        <div className="xl:col-span-8 flex flex-col min-h-0 overflow-visible">
-             <div className="bg-white rounded-[3rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-visible">
-                  <div className="p-8 border-b border-zinc-50 bg-zinc-50/20 flex items-center justify-between">
-                     <h3 className="text-lg font-black text-zinc-950 uppercase italic tracking-tighter flex items-center gap-3">
-                        Config Layer
+        <div className="xl:col-span-8 flex flex-col min-h-0 h-full overflow-hidden">
+             <div className="terminal-card flex-1 flex flex-col overflow-hidden bg-zinc-950/40 rounded-[2.5rem]">
+                  <div className="p-8 border-b border-white/5 bg-white/5 flex items-center justify-between font-mono">
+                     <h3 className="text-lg font-black text-white uppercase italic tracking-tighter flex items-center gap-3">
+                        <Terminal size={18} className="text-emerald-500" /> Config Layer
                      </h3>
-                     <span className="bg-emerald-500 text-white text-[9px] px-3 py-1.5 rounded-lg font-black tracking-widest shadow-lg">STABLE</span>
+                     <span className="p-1 px-4 bg-emerald-500/10 text-emerald-500 text-[9px] rounded-lg font-black tracking-widest border border-emerald-500/20 crt-glow">AUTHORIZED</span>
                   </div>
 
-                  <div className="flex-1 p-12 space-y-12 overflow-visible">
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 overflow-visible">
+                  <div className="flex-1 p-10 space-y-10 overflow-y-auto custom-scrollbar">
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                         {/* Shard 1: Infrastructure */}
-                        <div className="space-y-12 overflow-visible">
-                            <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.4em] mb-4 italic">General Channels</h4>
+                        <div className="space-y-10">
+                            <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.4em] mb-4 italic font-mono border-b border-white/5 pb-2">Global Channels</h4>
                             
                             <DiscordSelect 
                                 label="Log Category"
                                 type="category"
                                 value={logCategory}
                                 onChange={setLogCategory}
-                                placeholder="Select category..."
+                                placeholder="SELECT_CAT..."
                             />
                             <DiscordSelect 
                                 label="Ticket Category"
                                 type="category"
                                 value={ticketCategory}
                                 onChange={setTicketCategory}
-                                placeholder="Select category..."
+                                placeholder="SELECT_CAT..."
                             />
                             <DiscordSelect 
                                 label="Transcript Channel"
                                 type="channel"
                                 value={transcriptChannel}
                                 onChange={setTranscriptChannel}
-                                placeholder="Select channel..."
+                                placeholder="SELECT_CH..."
                             />
                             <DiscordSelect 
                                 label="Welcome Channel"
                                 type="channel"
                                 value={welcomeChannel}
                                 onChange={setWelcomeChannel}
-                                placeholder="Select channel..."
+                                placeholder="SELECT_CH..."
                             />
 
-                             <div className="space-y-3">
-                                <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest px-4 font-mono leading-none italic">Bot Prefix</label>
+                             <div className="space-y-3 font-mono">
+                                <label className="text-[10px] font-black text-zinc-600 uppercase tracking-widest px-4 leading-none italic">Bot Prefix</label>
                                 <input 
                                     type="text"
                                     maxLength={3}
                                     value={botPrefix}
                                     onChange={(e) => setBotPrefix(e.target.value)}
-                                    className="w-full p-5 rounded-2xl bg-zinc-50 border border-zinc-100 font-bold text-center text-3xl text-zinc-950 focus:bg-white outline-none placeholder:opacity-10 transition-all italic shadow-inner"
+                                    className="w-full p-5 rounded-2xl bg-black border border-white/5 font-black text-center text-3xl text-emerald-500 focus:border-emerald-500/30 outline-none transition-all italic uppercase"
                                     placeholder="!"
                                 />
                             </div>
                         </div>
 
                         {/* Shard 2: Authority & Operations */}
-                        <div className="space-y-12 overflow-visible">
-                             <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.4em] mb-4 italic">Standard Roles</h4>
+                        <div className="space-y-10">
+                             <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.4em] mb-4 italic font-mono border-b border-white/5 pb-2">Standard Roles</h4>
                              <DiscordSelect 
                                 label="Admin Role"
                                 type="role"
                                 value={roleHigh}
                                 onChange={setRoleHigh}
-                                placeholder="Select role..."
+                                placeholder="SELECT_ROLE..."
                             />
                             <DiscordSelect 
                                 label="Founder Role"
                                 type="role"
                                 value={roleFounder}
                                 onChange={setRoleFounder}
-                                placeholder="Select role..."
+                                placeholder="SELECT_ROLE..."
                             />
                             <DiscordSelect 
                                 label="Moderator Role"
                                 type="role"
                                 value={roleMod}
                                 onChange={setRoleMod}
-                                placeholder="Select role..."
+                                placeholder="SELECT_ROLE..."
                             />
                             
-                            <h4 className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.4em] mt-8 mb-4 italic">Operational Channels</h4>
+                            <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.4em] mt-8 mb-4 italic font-mono border-b border-white/5 pb-2">Operational Relay</h4>
                             <DiscordSelect 
                                 label="Startup Signal (CH_STARTUP)"
                                 type="channel"
@@ -274,49 +272,53 @@ export default function SetupPage() {
         </div>
 
         {/* Right: Operations */}
-        <div className="xl:col-span-4 flex flex-col gap-10 min-h-0 overflow-visible">
-             <div className="bg-white p-12 rounded-[3.5rem] border border-zinc-100 shadow-sm relative overflow-visible flex flex-col items-center justify-center group flex-1 shrink-0 shadow-inner">
-                <div className="absolute top-0 right-0 p-10 opacity-[0.05] pointer-events-none rotate-12 group-hover:rotate-0 transition-transform duration-700"><Bot size={140} /></div>
-                <h3 className="text-2xl font-black text-zinc-950 mb-12 flex items-center gap-4 italic tracking-tighter uppercase shrink-0">
-                    Bot Status
+        <div className="xl:col-span-4 flex flex-col gap-8 min-h-0 h-full overflow-hidden font-mono">
+             <div className="terminal-card bg-zinc-900/40 p-10 rounded-[3rem] border border-white/5 shadow-xl relative overflow-hidden flex flex-col items-center justify-center group flex-1 shrink-0">
+                <div className="absolute top-0 right-0 p-10 opacity-[0.03] pointer-events-none rotate-12 group-hover:rotate-0 transition-transform duration-700 text-emerald-500"><Bot size={140} /></div>
+                <h3 className="text-2xl font-black text-white mb-10 flex items-center gap-4 italic tracking-tighter uppercase shrink-0">
+                    Sync Status
                 </h3>
 
                 <div className="w-full space-y-6">
-                    <div className="p-8 bg-zinc-50 rounded-[2.5rem] border border-zinc-100 space-y-5 shadow-inner">
+                    <div className="p-8 bg-black/40 rounded-[2.5rem] border border-white/5 space-y-5">
                         <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest italic">Sync Status</span>
-                            <span className={`px-4 py-1.5 rounded-lg text-[9px] font-black uppercase ${welcomeChannel ? 'bg-emerald-500 text-white shadow-lg' : 'bg-red-500 text-white'}`}>
-                                {welcomeChannel ? 'CONNECTED' : 'DISCONNECTED'}
+                            <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest italic">Node Link</span>
+                            <span className={`px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest border ${welcomeChannel ? 'bg-emerald-500 text-black border-emerald-500 crt-glow' : 'bg-red-500/10 text-red-500 border-red-500/20'}`}>
+                                {welcomeChannel ? 'OPTIMAL' : 'SEVERED'}
                             </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                             <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest italic">DB Latency</span>
+                             <span className="text-emerald-500 text-xs font-black tracking-tighter italic">24MS</span>
                         </div>
                     </div>
 
                     <button 
                         disabled={seeding}
                         onClick={handleSeedDefaults}
-                        className="w-full flex flex-col items-center gap-5 p-10 bg-zinc-50 border-2 border-dashed border-zinc-200 rounded-[3rem] group hover:bg-zinc-950 hover:border-transparent transition-all shadow-inner relative overflow-visible"
+                        className="w-full flex flex-col items-center gap-5 p-10 bg-white/[0.02] border-2 border-dashed border-white/5 rounded-[3rem] group hover:bg-emerald-500 hover:border-transparent transition-all relative overflow-hidden"
                     >
-                        <Database size={28} className={`text-zinc-200 ${seeding ? 'animate-spin' : 'group-hover:text-emerald-400 group-hover:scale-110'} transition-all`} />
+                        <Database size={28} className={`text-zinc-800 ${seeding ? 'animate-spin' : 'group-hover:text-black group-hover:scale-110'} transition-all`} />
                         <div className="text-center">
-                            <span className="text-[11px] font-black italic tracking-widest text-zinc-950 group-hover:text-white uppercase block mb-1">Load Defaults</span>
-                            <span className="text-[8px] font-black text-zinc-300 uppercase tracking-widest italic">RESET_CMD_NODES</span>
+                            <span className="text-[11px] font-black italic tracking-widest text-zinc-600 group-hover:text-black uppercase block mb-1">Load System Defaults</span>
+                            <span className="text-[8px] font-black text-zinc-800 uppercase tracking-widest italic block">RESET_CMD_NODES</span>
                         </div>
                     </button>
                 </div>
              </div>
 
-             <div className="p-10 bg-zinc-950 text-white rounded-[3rem] shadow-2xl relative overflow-visible group border border-zinc-900 shrink-0">
-                <div className="absolute right-0 bottom-0 p-8 opacity-5 group-hover:scale-125 transition-transform duration-1000 rotate-12 pointer-events-none"><ShieldAlert size={160} /></div>
-                <h4 className="text-lg font-black italic mb-3 tracking-tighter flex items-center gap-4 uppercase">
+             <div className="terminal-card bg-zinc-950 p-8 rounded-[3rem] shadow-2xl relative overflow-hidden group border border-white/5 shrink-0">
+                <div className="absolute right-0 bottom-0 p-8 opacity-5 group-hover:scale-125 transition-transform duration-1000 rotate-12 pointer-events-none text-red-500"><ShieldAlert size={160} /></div>
+                <h4 className="text-lg font-black italic text-white mb-2 tracking-tighter flex items-center gap-4 uppercase">
                    Emergency Reset
                 </h4>
-                <p className="text-[11px] opacity-40 mb-8 font-bold leading-relaxed italic pr-4">Clear local cache and restart bot session immediately.</p>
+                <p className="text-[10px] text-zinc-600 mb-8 font-black leading-relaxed italic pr-4 uppercase tracking-widest">Clear local cache and restart bot session immediately.</p>
                 <button 
                   onClick={() => {
                     localStorage.clear();
                     window.location.href = '/';
                   }}
-                  className="w-full py-5 bg-white text-zinc-950 rounded-2xl font-black text-[10px] uppercase tracking-[0.4em] shadow-xl hover:bg-zinc-100 transition-all italic"
+                  className="w-full py-5 bg-red-500/10 text-red-500 rounded-2xl font-black text-[10px] uppercase tracking-[0.4em] border border-red-500/20 hover:bg-red-500 hover:text-white transition-all italic shadow-[0_0_15px_rgba(239,68,68,0.1)]"
                 >
                   TERMINATE SESSION
                 </button>
@@ -326,3 +328,4 @@ export default function SetupPage() {
     </div>
   );
 }
+
