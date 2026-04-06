@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
-import { Hash, Shield, Search, Loader2, ChevronDown, Layout, AlertCircle } from "lucide-react";
+import { Hash, Shield, Search, Loader2, ChevronDown, Layout, AlertCircle, Terminal, Cpu } from "lucide-react";
 
 interface DiscordSelectProps {
   label: string;
@@ -65,7 +65,6 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
   const updateCoords = useCallback(() => {
     if (buttonRef.current && isOpen) {
         const rect = buttonRef.current.getBoundingClientRect();
-        // Use fixed positioning relative to viewport to escape all parents
         setCoords({
             top: rect.bottom,
             left: rect.left,
@@ -77,7 +76,6 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
   useEffect(() => {
     if (isOpen) {
         updateCoords();
-        // Add listeners to parent scroll containers to ensure position stays sticky
         window.addEventListener('scroll', updateCoords, true);
         window.addEventListener('resize', updateCoords);
     }
@@ -99,8 +97,8 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
   });
 
   return (
-    <div className="space-y-2 relative">
-      <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest px-1">
+    <div className="space-y-2 relative font-mono">
+      <label className="text-[10px] font-black text-zinc-700 uppercase tracking-widest px-1">
         {label}
       </label>
       
@@ -109,27 +107,27 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
           ref={buttonRef}
           type="button"
           onClick={toggleDropdown}
-          className={`w-full h-11 flex items-center justify-between px-4 bg-zinc-50 border rounded-xl font-bold transition-all hover:bg-white focus:ring-2 ring-zinc-950/5 outline-none ${
-            error ? "border-red-200 bg-red-50/30" : "border-zinc-100"
+          className={`w-full h-12 flex items-center justify-between px-4 bg-black/40 border rounded-2xl font-black transition-all hover:bg-zinc-950 focus:border-emerald-500/30 outline-none ${
+            error ? "border-red-500/30 bg-red-500/5 text-red-500" : "border-white/5 text-zinc-300"
           }`}
         >
           <div className="flex items-center gap-3">
             {loading ? (
-                <Loader2 size={14} className="animate-spin text-zinc-400" />
+                <Loader2 size={14} className="animate-spin text-emerald-500" />
             ) : error ? (
-                <AlertCircle size={14} className="text-red-400" />
+                <AlertCircle size={14} className="text-red-500 animate-pulse" />
             ) : type === "channel" ? (
-                <Hash size={14} className="text-zinc-400" />
+                <Hash size={14} className={selectedItem ? "text-emerald-500" : "text-zinc-700"} />
             ) : type === "role" ? (
-                <Shield size={14} className="text-zinc-400" />
+                <Shield size={14} className={selectedItem ? "text-emerald-500" : "text-zinc-700"} />
             ) : (
-                <Layout size={14} className="text-zinc-400" />
+                <Cpu size={14} className={selectedItem ? "text-emerald-500" : "text-zinc-700"} />
             )}
-            <span className={`text-sm truncate max-w-[180px] ${error ? "text-red-400 font-black italic" : selectedItem ? "text-zinc-900" : "text-zinc-400 opacity-60"}`}>
-              {error ? `SYSTEM_ERR: ${error}` : selectedItem ? (selectedItem.name || selectedItem.label) : placeholder || `Select ${type}...`}
+            <span className={`text-[10px] uppercase tracking-widest truncate max-w-[180px] ${error ? "text-red-500 italic" : selectedItem ? "text-white" : "text-zinc-700"}`}>
+              {error ? `NODE_ERR: ${error}` : selectedItem ? (selectedItem.name || selectedItem.label) : placeholder || `ID_REQUIRED: ${type}`}
             </span>
           </div>
-          <ChevronDown size={14} className={`text-zinc-300 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
+          <ChevronDown size={14} className={`text-zinc-700 transition-transform duration-300 ${isOpen ? "rotate-180 text-emerald-500" : ""}`} />
         </button>
 
         {isOpen && typeof document !== "undefined" && createPortal(
@@ -139,36 +137,35 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
                 top: coords.top + 8,
                 left: coords.left,
                 width: coords.width,
-                zIndex: 9999999 // Ultimate priority
+                zIndex: 9999999
             }}
-            className="bg-white border border-zinc-100 rounded-2xl shadow-2xl overflow-visible animate-in fade-in zoom-in-95 duration-200"
+            className="bg-[#0f0f12] border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden animate-in fade-in zoom-in-95 duration-200"
           >
             {error ? (
-                <div className="p-8 text-center bg-red-50/50">
-                    <AlertCircle size={24} className="mx-auto text-red-400 mb-3" />
-                    <div className="text-[10px] font-black text-red-500 uppercase tracking-widest mb-1">Connection Error</div>
-                    <div className="text-[9px] font-bold text-red-400/60 leading-relaxed uppercase">{error}</div>
-                    <div className="mt-4 text-[8px] font-black text-zinc-400 uppercase tracking-widest italic pt-4 border-t border-red-100">Check Bot API Status</div>
+                <div className="p-8 text-center bg-red-500/5">
+                    <AlertCircle size={24} className="mx-auto text-red-500 mb-3" />
+                    <div className="text-[10px] font-black text-red-500 uppercase tracking-widest mb-1 font-mono">Transmission Failure</div>
+                    <div className="text-[9px] font-bold text-red-500/60 leading-relaxed uppercase font-mono">{error}</div>
                 </div>
             ) : (
                 <>
-                    <div className="p-3 border-b border-zinc-50 bg-zinc-50/50">
-                    <div className="relative">
-                        <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
-                        <input 
-                            autoFocus
-                            type="text" 
-                            className="w-full pl-9 pr-4 py-2 bg-white rounded-lg text-xs font-bold focus:outline-none border border-zinc-100"
-                            placeholder="Search..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                    </div>
+                    <div className="p-4 border-b border-white/5 bg-black/40">
+                        <div className="relative group">
+                            <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-700 group-focus-within:text-emerald-500 transition-colors" />
+                            <input 
+                                autoFocus
+                                type="text" 
+                                className="w-full pl-10 pr-4 py-3 bg-[#0a0a0c] border border-white/5 rounded-xl text-[10px] uppercase font-black tracking-widest text-white outline-none focus:border-emerald-500/20 transition-all placeholder:text-zinc-800"
+                                placeholder="Search Cluster..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
                     </div>
                     
-                    <div className="max-h-60 overflow-y-auto p-1 custom-scrollbar">
+                    <div className="max-h-60 overflow-y-auto p-2 custom-scrollbar space-y-1 font-mono">
                     {filteredItems.length === 0 ? (
-                        <div className="p-6 text-center text-[10px] font-black text-zinc-300 uppercase tracking-widest italic">No results found</div>
+                        <div className="p-8 text-center text-[10px] font-black text-zinc-800 uppercase tracking-widest italic font-mono">No nodes identified</div>
                     ) : (
                         filteredItems.map((item) => (
                         <button
@@ -177,14 +174,16 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
                                 onChange(item.id, item.color);
                                 setIsOpen(false);
                             }}
-                            className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left text-sm font-bold ${
-                                value === item.id ? "bg-zinc-950 text-white" : "hover:bg-zinc-50 text-zinc-900"
+                            className={`w-full flex items-center gap-3 p-3.5 rounded-xl transition-all text-left text-[10px] font-black uppercase tracking-widest ${
+                                value === item.id 
+                                ? "bg-emerald-500 text-black shadow-lg" 
+                                : "hover:bg-white/5 text-zinc-500 hover:text-white"
                             }`}
                         >
-                            {type === "channel" ? <Hash size={12} className="opacity-40" /> : type === "role" ? <Shield size={12} className="opacity-40" /> : <Layout size={12} className="opacity-40" />}
+                            {type === "channel" ? <Hash size={12} className="opacity-40 shrink-0" /> : type === "role" ? <Shield size={12} className="opacity-40 shrink-0" /> : <Terminal size={12} className="opacity-40 shrink-0" />}
                             <span className="truncate">{item.name || item.label}</span>
                             {item.color && type === "role" && (
-                                <div className="w-1.5 h-1.5 rounded-full ml-auto" style={{ backgroundColor: item.color }}></div>
+                                <div className="w-2 h-2 rounded-full ml-auto shadow-sm" style={{ backgroundColor: item.color }}></div>
                             )}
                         </button>
                         ))
@@ -200,7 +199,7 @@ export default function DiscordSelect({ label, type, value, excludeIds = [], onC
       {/* Backdrop for closing */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-[9999998]" 
+          className="fixed inset-0 z-[9999998] bg-black/20" 
           onClick={() => setIsOpen(false)}
         />
       )}

@@ -8,7 +8,7 @@ import {
   TrendingUp, Coins, Crown, Palette, Settings, 
   LogOut, Send, Bot, MessageSquare, ShieldCheck, 
   Activity, ShieldAlert, Sparkles, History, Users,
-  ChevronDown, ChevronRight, Monitor
+  ChevronDown, Cpu, Terminal, Monitor, BarChart, Zap
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
@@ -18,38 +18,36 @@ const NavigationGroups = [
     category: "CORE",
     items: [
       { name: "Overview", icon: LayoutDashboard, href: "/dashboard" },
+      { name: "Node Stats", icon: BarChart, href: "/dashboard/stats" },
     ]
   },
   {
     category: "ENGAGEMENT",
     items: [
-      { name: "Welcome & Leave", icon: Users, href: "/dashboard/discord/welcome" },
-      { name: "Levels", icon: TrendingUp, href: "/dashboard/discord/levels" },
-      { name: "Economy", icon: Coins, href: "/dashboard/discord/points" },
-      { name: "Admin Points", icon: Crown, href: "/dashboard/discord/admin-points" },
-      { name: "Messenger & BC", icon: Send, href: "/dashboard/discord/messenger" },
+      { name: "Broadcast", icon: Send, href: "/dashboard/discord/messenger" },
+      { name: "Identity", icon: Users, href: "/dashboard/discord/welcome" },
+      { name: "Merit (XP)", icon: TrendingUp, href: "/dashboard/discord/levels" },
+      { name: "Currency", icon: Coins, href: "/dashboard/discord/points" },
     ]
   },
   {
     category: "AUTOMATION",
     items: [
-      { name: "Commands", icon: Command, href: "/dashboard/discord/commands" },
-      { name: "Auto Response", icon: MessageSquare, href: "/dashboard/discord/auto-replies" },
-      { name: "Embed Builder", icon: PanelsTopLeft, href: "/dashboard/discord/panels" },
+      { name: "Protocols", icon: Command, href: "/dashboard/discord/commands" },
+      { name: "Auto Reply", icon: MessageSquare, href: "/dashboard/discord/auto-replies" },
+      { name: "Terminal UI", icon: PanelsTopLeft, href: "/dashboard/discord/panels" },
       { name: "Tickets", icon: Ticket, href: "/dashboard/discord/tickets" },
-      { name: "Colors", icon: Palette, href: "/dashboard/discord/colors" },
     ]
   },
   {
     category: "SECURITY",
     items: [
       { name: "Moderation", icon: ShieldCheck, href: "/dashboard/discord/moderation" },
-      { name: "Auto Mod", icon: ShieldAlert, href: "/dashboard/discord/auto-mod" },
-      { name: "Logs", icon: History, href: "/dashboard/discord/logs" },
+      { name: "Audit Log", icon: History, href: "/dashboard/discord/logs" },
     ]
   },
   {
-    category: "SETTINGS",
+    category: "SYSTEM",
     items: [
       { name: "Setup", icon: Settings, href: "/dashboard/discord/setup" },
     ]
@@ -62,11 +60,8 @@ export default function Sidebar() {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    if (pathname.includes("/telegram")) {
-        setPlatform("telegram");
-    } else {
-        setPlatform("discord");
-    }
+    if (pathname.includes("/telegram")) setPlatform("telegram");
+    else setPlatform("discord");
   }, [pathname]);
 
   const toggleCategory = (cat: string) => {
@@ -74,46 +69,51 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white text-zinc-900 w-full overflow-hidden">
-      <div className="mb-10 px-4 mt-6 shrink-0">
-          <h2 className="text-2xl font-black text-zinc-950 flex items-center gap-3">
-              <div className="w-10 h-10 bg-zinc-950 rounded-[14px] flex items-center justify-center shadow-md">
-                  <Bot size={20} className="text-white" />
-              </div>
-              <div className="flex flex-col leading-none">
-                  <span>High</span>
-                  <span className="text-sm text-zinc-500 font-bold tracking-tight">Core Agency</span>
-              </div>
-          </h2>
+    <div className="flex flex-col h-full bg-[#0f0f12] text-zinc-400 w-full overflow-hidden border-r border-white/5 font-mono">
+      
+      {/* Agency Branding */}
+      <div className="p-8 shrink-0 border-b border-white/5 bg-black/20">
+          <Link href="/dashboard" className="group">
+            <h2 className="text-xl font-black text-white flex items-center gap-4 italic tracking-tighter uppercase">
+                <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20 shadow-[0_0_20px_rgba(34,197,94,0.15)] group-hover:scale-110 transition-transform">
+                    <Cpu size={20} className="text-emerald-500 crt-glow" />
+                </div>
+                <div className="flex flex-col leading-none">
+                    <span className="group-hover:text-emerald-500 transition-colors">Highcore</span>
+                    <span className="text-[10px] text-zinc-600 font-black tracking-widest uppercase not-italic">Agency Node</span>
+                </div>
+            </h2>
+          </Link>
       </div>
 
-      <div className="flex bg-zinc-50 p-1.5 rounded-xl border border-zinc-100 mb-6 mx-4 shrink-0">
+      {/* Platform Selector */}
+      <div className="flex bg-black/40 p-1.5 rounded-xl border border-white/5 my-6 mx-6 shrink-0 font-sans">
           <button 
               onClick={() => setPlatform('discord')}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-bold transition-all ${platform === 'discord' ? 'bg-zinc-950 text-white shadow-md' : 'text-zinc-500 hover:text-zinc-900'}`}
+              className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-[10px] font-black uppercase transition-all tracking-widest ${platform === 'discord' ? 'bg-white text-black shadow-lg scale-105' : 'text-zinc-600 hover:text-zinc-300'}`}
           >
               <Monitor size={14} /> Discord
           </button>
           <button 
               onClick={() => setPlatform('telegram')}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-bold transition-all ${platform === 'telegram' ? 'bg-blue-500 text-white shadow-md' : 'text-zinc-500 hover:text-zinc-900'}`}
+              className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-[10px] font-black uppercase transition-all tracking-widest ${platform === 'telegram' ? 'bg-emerald-500 text-white shadow-lg scale-105' : 'text-zinc-600 hover:text-zinc-300'}`}
           >
               <Send size={14} /> Telegram
           </button>
       </div>
 
-      <nav className="flex-1 custom-scrollbar overflow-y-auto px-4 space-y-6 pb-6">
+      <nav className="flex-1 custom-scrollbar overflow-y-auto px-6 space-y-8 pb-10 mt-2">
         {NavigationGroups.map((group) => {
             const isCollapsed = collapsed[group.category];
 
             return (
-              <div key={group.category} className="space-y-2">
+              <div key={group.category} className="space-y-4">
                 <button 
                   onClick={() => toggleCategory(group.category)}
-                  className="w-full flex items-center justify-between text-[10px] font-black text-zinc-400 hover:text-zinc-600 transition-colors py-2 tracking-widest uppercase italic"
+                  className="w-full flex items-center justify-between text-[10px] font-black text-zinc-700 hover:text-emerald-500 transition-colors tracking-[0.3em] uppercase"
                 >
-                  <span>{group.category}</span>
-                  <ChevronDown size={12} className={`transition-transform ${isCollapsed ? 'rotate-180' : ''}`} />
+                  <span className="flex items-center gap-2 underline underline-offset-4 decoration-emerald-500/10">{group.category}</span>
+                  <ChevronDown size={12} className={`transition-transform duration-300 ${isCollapsed ? 'rotate-180 opacity-20' : 'opacity-50'}`} />
                 </button>
                 
                 <AnimatePresence initial={false}>
@@ -136,25 +136,21 @@ export default function Sidebar() {
 
                           return (
                               <Link key={item.name} href={finalHref}>
-                                  <motion.div 
-                                      whileHover={{ scale: 1.01 }}
-                                      whileTap={{ scale: 0.98 }}
-                                      className={`group flex items-center justify-between p-3.5 rounded-xl transition-all ${
-                                          isActive 
-                                          ? "bg-zinc-50 text-black border border-zinc-100 shadow-sm" 
-                                          : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50/50"
-                                      }`}
-                                  >
+                                  <div className={`group flex items-center justify-between p-3 rounded-xl transition-all border ${
+                                      isActive 
+                                      ? "bg-emerald-500/5 text-emerald-500 border-emerald-500/20 shadow-[inset_0_0_20px_rgba(34,197,94,0.02)]" 
+                                      : "text-zinc-600 hover:text-white hover:bg-white/5 border-transparent"
+                                  }`}>
                                       <div className="flex items-center gap-3">
-                                          <item.icon size={18} className={isActive ? "text-zinc-950" : "text-zinc-400 group-hover:text-zinc-600"} />
-                                          <span className={`text-sm ${isActive ? "font-bold text-zinc-950" : "font-semibold"}`}>
+                                          <item.icon size={16} className={isActive ? "text-emerald-500 crt-glow" : "text-zinc-700 group-hover:text-emerald-500 transition-colors"} />
+                                          <span className={`text-[11px] font-black uppercase tracking-tight ${isActive ? "text-white" : ""}`}>
                                               {item.name}
                                           </span>
                                       </div>
                                       {isActive && (
-                                          <div className={`w-1.5 h-1.5 rounded-full ${platform === 'discord' ? 'bg-zinc-950' : 'bg-blue-500'}`}></div>
+                                          <motion.div layoutId="active-dot" className="w-1 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
                                       )}
-                                  </motion.div>
+                                  </div>
                               </Link>
                           )
                       })}
@@ -166,12 +162,12 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="mt-4 pt-6 border-t border-zinc-100 px-2 shrink-0">
+      <div className="p-6 border-t border-white/5 bg-black/20 shrink-0">
         <button 
-            onClick={() => signOut()}
-            className="w-full flex items-center justify-between p-4 bg-zinc-950 text-white font-bold text-sm rounded-xl hover:bg-zinc-800 transition-all shadow-md"
+            onClick={() => signOut({ callbackUrl: '/' })}
+            className="w-full flex items-center justify-between p-4 bg-white/5 text-zinc-500 font-black text-[10px] uppercase tracking-[0.2em] rounded-xl hover:bg-emerald-500 hover:text-white transition-all border border-transparent hover:border-emerald-500/30 group"
         >
-            Log Out <LogOut size={16} className="opacity-70" />
+            De-authorize Node <LogOut size={16} className="opacity-40 group-hover:opacity-100 transition-opacity" />
         </button>
       </div>
     </div>
