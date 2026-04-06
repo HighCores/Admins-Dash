@@ -75,13 +75,13 @@ export default function DiscordOverviewPage() {
              <div className="p-2 bg-emerald-500/10 rounded-xl shadow-lg border border-emerald-500/20">
                 <Bot size={18} className="text-emerald-500 crt-glow" />
              </div>
-             <span className="text-[10px] font-black text-emerald-500/60 uppercase tracking-widest leading-none">Subsystem // Discord Mirror Nexus</span>
+             <span className="text-[10px] font-black text-emerald-500/60 uppercase tracking-widest leading-none">Highcore Agency // Discord Analytics</span>
           </div>
           <h1 className="text-4xl lg:text-5xl font-black text-white tracking-tighter uppercase italic">
             Discord <span className="text-emerald-500 crt-glow">Overview</span>
           </h1>
           <p className="text-sm font-medium text-zinc-500 max-w-xl font-mono">
-             Live telemetry from the Discord Highcore Node. Monitoring real-time handshake fidelity and registry flow.
+             Real-time activity from the Highcore Agency Discord. Monitoring connection quality and data synchronisation.
           </p>
         </div>
         
@@ -94,7 +94,7 @@ export default function DiscordOverviewPage() {
             </button>
             <div className="px-6 py-4 bg-emerald-500/10 text-emerald-500 rounded-2xl shadow-2xl flex items-center gap-3 border border-emerald-500/20">
                 <div className={`w-2 h-2 rounded-full ${telemetry.status === 'ONLINE' ? 'bg-emerald-500 shadow-[0_0_12px_#10b981]' : 'bg-red-500 shadow-[0_0_12px_#ef4444] animate-pulse'}`}></div>
-                <span className="text-[10px] font-black uppercase tracking-widest font-mono">Node {telemetry.status}</span>
+                <span className="text-[10px] font-black uppercase tracking-widest font-mono">System {telemetry.status === 'ONLINE' ? 'ACTIVE' : 'INACTIVE'}</span>
             </div>
         </div>
       </header>
@@ -102,14 +102,14 @@ export default function DiscordOverviewPage() {
       {loading ? (
         <div className="flex flex-col items-center justify-center p-40 opacity-20 font-mono">
           <Loader2 className="animate-spin text-emerald-500 mb-4" size={40} />
-          <span className="text-[10px] uppercase font-black tracking-widest">Decrypting Relay Data...</span>
+          <span className="text-[10px] uppercase font-black tracking-widest">Loading Agency Data...</span>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 overflow-hidden">
-          <StatCard icon={<Ticket size={20} />} title="Total Feed" value={stats.totalTickets} subtitle="Registry Sync" />
-          <StatCard icon={<Activity size={20} />} title="Open Threads" value={stats.openTickets} subtitle="Awaiting Action" highlight />
-          <StatCard icon={<MessageSquare size={20} />} title="Active Logic" value={stats.autoReplies} subtitle="Neural Triggers" />
-          <StatCard icon={<ShieldCheck size={20} />} title="Node Shield" value={stats.servers} subtitle="Protection SSL" />
+          <StatCard icon={<Ticket size={20} />} title="Total Activity" value={stats.totalTickets} subtitle="Records Synced" />
+          <StatCard icon={<Activity size={20} />} title="Open Cases" value={stats.openTickets} subtitle="Awaiting Action" highlight />
+          <StatCard icon={<MessageSquare size={20} />} title="Auto Responses" value={stats.autoReplies} subtitle="Smart Logic" />
+          <StatCard icon={<ShieldCheck size={20} />} title="Agency Shield" value={stats.servers} subtitle="Protection SSL" />
         </div>
       )}
 
@@ -131,11 +131,11 @@ export default function DiscordOverviewPage() {
             <div className="xl:col-span-4 terminal-card p-10 rounded-[3rem] bg-zinc-900/40 border-white/5 shadow-xl relative overflow-hidden group font-mono">
                 <div className="absolute left-0 bottom-0 p-10 opacity-[0.03] pointer-events-none text-emerald-500"><Cpu size={140} /></div>
                 <h3 className="text-xl font-black text-white mb-8 flex items-center gap-4 italic tracking-tighter uppercase border-b border-white/5 pb-4">
-                    <Activity size={18} className="text-emerald-500" /> Pulse Diagnostics
+                    <Activity size={18} className="text-emerald-500" /> Diagnostic Health
                 </h3>
                 <div className="space-y-6">
                     <div className="flex justify-between items-center bg-black/40 p-5 rounded-2xl border border-white/5 group-hover:border-emerald-500/20 transition-all">
-                        <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest leading-none">Latent Delay</span>
+                        <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest leading-none">Latency Delay</span>
                         <span className="text-lg font-black text-emerald-500 tracking-tighter italic crt-glow">{telemetry.latency}</span>
                     </div>
                     <div className="flex justify-between items-center bg-black/40 p-5 rounded-2xl border border-white/5 group-hover:border-emerald-500/20 transition-all">

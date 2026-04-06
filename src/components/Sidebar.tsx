@@ -19,7 +19,7 @@ const NavigationGroups = [
     platforms: ["discord", "telegram"],
     items: [
       { name: "Overview", icon: LayoutDashboard, href: "/dashboard" },
-      { name: "Node Stats", icon: BarChart, href: "/dashboard/stats" },
+      { name: "Analytics", icon: BarChart, href: "/dashboard/stats" },
     ]
   },
   {
@@ -27,19 +27,19 @@ const NavigationGroups = [
     platforms: ["discord", "telegram"],
     items: [
       { name: "Broadcast", icon: Send, href: "/dashboard/discord/messenger", platforms: ["discord", "telegram"] },
-      { name: "Identity", icon: Users, href: "/dashboard/discord/welcome", platforms: ["discord"] },
-      { name: "Merit (XP)", icon: TrendingUp, href: "/dashboard/discord/levels", platforms: ["discord"] },
-      { name: "Currency", icon: Coins, href: "/dashboard/discord/points", platforms: ["discord"] },
+      { name: "Branding", icon: Users, href: "/dashboard/discord/welcome", platforms: ["discord"] },
+      { name: "Reputation", icon: TrendingUp, href: "/dashboard/discord/levels", platforms: ["discord"] },
+      { name: "Agency Credits", icon: Coins, href: "/dashboard/discord/points", platforms: ["discord"] },
     ]
   },
   {
-    category: "AUTOMATION",
+    category: "OPERATIONS",
     platforms: ["discord", "telegram"],
     items: [
-      { name: "Protocols", icon: Command, href: "/dashboard/discord/commands", platforms: ["discord"] },
-      { name: "Auto Reply", icon: MessageSquare, href: "/dashboard/discord/auto-replies", platforms: ["discord", "telegram"] },
-      { name: "Terminal UI", icon: PanelsTopLeft, href: "/dashboard/discord/panels", platforms: ["discord"] },
-      { name: "Tickets", icon: Ticket, href: "/dashboard/discord/tickets", platforms: ["discord", "telegram"] },
+      { name: "Commands", icon: Command, href: "/dashboard/discord/commands", platforms: ["discord"] },
+      { name: "Smart Replies", icon: MessageSquare, href: "/dashboard/discord/auto-replies", platforms: ["discord", "telegram"] },
+      { name: "Live Panels", icon: PanelsTopLeft, href: "/dashboard/discord/panels", platforms: ["discord"] },
+      { name: "Support Tickets", icon: Ticket, href: "/dashboard/discord/tickets", platforms: ["discord", "telegram"] },
     ]
   },
   {
@@ -47,14 +47,14 @@ const NavigationGroups = [
     platforms: ["discord"],
     items: [
       { name: "Moderation", icon: ShieldCheck, href: "/dashboard/discord/moderation" },
-      { name: "Audit Log", icon: History, href: "/dashboard/discord/logs" },
+      { name: "Audit Logs", icon: History, href: "/dashboard/discord/logs" },
     ]
   },
   {
     category: "SYSTEM",
     platforms: ["discord", "telegram"],
     items: [
-      { name: "Setup", icon: Settings, href: "/dashboard/discord/setup" },
+      { name: "Configuration", icon: Settings, href: "/dashboard/discord/setup" },
     ]
   }
 ];
@@ -85,7 +85,7 @@ export default function Sidebar() {
                 </div>
                 <div className="flex flex-col leading-none">
                     <span className="group-hover:text-emerald-500 transition-colors">Highcore</span>
-                    <span className="text-[10px] text-zinc-600 font-black tracking-widest uppercase not-italic">Agency Node</span>
+                    <span className="text-[10px] text-zinc-600 font-black tracking-widest uppercase not-italic">Agency Dashboard</span>
                 </div>
             </h2>
           </Link>
@@ -172,7 +172,7 @@ export default function Sidebar() {
             onClick={() => signOut({ callbackUrl: '/' })}
             className="w-full flex items-center justify-between p-4 bg-white/5 text-zinc-500 font-black text-[10px] uppercase tracking-[0.2em] rounded-xl hover:bg-emerald-500 hover:text-white transition-all border border-transparent hover:border-emerald-500/30 group"
         >
-            De-authorize Node <LogOut size={16} className="opacity-40 group-hover:opacity-100 transition-opacity" />
+            Authorize Access <LogOut size={16} className="opacity-40 group-hover:opacity-100 transition-opacity" />
         </button>
       </div>
     </div>
