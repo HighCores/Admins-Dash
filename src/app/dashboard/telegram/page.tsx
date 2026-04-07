@@ -96,7 +96,7 @@ export default function TelegramOverviewPage() {
             Telegram <span className="text-emerald-500 crt-glow">Management</span>
           </h1>
           <p className="text-sm font-medium text-zinc-500 max-w-xl font-mono">
-             Active connection with the Telegram Platform. Monitoring automated responses and new project orders.
+             Live coordination with the Telegram Platform. Monitoring service performance and project orders.
           </p>
         </div>
         
@@ -109,17 +109,17 @@ export default function TelegramOverviewPage() {
             </button>
             <div className="px-6 py-4 bg-emerald-500/10 text-emerald-500 rounded-2xl shadow-2xl flex items-center gap-3 border border-emerald-500/20">
                 <div className={`w-2 h-2 rounded-full ${telemetry.status === 'ONLINE' ? 'bg-emerald-500 shadow-[0_0_12px_#10b981]' : 'bg-red-500 shadow-[0_0_12px_#ef4444] animate-pulse'}`}></div>
-                <span className="text-[10px] font-black uppercase tracking-widest font-mono">System {telemetry.status === 'ONLINE' ? 'ACTIVE' : 'INACTIVE'}</span>
+                <span className="text-[10px] font-black uppercase tracking-widest font-mono">System {telemetry.status === 'ONLINE' ? 'ONLINE' : 'OFFLINE'}</span>
             </div>
         </div>
       </header>
 
       {/* Stats Quickbar */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        <StatCard icon={<TicketIcon size={20} />} title="Telegram Activity" value={stats.totalTickets} subtitle="Records Synced" />
-        <StatCard icon={<AlertCircle size={20} />} title="Pending Support" value={stats.openTickets} subtitle="Support Mirror" highlight />
-        <StatCard icon={<Share2 size={20} />} title="Smart Responses" value={stats.activeCommands} subtitle="Automatic Logic" />
-        <StatCard icon={<Globe size={20} />} title="Global API" value="SECURE" subtitle="Encryption SSL" />
+        <StatCard icon={<TicketIcon size={20} />} title="Telegram Activity" value={stats.totalTickets} subtitle="Engagement Records" />
+        <StatCard icon={<AlertCircle size={20} />} title="Pending Support" value={stats.openTickets} subtitle="Active Requests" highlight />
+        <StatCard icon={<Share2 size={20} />} title="Smart Responses" value={stats.activeCommands} subtitle="System Intelligence" />
+        <StatCard icon={<Globe size={20} />} title="Agency Network" value="SECURE" subtitle="Premium Connection" />
       </div>
 
       <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 min-h-0 overflow-hidden">
@@ -129,10 +129,10 @@ export default function TelegramOverviewPage() {
             <div className="terminal-card rounded-[2rem] flex-1 flex flex-col overflow-hidden bg-zinc-950/40 relative">
                  <div className="p-8 border-b border-white/5 bg-white/5 flex items-center justify-between">
                     <h3 className="text-xl font-black text-white flex items-center gap-4 tracking-tighter uppercase italic">
-                        <Terminal size={18} className="text-emerald-500" /> Agency History
+                        <Terminal size={18} className="text-emerald-500" /> History
                     </h3>
                     <div className="flex items-center gap-2">
-                        <span className="text-[9px] font-black bg-emerald-500/20 text-emerald-500 px-3 py-1.5 rounded-lg tracking-widest uppercase border border-emerald-500/20">Live Secure Trace</span>
+                        <span className="text-[9px] font-black bg-emerald-500/20 text-emerald-500 px-3 py-1.5 rounded-lg tracking-widest uppercase border border-emerald-500/20">Activity Feed</span>
                     </div>
                  </div>
 
@@ -142,7 +142,7 @@ export default function TelegramOverviewPage() {
                     ) : recentActivity.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-full text-center opacity-20 py-20">
                              <Terminal size={60} className="mb-4" />
-                             <p className="text-xl font-black tracking-tighter uppercase">Connection Active // Synchronizing Records...</p>
+                             <p className="text-xl font-black tracking-tighter uppercase">Connection Active // Reviewing Records...</p>
                         </div>
                     ) : (
                         recentActivity.map((event, idx) => (
@@ -173,7 +173,7 @@ export default function TelegramOverviewPage() {
                  
                  <div className="p-6 bg-white/[0.02] border-t border-white/5 text-center">
                     <button className="text-[10px] font-black text-emerald-500/60 uppercase tracking-[0.4em] hover:text-emerald-500 transition-colors flex items-center justify-center gap-3 mx-auto group italic">
-                        Access Agency Registry <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
+                        Access Management Records <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
                     </button>
                  </div>
             </div>
@@ -184,19 +184,19 @@ export default function TelegramOverviewPage() {
              <div className="terminal-card p-8 rounded-[2rem] flex-1 flex flex-col group overflow-hidden relative bg-zinc-950/40">
                 <div className="absolute top-0 right-0 p-8 opacity-5 rotate-12 group-hover:rotate-0 transition-transform duration-700 pointer-events-none text-emerald-500"><ShieldCheck size={120} /></div>
                 <h4 className="font-black text-xl text-white mb-8 flex items-center gap-3 italic tracking-tighter uppercase shrink-0 border-b border-white/5 pb-4">
-                    <Globe size={18} className="text-emerald-500" /> System Health
+                    <Globe size={18} className="text-emerald-500" /> System Performance
                 </h4>
                 <div className="space-y-8 relative z-10 flex-1 overflow-y-auto custom-scrollbar pr-2 font-mono">
-                    <HealthRow label="Latency" value={telemetry.latency} percent={85} color="emerald-500" />
-                    <HealthRow label="Data Integrity" value={telemetry.status === 'ONLINE' ? 'OPTIMAL' : 'OFFLINE'} percent={telemetry.status === 'ONLINE' ? 100 : 0} color="emerald-500" />
+                    <HealthRow label="Connection Status" value={telemetry.latency} percent={85} color="emerald-500" />
+                    <HealthRow label="Information Accuracy" value={telemetry.status === 'ONLINE' ? 'VERIFIED' : 'OFFLINE'} percent={telemetry.status === 'ONLINE' ? 100 : 0} color="emerald-500" />
                     <HealthRow label="System Uptime" value={telemetry.uptime} percent={85} color="emerald-500" />
                     
                     <div className="pt-6">
                          <div className="p-5 bg-white/[0.03] rounded-2xl border border-white/5 flex items-center gap-4 group-hover:border-emerald-500/20 transition-all font-sans">
                             <div className="w-10 h-10 bg-emerald-500/10 rounded-xl shadow-sm flex items-center justify-center border border-emerald-500/20"><TrendingUp size={18} className="text-emerald-500" /></div>
                             <div>
-                                <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest block leading-none mb-1">Weekly Growth</span>
-                                <span className="text-lg font-black text-white tracking-tighter italic">+4.1% FLOW <span className="text-emerald-500">SYNCED</span></span>
+                                <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest block leading-none mb-1">Weekly Performance</span>
+                                <span className="text-lg font-black text-white tracking-tighter italic">+4.1% ENGAGEMENT <span className="text-emerald-500">MANAGED</span></span>
                             </div>
                         </div>
                     </div>
