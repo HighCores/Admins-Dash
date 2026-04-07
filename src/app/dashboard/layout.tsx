@@ -15,9 +15,7 @@ export default function DashboardLayout({
   return (
     <div className="flex h-screen bg-[#0a0a0c] font-sans text-zinc-300 overflow-hidden relative">
       
-      {/* Cinematic CRT Overlay */}
-      <div className="scanline z-[200] opacity-5" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(34,197,94,0.05)_0%,transparent_100%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(16,185,129,0.03)_0%,transparent_100%)] pointer-events-none" />
 
       {/* Mobile Top Navigation */}
       <div className="md:hidden fixed top-0 left-0 right-0 flex items-center justify-between p-4 bg-[#0f0f12] border-b border-white/5 z-50 h-16">
@@ -46,7 +44,7 @@ export default function DashboardLayout({
       
       {/* Main Content Area - Shifted past the sidebar on desktop */}
       <main className="flex-1 h-full overflow-y-auto bg-transparent relative custom-scrollbar flex flex-col min-w-0 md:ml-72 mt-16 md:mt-0">
-        <div className="min-h-full w-full p-4 lg:p-8 pb-48 flex flex-col relative z-10 flex-1">
+        <div className="min-h-full w-full p-4 lg:p-6 pb-24 flex flex-col relative z-10 flex-1">
           {children}
         </div>
         <CustomToaster />

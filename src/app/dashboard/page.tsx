@@ -97,13 +97,13 @@ export default function DashboardOverview() {
              <div className="p-2 bg-emerald-500/10 rounded-xl shadow-[0_0_20px_rgba(34,197,94,0.1)] border border-emerald-500/20">
                 <Zap size={16} className="text-emerald-500 crt-glow animate-pulse" />
              </div>
-             <span className="text-[10px] font-black text-emerald-500/60 uppercase tracking-widest leading-none">Subsystem // Node Telemetry Log</span>
+             <span className="text-[10px] font-black text-emerald-500/60 uppercase tracking-widest leading-none">Agency // Operations Registry</span>
           </div>
           <h1 className="text-4xl lg:text-5xl font-black text-white tracking-tighter uppercase italic">
-            Agency <span className="text-emerald-500 crt-glow">Heartbeat</span>
+            Agency <span className="text-emerald-500 crt-glow">Pulse</span>
           </h1>
           <p className="text-sm font-medium text-zinc-500 max-w-xl">
-             Live neural link with the Highcore Agency protocols. Monitoring real-time interaction flow and system fidelity.
+             Live operational link with the Highcore Agency protocols. Monitoring real-time interaction flow and agency performance.
           </p>
         </div>
         
@@ -123,10 +123,10 @@ export default function DashboardOverview() {
 
       {/* Stats Quickbar - Terminal Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        <StatCard icon={<TicketIcon size={20} />} title="Registry Inbound" value={stats.totalTickets} subtitle="Total Inquiries Tracked" />
-        <StatCard icon={<AlertCircle size={20} />} title="High Priority" value={stats.openTickets} subtitle="Pending Operational Action" highlight />
-        <StatCard icon={<UserIcon size={20} />} title="Network Assets" value={stats.totalUsers} subtitle="Identified Entities" />
-        <StatCard icon={<Cpu size={20} />} title="Core Protocols" value={stats.activeCommands} subtitle="Live Bot Automations" />
+        <StatCard icon={<TicketIcon size={20} />} title="Client Requests" value={stats.totalTickets} subtitle="Total Inquiries Tracked" />
+        <StatCard icon={<AlertCircle size={20} />} title="Active Tasks" value={stats.openTickets} subtitle="Pending Operational Action" highlight />
+        <StatCard icon={<UserIcon size={20} />} title="Client Base" value={stats.totalUsers} subtitle="Identified Entities" />
+        <StatCard icon={<Cpu size={20} />} title="Automations" value={stats.activeCommands} subtitle="Live Bot Interactions" />
       </div>
 
       <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 min-h-0 overflow-hidden">
@@ -136,10 +136,10 @@ export default function DashboardOverview() {
             <div className="terminal-card rounded-[2rem] flex-1 flex flex-col overflow-hidden bg-zinc-950/40 relative">
                  <div className="p-8 border-b border-white/5 bg-white/5 flex items-center justify-between">
                     <h3 className="text-xl font-black text-white flex items-center gap-4 tracking-tighter uppercase italic">
-                        <Terminal size={18} className="text-emerald-500" /> Operational Ledger
+                        <Terminal size={18} className="text-emerald-500" /> Interaction Log
                     </h3>
                     <div className="flex items-center gap-2">
-                        <span className="text-[9px] font-black bg-emerald-500/20 text-emerald-500 px-3 py-1.5 rounded-lg tracking-widest uppercase border border-emerald-500/20">Live Secure Trace</span>
+                        <span className="text-[9px] font-black bg-emerald-500/20 text-emerald-500 px-3 py-1.5 rounded-lg tracking-widest uppercase border border-emerald-500/20">Live Secure Feed</span>
                     </div>
                  </div>
 

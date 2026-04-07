@@ -22,7 +22,7 @@ export default function TicketsPage() {
 
   useEffect(() => {
     fetchTickets();
-  }, []);
+  }, [filter]);
 
   const fetchTickets = async () => {
     setLoading(true);
@@ -77,11 +77,11 @@ export default function TicketsPage() {
              </div>
              <span className="text-[10px] font-black text-emerald-500/60 uppercase tracking-widest leading-none">Management // Support Logs</span>
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tighter uppercase italic">
-            Operational <span className="text-emerald-500 crt-glow">Tickets</span>
+           <h1 className="text-3xl font-black text-white tracking-tighter uppercase italic">
+            Agency <span className="text-emerald-500 crt-glow">Support Hub</span>
           </h1>
           <p className="text-sm font-medium text-zinc-500 max-w-2xl">
-             Auditing interaction sessions and secure transcripts across the Highcore Support System.
+             Managing interaction sessions and professional transcripts across the Highcore Agency.
           </p>
         </div>
         
@@ -106,7 +106,7 @@ export default function TicketsPage() {
       </header>
 
       {/* Grid Layout - Dark Terminal */}
-      <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 min-h-0 overflow-hidden">
+      <div className="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-4 min-h-0 overflow-hidden">
         
         {/* Left: Ticket Stream (Col: 5) */}
         <div className="xl:col-span-4 flex flex-col min-h-0">

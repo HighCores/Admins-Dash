@@ -15,9 +15,11 @@
 }
 
 :root {
-  --background: #0f0f11;
+  --background: #0a0a0c;
   --foreground: #f4f4f5;
-  --terminal-green: #22c55e;
+  --primary: #10b981;
+  --primary-glow: rgba(16, 185, 129, 0.5);
+  --terminal-border: #1a1a1e;
 }
 
 body {
@@ -44,28 +46,9 @@ body {
   box-shadow: 0 0 30px rgba(34, 197, 94, 0.05);
 }
 
-/* Scanline Effect */
-.scanline {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: rgba(34, 197, 94, 0.03);
-  opacity: 0.1;
-  z-index: 100;
-  pointer-events: none;
-  animation: scanline 8s linear infinite;
-}
-
-@keyframes scanline {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
-}
-
-/* CRT Glow */
+/* CRT Glow (Refined) */
 .crt-glow {
-  text-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+  text-shadow: 0 0 12px var(--primary-glow);
 }
 
 /* Custom Scrollbar */

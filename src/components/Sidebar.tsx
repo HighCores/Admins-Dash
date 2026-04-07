@@ -15,17 +15,21 @@ import { useState, useEffect } from "react";
 
 const NavigationGroups = [
   {
-    category: "TERMINAL",
+    category: "MANAGEMENT",
     items: [
       { name: "OVERVIEW", icon: LayoutDashboard, href: "/dashboard" },
-      { name: "WELCOME & LEAVE", icon: Users, href: "/dashboard/discord/welcome" },
-      { name: "ADMIN POINTS", icon: Coins, href: "/dashboard/discord/points" },
-      { name: "MESSENGER & BC", icon: Send, href: "/dashboard/discord/messenger" },
-      { name: "COMMANDS", icon: Command, href: "/dashboard/discord/commands" },
-      { name: "AUTO RESPOND", icon: MessageSquare, href: "/dashboard/discord/auto-replies" },
-      { name: "EMBED BUILDER", icon: Palette, href: "/dashboard/discord/embed-builder" },
+      { name: "WELCOME SYSTEM", icon: Users, href: "/dashboard/discord/welcome" },
+      { name: "ADMIN LOGS", icon: ShieldAlert, href: "/dashboard/discord/points" },
+      { name: "MESSENGER", icon: Send, href: "/dashboard/discord/messenger" },
+    ]
+  },
+  {
+    category: "OPERATIONS",
+    items: [
       { name: "TICKETS", icon: Ticket, href: "/dashboard/discord/tickets" },
-      { name: "SETUP", icon: Settings, href: "/dashboard/discord/setup" },
+      { name: "COMMANDS", icon: Command, href: "/dashboard/discord/commands" },
+      { name: "AUTO RESPONSES", icon: MessageSquare, href: "/dashboard/discord/auto-replies" },
+      { name: "EMBED BUILDER", icon: Palette, href: "/dashboard/discord/embed-builder" },
     ]
   }
 ];

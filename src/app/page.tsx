@@ -23,13 +23,12 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center bg-[#0a0a0c] overflow-hidden p-6 selection:bg-emerald-500/30 selection:text-emerald-400">
+    <div className="relative min-h-screen flex flex-col items-center justify-center bg-[#0a0a0c] overflow-y-auto p-6 selection:bg-emerald-500/30 selection:text-emerald-400">
       
-      {/* Cinematic Background Scanline */}
+      {/* Cinematic Background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(34,197,94,0.1)_0%,transparent_100%)] h-full w-full" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(16,185,129,0.1)_0%,transparent_100%)] h-full w-full" />
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
-        <div className="scanline" />
       </div>
 
       <motion.div 
