@@ -56,14 +56,14 @@ export default function TelegramCommandsPage() {
 
         await supabase.from("dc_stats").insert({
             event_type: "tg_command_updated",
-            details: `Telegram Logic node /${name} was recalibrated.`
+            details: `Telegram Command /${name} was recalibrated.`
         });
 
-        alert("Telegram Logic node stabilized! /" + name + " is live. ⚡");
+        alert("Telegram Command stabilized! /" + name + " is live. ⚡");
         setEditingCommand(null);
         fetchCommands();
     } catch (err: any) {
-        alert(`ERR_LOGIC: ${err.message}`);
+        alert(`ERR_SYSTEM: ${err.message}`);
     } finally {
         setSaving(false);
     }
@@ -102,7 +102,7 @@ export default function TelegramCommandsPage() {
                 <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 group-hover:text-blue-600 transition-colors" />
                 <input 
                     type="text" 
-                    placeholder="Scan neural paths..."
+                    placeholder="Search commands..."
                     className="pl-12 pr-6 py-4 bg-white border border-zinc-100 rounded-2xl shadow-sm outline-none focus:ring-8 ring-blue-500/5 transition-all font-bold text-sm w-72 italic"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
@@ -119,7 +119,7 @@ export default function TelegramCommandsPage() {
                 className="flex items-center gap-4 px-8 py-4 bg-zinc-950 text-white font-black text-xs rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all group italic tracking-widest uppercase"
             >
                 <Plus size={18} className="group-hover:rotate-90 transition-transform" />
-                Inject Path
+                Add Command
             </button>
         </div>
       </header>
@@ -131,8 +131,8 @@ export default function TelegramCommandsPage() {
         <div className="xl:col-span-8 flex flex-col min-h-0">
              <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-hidden">
                   <div className="grid grid-cols-12 p-6 border-b border-zinc-50 bg-zinc-50/20 text-[9px] font-black text-zinc-400 uppercase tracking-widest leading-none">
-                      <div className="col-span-3 pl-4">Neural Path</div>
-                      <div className="col-span-5">Automated Payload</div>
+                      <div className="col-span-3 pl-4">Command Trigger</div>
+                      <div className="col-span-5">Automated Response</div>
                       <div className="col-span-2 text-center">Status</div>
                       <div className="col-span-2 text-right pr-4">Metrics</div>
                   </div>
@@ -141,7 +141,7 @@ export default function TelegramCommandsPage() {
                      {loading ? (
                          <div className="flex justify-center p-20"><Loader2 className="animate-spin text-blue-500" size={40} /></div>
                      ) : filteredCommands.length === 0 ? (
-                         <div className="p-32 text-center opacity-10 italic uppercase font-black tracking-[0.2em] font-mono">Logic Void Detected</div>
+                         <div className="p-32 text-center opacity-10 italic uppercase font-black tracking-[0.2em] font-mono">No Commands Found</div>
                      ) : (
                          filteredCommands.map((cmd, idx) => (
                              <motion.div 
@@ -171,7 +171,7 @@ export default function TelegramCommandsPage() {
                                  <div className="col-span-2 text-center">
                                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-50 rounded-full border border-zinc-100 group-hover:bg-blue-600 group-hover:text-white transition-all">
                                          <div className={`w-1.5 h-1.5 rounded-full ${cmd.is_active ? 'bg-emerald-400 shadow-glow-emerald' : 'bg-red-400'}`}></div>
-                                         <span className="text-[9px] font-black uppercase tracking-widest italic">{cmd.is_active ? 'ACTIVE' : 'SEVERED'}</span>
+                                         <span className="text-[9px] font-black uppercase tracking-widest italic">{cmd.is_active ? 'ACTIVE' : 'DISABLED'}</span>
                                      </div>
                                  </div>
                                  <div className="col-span-2 text-right pr-4 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
@@ -194,7 +194,7 @@ export default function TelegramCommandsPage() {
              <div className="bg-zinc-950 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden group shrink-0">
                 <div className="absolute right-0 bottom-0 p-8 opacity-10 rotate-12 group-hover:scale-125 transition-transform duration-1000 pointer-events-none"><Send size={200} /></div>
                 <h3 className="text-xl font-black mb-6 flex items-center gap-4 italic tracking-tighter">
-                    <Sparkles className="text-zinc-400" /> Neural Pulse
+                    <Sparkles className="text-zinc-400" /> Command Statistics
                 </h3>
                 
                 <div className="space-y-4 relative z-10">
@@ -212,19 +212,19 @@ export default function TelegramCommandsPage() {
              <div className="bg-white p-8 rounded-[3rem] border border-zinc-100 shadow-sm relative overflow-hidden flex-1 flex flex-col min-h-0 group">
                 <div className="absolute top-0 right-0 p-8 opacity-10 rotate-12 group-hover:rotate-0 transition-transform duration-700 pointer-events-none"><ShieldCheck size={120} /></div>
                 <h4 className="font-black text-xl text-zinc-950 mb-8 flex items-center gap-3 italic tracking-tighter underline underline-offset-8 decoration-zinc-100 uppercase shrink-0">
-                    <History size={18} className="text-zinc-400" /> Activity Trace
+                    <History size={18} className="text-zinc-400" /> Action History
                 </h4>
                 
                 <div className="flex-1 flex flex-col items-center justify-center p-4 bg-zinc-50 rounded-[2rem] border border-zinc-100 relative overflow-hidden">
                      <div className="flex flex-col items-center gap-6 text-center relative z-10 opacity-20">
                         <Terminal size={48} className="text-zinc-400 animate-pulse" />
-                        <h5 className="text-sm font-black uppercase tracking-[0.2em] italic">Real-time Telemetry Active</h5>
+                        <h5 className="text-sm font-black uppercase tracking-[0.2em] italic">Real-time Monitoring Active</h5>
                      </div>
                 </div>
 
                 <div className="mt-8 text-center shrink-0">
                     <button className="text-[10px] font-black text-zinc-300 uppercase tracking-[0.4em] hover:text-zinc-950 transition-colors flex items-center justify-center gap-3 mx-auto group italic">
-                        Access Performance Ledger <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
+                        Access Action Logs <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
                     </button>
                 </div>
              </div>
@@ -245,7 +245,7 @@ export default function TelegramCommandsPage() {
                 
                 <div className="flex justify-between items-center">
                     <h3 className="text-2xl font-black text-zinc-950 italic tracking-tighter uppercase flex items-center gap-4 py-2 border-b-2 border-zinc-950">
-                        <Zap className="text-zinc-950" size={24} /> Neural Calibrator
+                        <Zap className="text-zinc-950" size={24} /> Command Editor
                     </h3>
                     <button onClick={() => setEditingCommand(null)} className="p-4 text-zinc-300 hover:text-red-500 bg-zinc-50 rounded-2xl transition-all"><X size={20} /></button>
                 </div>
@@ -263,19 +263,19 @@ export default function TelegramCommandsPage() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Relay Status</label>
+                            <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Active Status</label>
                             <button 
                                 onClick={() => setIsActive(!isActive)}
                                 className={`w-full h-[66px] rounded-xl transition-all border flex items-center justify-between px-6 ${isActive ? 'bg-zinc-950 border-zinc-950 text-white shadow-xl' : 'bg-red-50 border-red-200 text-red-500'}`}
                             >
-                                <span className="text-[9px] font-black uppercase tracking-widest">{isActive ? 'ONLINE' : 'SEVERED'}</span>
+                                <span className="text-[9px] font-black uppercase tracking-widest">{isActive ? 'ONLINE' : 'DISABLED'}</span>
                                 <Power size={20} className={isActive ? 'text-blue-400 animate-pulse shadow-glow-blue' : ''} />
                             </button>
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Automated Payload</label>
+                        <label className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.3em] px-4 font-mono leading-none italic">Automated Response</label>
                         <textarea 
                             rows={4} 
                             className="w-full p-6 rounded-xl bg-zinc-50 border border-zinc-100 focus:bg-white font-bold text-zinc-900 leading-relaxed italic transition-all outline-none resize-none shadow-inner" 
@@ -293,7 +293,7 @@ export default function TelegramCommandsPage() {
                         className="w-full py-6 bg-zinc-950 text-white font-black text-[10px] rounded-2xl shadow-xl hover:bg-black transition-all flex items-center justify-center gap-4 uppercase tracking-[0.4em] italic disabled:opacity-50"
                     >
                         {saving ? <Loader2 className="animate-spin" /> : <Save size={20} />} 
-                        Broadcast Neural Sync
+                        Save Command
                     </button>
                 </div>
              </motion.div>

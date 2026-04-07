@@ -12,7 +12,8 @@ import { supabase } from "@/lib/supabase";
 import DiscordSelect from "@/components/DiscordSelect";
 import { showToast } from "@/components/CustomToaster";
 
-export default function PanelsPage() {
+export default function EmbedBuilderPage() {
+    // ... rest of component
   const [menus, setMenus] = useState<any[]>([]);
   const [buttons, setButtons] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -156,10 +157,10 @@ export default function PanelsPage() {
             <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none font-mono">Architect Domain Console</span>
           </div>
           <h1 className="text-3xl font-black text-zinc-950 tracking-tighter uppercase">
-            Bot <span className="text-zinc-500">Panels</span>
+            Embed <span className="text-zinc-500">Builder</span>
           </h1>
           <p className="text-zinc-500 text-sm font-medium max-w-md">
-            Design and manage interactive messages for your community.
+            Design and manage high-fidelity interactive transmissions.
           </p>
         </div>
         
@@ -175,7 +176,7 @@ export default function PanelsPage() {
                 className="flex items-center gap-4 px-8 py-4 bg-zinc-950 text-white font-bold text-xs rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all group tracking-widest uppercase"
             >
                 <Plus size={18} className="group-hover:rotate-90 transition-transform" />
-                New Panel
+                New Embed
             </button>
         </div>
       </header>
@@ -187,7 +188,7 @@ export default function PanelsPage() {
         <div className="xl:col-span-3 flex flex-col min-h-0">
           <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-visible">
             <div className="p-6 border-b border-zinc-50 bg-zinc-50/20 flex items-center justify-between">
-                <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest leading-none">All Panels</h3>
+                <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest leading-none">Active Builds</h3>
                 <span className="text-[9px] font-bold bg-zinc-950 text-white px-2.5 py-1 rounded-lg tracking-widest leading-none">{menus.length} ACTIVE</span>
             </div>
 

@@ -15,46 +15,17 @@ import { useState, useEffect } from "react";
 
 const NavigationGroups = [
   {
-    category: "CORE",
-    platforms: ["discord", "telegram"],
+    category: "TERMINAL",
     items: [
-      { name: "Overview", icon: LayoutDashboard, href: "/dashboard" },
-      { name: "Analytics", icon: BarChart, href: "/dashboard/stats" },
-    ]
-  },
-  {
-    category: "ENGAGEMENT",
-    platforms: ["discord", "telegram"],
-    items: [
-      { name: "Broadcast", icon: Send, href: "/dashboard/discord/messenger", platforms: ["discord", "telegram"] },
-      { name: "Branding", icon: Users, href: "/dashboard/discord/welcome", platforms: ["discord"] },
-      { name: "Reputation", icon: TrendingUp, href: "/dashboard/discord/levels", platforms: ["discord"] },
-      { name: "Agency Credits", icon: Coins, href: "/dashboard/discord/points", platforms: ["discord"] },
-    ]
-  },
-  {
-    category: "OPERATIONS",
-    platforms: ["discord", "telegram"],
-    items: [
-      { name: "Commands", icon: Command, href: "/dashboard/discord/commands", platforms: ["discord"] },
-      { name: "Smart Replies", icon: MessageSquare, href: "/dashboard/discord/auto-replies", platforms: ["discord", "telegram"] },
-      { name: "Live Panels", icon: PanelsTopLeft, href: "/dashboard/discord/panels", platforms: ["discord"] },
-      { name: "Support Tickets", icon: Ticket, href: "/dashboard/discord/tickets", platforms: ["discord", "telegram"] },
-    ]
-  },
-  {
-    category: "SECURITY",
-    platforms: ["discord"],
-    items: [
-      { name: "Moderation", icon: ShieldCheck, href: "/dashboard/discord/moderation" },
-      { name: "Audit Logs", icon: History, href: "/dashboard/discord/logs" },
-    ]
-  },
-  {
-    category: "SYSTEM",
-    platforms: ["discord", "telegram"],
-    items: [
-      { name: "Configuration", icon: Settings, href: "/dashboard/discord/setup" },
+      { name: "OVERVIEW", icon: LayoutDashboard, href: "/dashboard" },
+      { name: "WELCOME & LEAVE", icon: Users, href: "/dashboard/discord/welcome" },
+      { name: "ADMIN POINTS", icon: Coins, href: "/dashboard/discord/points" },
+      { name: "MESSENGER & BC", icon: Send, href: "/dashboard/discord/messenger" },
+      { name: "COMMANDS", icon: Command, href: "/dashboard/discord/commands" },
+      { name: "AUTO RESPOND", icon: MessageSquare, href: "/dashboard/discord/auto-replies" },
+      { name: "EMBED BUILDER", icon: Palette, href: "/dashboard/discord/embed-builder" },
+      { name: "TICKETS", icon: Ticket, href: "/dashboard/discord/tickets" },
+      { name: "SETUP", icon: Settings, href: "/dashboard/discord/setup" },
     ]
   }
 ];

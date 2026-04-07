@@ -75,13 +75,13 @@ export default function TicketsPage() {
              <div className="p-2 bg-emerald-500/10 rounded-xl border border-emerald-500/20 shadow-[0_0_20px_rgba(34,197,94,0.1)]">
                 <Ticket size={16} className="text-emerald-500 crt-glow" />
              </div>
-             <span className="text-[10px] font-black text-emerald-500/60 uppercase tracking-widest leading-none">Subsystem // Incident Logs</span>
+             <span className="text-[10px] font-black text-emerald-500/60 uppercase tracking-widest leading-none">Management // Support Logs</span>
           </div>
           <h1 className="text-3xl font-black text-white tracking-tighter uppercase italic">
             Operational <span className="text-emerald-500 crt-glow">Tickets</span>
           </h1>
           <p className="text-sm font-medium text-zinc-500 max-w-2xl">
-             Auditing interaction sessions and secure transcripts across the Highcore Relay.
+             Auditing interaction sessions and secure transcripts across the Highcore Support System.
           </p>
         </div>
         
@@ -123,14 +123,14 @@ export default function TicketsPage() {
                             </button>
                         ))}
                      </div>
-                     <span className="text-[9px] font-black text-zinc-700 uppercase tracking-widest font-mono">{filteredTickets.length} REGISTRY</span>
+                     <span className="text-[9px] font-black text-zinc-700 uppercase tracking-widest font-mono">{filteredTickets.length} RECORDS</span>
                   </div>
 
                   <div className="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-3 font-mono">
                      {loading ? (
                          <div className="flex justify-center p-20"><Loader2 className="animate-spin text-emerald-500" size={40} /></div>
                      ) : filteredTickets.length === 0 ? (
-                         <div className="p-20 text-center opacity-20 italic uppercase tracking-widest text-[10px]">No logs manifest.</div>
+                         <div className="p-20 text-center opacity-20 italic uppercase tracking-widest text-[10px]">No tickets found.</div>
                      ) : (
                          filteredTickets.map((ticket) => (
                              <motion.div 
@@ -151,7 +151,7 @@ export default function TicketsPage() {
                                          <div className="min-w-0">
                                              <div className={`font-black text-lg italic tracking-tighter leading-none mb-1 uppercase ${activeTicket?.id === ticket.id ? 'text-white' : 'text-zinc-400'}`}>#{ticket.ticket_id}</div>
                                              <div className={`text-[10px] font-black uppercase tracking-[0.2em] truncate ${activeTicket?.id === ticket.id ? 'text-emerald-500/60' : 'text-zinc-600'}`}>
-                                                 {ticket.user_name || `Node: ${ticket.user_id.substring(0,8)}...`}
+                                                 {ticket.user_name || `User: ${ticket.user_id.substring(0,8)}...`}
                                              </div>
                                          </div>
                                      </div>
@@ -181,11 +181,11 @@ export default function TicketsPage() {
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
                                     <h3 className="text-xl font-black text-white italic tracking-tighter uppercase flex items-center gap-3">
-                                        <History className="text-emerald-500" /> SECURE_NODE_#{activeTicket.ticket_id}
+                                        <History className="text-emerald-500" /> TICKET_#{activeTicket.ticket_id}
                                     </h3>
                                     <div className="flex items-center gap-3">
                                         <div className={`w-2 h-2 rounded-full ${activeTicket.status === 'open' ? 'bg-emerald-500 animate-pulse' : 'bg-zinc-700'}`}></div>
-                                        <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">{activeTicket.status} SESSION_LOG</span>
+                                        <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">{activeTicket.status} SUPPORT_LOG</span>
                                     </div>
                                 </div>
                                 <button 
@@ -197,14 +197,14 @@ export default function TicketsPage() {
                                 <div className="p-4 bg-black/40 rounded-2xl border border-white/5 flex items-center gap-4">
                                     <User size={16} className="text-zinc-600" />
                                     <div>
-                                        <div className="text-[9px] font-black text-zinc-700 uppercase tracking-[0.2em] leading-none mb-1">Affiliate Identity</div>
+                                        <div className="text-[9px] font-black text-zinc-700 uppercase tracking-[0.2em] leading-none mb-1">User Identity</div>
                                         <div className="text-sm font-black text-zinc-300 truncate tracking-tight uppercase italic">{activeTicket.user_name || activeTicket.user_id}</div>
                                     </div>
                                 </div>
                                 <div className="p-4 bg-black/40 rounded-2xl border border-white/5 flex items-center gap-4">
                                     <Cpu size={16} className="text-zinc-600" />
                                     <div>
-                                        <div className="text-[9px] font-black text-zinc-700 uppercase tracking-[0.2em] leading-none mb-1">Core Subject</div>
+                                        <div className="text-[9px] font-black text-zinc-700 uppercase tracking-[0.2em] leading-none mb-1">Support Subject</div>
                                         <div className="text-sm font-black text-zinc-300 truncate tracking-tight uppercase italic">{activeTicket.subject || activeTicket.type || "Undefined"}</div>
                                     </div>
                                 </div>
@@ -216,13 +216,13 @@ export default function TicketsPage() {
                             {messagesLoading ? (
                                 <div className="flex flex-col items-center justify-center h-full opacity-20">
                                     <Loader2 size={40} className="animate-spin mb-4 text-emerald-500" />
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-500">Decrypting Operational Streams...</span>
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-500">Loading Support History...</span>
                                 </div>
                             ) : messages.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center h-full opacity-10">
                                     <Terminal size={80} className="mb-6 text-emerald-500" />
-                                    <h4 className="text-2xl font-black tracking-tighter uppercase italic">No Trace Manifest</h4>
-                                    <p className="text-sm font-black uppercase tracking-[0.2em]">Zero Telemetry Inbound</p>
+                                    <h4 className="text-2xl font-black tracking-tighter uppercase italic">No Messages</h4>
+                                    <p className="text-sm font-black uppercase tracking-[0.2em]">The message history is empty</p>
                                 </div>
                             ) : (
                                 messages.map((msg, idx) => (
@@ -232,10 +232,10 @@ export default function TicketsPage() {
                                          </div>
                                          <div className="flex flex-col min-w-0">
                                              <div className="flex items-center gap-3 mb-1">
-                                                <span className="text-[10px] font-black text-white uppercase italic tracking-widest">{msg.user_name || "Unknown_Node"}</span>
+                                                <span className="text-[10px] font-black text-white uppercase italic tracking-widest">{msg.user_name || "Unknown_User"}</span>
                                                 <span className="text-[9px] font-black text-zinc-700 uppercase tracking-widest font-mono">[{new Date(msg.created_at).toLocaleTimeString([], {hour12: false})}]</span>
                                                 {msg.type === 'system' && (
-                                                    <span className="text-[8px] bg-blue-500/10 text-blue-500 px-2 py-0.5 rounded border border-blue-500/20">SYSTEM_COMMS</span>
+                                                    <span className="text-[8px] bg-blue-500/10 text-blue-500 px-2 py-0.5 rounded border border-blue-500/20">SYSTEM_MSG</span>
                                                 )}
                                              </div>
                                              <div className="p-5 bg-white/[0.03] border border-white/5 rounded-2xl rounded-tl-none shadow-sm text-[13px] font-medium text-zinc-400 leading-relaxed max-w-2xl group-hover/msg:border-white/10 group-hover/msg:bg-white/[0.05] transition-all font-sans">
@@ -251,10 +251,10 @@ export default function TicketsPage() {
                          <div className="p-8 border-t border-white/5 bg-black/20 shrink-0 relative z-10 font-mono">
                             <div className="flex gap-4">
                                 <button className="flex-1 py-4 bg-zinc-900 text-zinc-500 font-black text-[10px] rounded-2xl border border-white/10 hover:border-white/20 hover:text-white transition-all uppercase tracking-widest italic flex items-center justify-center gap-3">
-                                    <Download size={14} /> DOWNLOAD_PROTOCOL_AUDIT
+                                    <Download size={14} /> DOWNLOAD_TRANSCRIPT
                                 </button>
                                 <button className="flex-1 py-4 bg-emerald-500 text-black font-black text-[10px] rounded-2xl shadow-[0_0_30px_rgba(34,197,94,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all uppercase tracking-widest flex items-center justify-center gap-3 italic">
-                                    <ExternalLink size={14} /> SYNC_WITH_SECURE_CHANNEL
+                                    <ExternalLink size={14} /> SYNC_WITH_DISCORD
                                 </button>
                             </div>
                          </div>
@@ -262,7 +262,7 @@ export default function TicketsPage() {
                 ) : (
                     <div className="flex-1 flex flex-col items-center justify-center p-20 bg-zinc-950/20 rounded-[2.5rem] text-center border-2 border-dashed border-white/5 opacity-20 font-mono">
                         <Shield size={60} className="mb-10 text-emerald-500 animate-pulse" />
-                        <h3 className="text-xl font-black text-white tracking-widest uppercase italic max-w-sm">Establish a node connection to verify interaction telemetry</h3>
+                        <h3 className="text-xl font-black text-white tracking-widest uppercase italic max-w-sm">Select a ticket to view the interaction history</h3>
                     </div>
                 )}
              </AnimatePresence>

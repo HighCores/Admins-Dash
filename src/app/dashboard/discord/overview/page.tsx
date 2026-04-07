@@ -31,7 +31,7 @@ export default function OverviewPage() {
             Dashboard <span className="text-zinc-300">Overview</span>
           </h1>
           <p className="text-sm font-bold text-zinc-500 max-w-2xl">
-             High Core neural telemetry and server activity ledger.
+             Highcore Agency server activity and management logs.
           </p>
         </div>
       </header>
@@ -70,11 +70,11 @@ export default function OverviewPage() {
             <div className="flex-1 bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm overflow-visible flex flex-col min-h-0">
                <div className="p-6 border-b border-zinc-50">
                   <h3 className="text-sm font-black uppercase tracking-widest text-zinc-950 italic flex items-center gap-2">
-                      <Activity size={16} className="text-zinc-400" /> Server Activity Matrix
+                      <Activity size={16} className="text-zinc-400" /> Server Activity Overview
                   </h3>
                </div>
                <div className="flex-1 p-8 flex items-center justify-center bg-zinc-50/20">
-                   <div className="text-zinc-300 font-black uppercase tracking-[0.3em] text-xs">Awaiting Telemetry Sync...</div>
+                   <div className="text-zinc-300 font-black uppercase tracking-[0.3em] text-xs">Connecting to System...</div>
                </div>
             </div>
          </div>

@@ -22,7 +22,7 @@ export default function WelcomePage() {
   const [messageType, setMessageType] = useState<"text" | "embed">("embed");
   const [message, setMessage] = useState("Welcome {user} to **{server}**! 🎉\\nYou are our {member_count}th member.");
   const [color, setColor] = useState("#10b981");
-  const [embedTitle, setEmbedTitle] = useState("A NEW_ENTITY HAS APPROACHED");
+  const [embedTitle, setEmbedTitle] = useState("WELCOME TO THE FAMILY");
   const [imageUrl, setImageUrl] = useState("https://assets.hc.agency/welcome-banner.png");
   const [thumbnailUrl, setThumbnailUrl] = useState("{user_avatar}");
 
@@ -44,7 +44,7 @@ export default function WelcomePage() {
           const { error } = await supabase.from("dc_settings").upsert(updates, { onConflict: 'key,guild_id' });
           if (error) throw error;
           
-          showToast("Handshake logic synchronized! 🧠⚡");
+          showToast("Welcome settings saved! 🧠⚡");
       } catch (err: any) {
           showToast(err.message, true);
       } finally {
@@ -62,13 +62,13 @@ export default function WelcomePage() {
              <div className="p-2 bg-emerald-500/10 rounded-xl shadow-lg border border-emerald-500/20">
                 <Users size={18} className="text-emerald-500 crt-glow" />
              </div>
-             <span className="text-[10px] font-black text-emerald-500/60 uppercase tracking-widest leading-none">Subsystem // Neural Engagement Handshake</span>
+             <span className="text-[10px] font-black text-emerald-500/60 uppercase tracking-widest leading-none">Management // Member Engagement System</span>
           </div>
           <h1 className="text-3xl lg:text-4xl font-black text-white tracking-tighter uppercase italic">
             Welcome <span className="text-emerald-500 crt-glow">Protocols</span>
           </h1>
           <p className="text-sm font-medium text-zinc-500 max-w-xl font-mono">
-             Calibrating onboarding sequences and greeting embeds for identified entities entering the Highcore relay.
+             Calibrating onboarding sequences and greeting embeds for new members joining the Highcore Hub.
           </p>
         </div>
         
@@ -80,7 +80,7 @@ export default function WelcomePage() {
                 }`}
             >
                 <Power size={16} className={isActive ? 'crt-glow' : ''} />
-                {isActive ? "ACTIVE_SYNC" : "SYNC_SEVERED"}
+                {isActive ? "SYSTEM_ACTIVE" : "SYSTEM_OFFLINE"}
             </button>
         </div>
       </header>
@@ -95,13 +95,13 @@ export default function WelcomePage() {
                     <h3 className="text-sm font-black text-white flex items-center gap-3 uppercase italic tracking-tighter">
                         <Settings2 size={18} className="text-emerald-500" /> Configuration Rack
                     </h3>
-                    {!isActive && <div className="absolute inset-0 z-50 flex items-center justify-center font-black text-red-500 text-3xl tracking-[0.5em] uppercase italic bg-black/40 backdrop-blur-sm">PROTOCOL_PAUSED</div>}
+                    {!isActive && <div className="absolute inset-0 z-50 flex items-center justify-center font-black text-red-500 text-3xl tracking-[0.5em] uppercase italic bg-black/40 backdrop-blur-sm">SYSTEM_PAUSED</div>}
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-10 custom-scrollbar space-y-10 font-mono">
                     
                     <DiscordSelect 
-                        label="GREETING_TARGET_NODE"
+                        label="TARGET_CHANNEL"
                         type="channel"
                         value={channelId}
                         onChange={setChannelId}
@@ -115,7 +115,7 @@ export default function WelcomePage() {
                                 messageType === "text" ? "bg-emerald-500 text-black border-emerald-500 shadow-lg crt-glow" : "bg-black/40 text-zinc-600 border-white/5 hover:border-emerald-500/20"
                             }`}
                         >
-                            <AlignLeft size={16} /> PLAIN_TEXT_DATA
+                            <AlignLeft size={16} /> PLAIN_TEXT
                         </button>
                         <button 
                             onClick={() => setMessageType("embed")}
@@ -123,7 +123,7 @@ export default function WelcomePage() {
                                 messageType === "embed" ? "bg-emerald-500 text-black border-emerald-500 shadow-lg crt-glow" : "bg-black/40 text-zinc-600 border-white/5 hover:border-emerald-500/20"
                             }`}
                         >
-                            <Monitor size={16} /> NEURAL_EMBED_FLOW
+                            <Monitor size={16} /> MODERN_EMBED
                         </button>
                     </div>
 
@@ -146,7 +146,7 @@ export default function WelcomePage() {
 
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] px-4 leading-none italic">Neural Accent</label>
+                                        <label className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] px-4 leading-none italic">Color Accent</label>
                                         <div className="flex gap-4">
                                             <input 
                                                 type="color" 
@@ -163,7 +163,7 @@ export default function WelcomePage() {
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] px-4 leading-none italic">Asset Pointer</label>
+                                        <label className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] px-4 leading-none italic">Avatar Image</label>
                                         <div className="relative">
                                             <ImageIcon size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-700" />
                                             <input 
@@ -195,14 +195,14 @@ export default function WelcomePage() {
 
                     <div className="space-y-4">
                         <div className="flex items-center justify-between px-4">
-                            <label className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] leading-none italic">Neural Payload</label>
+                            <label className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] leading-none italic">Message Content</label>
                         </div>
                         <textarea 
                             rows={5}
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             className="w-full px-8 py-6 rounded-[2.5rem] bg-black border border-white/5 font-medium text-zinc-300 leading-relaxed transition-all outline-none focus:border-emerald-500/20 resize-none font-sans text-sm"
-                            placeholder="TRANSMIT_GREETING_HERE..."
+                            placeholder="ENTER_WELCOME_MESSAGE..."
                         />
                         <div className="flex flex-wrap gap-2 pt-2 px-4 italic">
                             {["{user}", "{server}", "{member_count}", "{user_avatar}"].map(v => (
@@ -226,7 +226,7 @@ export default function WelcomePage() {
                         className="w-full flex items-center justify-center gap-4 py-6 bg-emerald-500 text-black font-black text-[11px] rounded-[1.5rem] shadow-[0_0_25px_#10b981] hover:scale-[1.02] hover:shadow-[0_0_35px_#10b981] transition-all active:scale-95 disabled:opacity-50 uppercase tracking-[0.4em] italic"
                     >
                         {saving ? <Loader2 className="animate-spin" /> : <Save size={20} />} 
-                        Sync_Handshake
+                        Sync_Settings
                     </button>
                 </div>
             </div>
@@ -237,10 +237,10 @@ export default function WelcomePage() {
              {/* Device Switcher */}
              <div className="bg-zinc-900/40 p-2 rounded-[2rem] border border-white/5 mb-8 flex justify-center gap-4 shrink-0 font-mono">
                  <button onClick={() => setIsPreviewMobile(false)} className={`flex-1 py-4 rounded-2xl transition-all flex items-center justify-center gap-3 text-[9px] font-black uppercase tracking-widest italic ${!isPreviewMobile ? 'bg-white text-black shadow-lg scale-105' : 'text-zinc-600 hover:text-zinc-300'}`}>
-                    <Monitor size={14} /> Desktop_View
+                    <Monitor size={14} /> Desktop_Preview
                  </button>
                  <button onClick={() => setIsPreviewMobile(true)} className={`flex-1 py-4 rounded-2xl transition-all flex items-center justify-center gap-3 text-[9px] font-black uppercase tracking-widest italic ${isPreviewMobile ? 'bg-emerald-500 text-black shadow-lg scale-105' : 'text-zinc-600 hover:text-zinc-300'}`}>
-                    <Smartphone size={14} /> Mobile_Link
+                    <Smartphone size={14} /> Mobile_Preview
                  </button>
              </div>
  

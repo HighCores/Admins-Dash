@@ -47,7 +47,7 @@ export default function AdminPointsPage() {
   };
 
   const cleanId = (id: string) => {
-    if (!id) return "NODE_UNKNOWN";
+    if (!id) return "USER_UNKNOWN";
     return id.replace(/^Node_/i, "").replace(/^panel_/i, "").toUpperCase().slice(0, 10);
   };
 
@@ -61,13 +61,13 @@ export default function AdminPointsPage() {
              <div className="p-2 bg-zinc-950 rounded-xl shadow-lg shadow-zinc-200">
                 <Crown size={16} className="text-white" />
              </div>
-             <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none font-mono">High Command Performance Registry</span>
+             <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none font-mono">Staff Performance Record</span>
           </div>
           <h1 className="text-3xl font-black text-zinc-950 tracking-tighter">
             Admin <span className="text-zinc-300">Performance</span>
           </h1>
           <p className="text-sm font-bold text-zinc-500 max-w-2xl">
-             Monitoring agency operator efficiency and neural response protocols.
+             Monitoring agency staff efficiency and response guidelines.
           </p>
         </div>
         
@@ -80,7 +80,7 @@ export default function AdminPointsPage() {
             </button>
             <div className="px-6 py-4 bg-zinc-950 text-white rounded-2xl shadow-xl flex items-center gap-3 border border-zinc-900 group">
                 <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]"></div>
-                <span className="text-[10px] font-black uppercase tracking-widest italic group-hover:text-white transition-colors cursor-default">{totalActions} ACTIONS_CAPTURED</span>
+                <span className="text-[10px] font-black uppercase tracking-widest italic group-hover:text-white transition-colors cursor-default">{totalActions} ACTIONS_LOGGED</span>
             </div>
         </div>
       </header>
@@ -95,7 +95,7 @@ export default function AdminPointsPage() {
                     {loading ? (
                         <div className="col-span-full flex justify-center p-20"><Loader2 className="animate-spin text-zinc-300" size={40} /></div>
                     ) : staffStats.length === 0 ? (
-                        <div className="col-span-full p-20 text-center opacity-10 italic uppercase font-black tracking-widest">No operations manifest</div>
+                        <div className="col-span-full p-20 text-center opacity-10 italic uppercase font-black tracking-widest">No staff activity found</div>
                     ) : staffStats.map((staff, idx) => (
                         <motion.div 
                             key={staff.user_id}
@@ -119,7 +119,7 @@ export default function AdminPointsPage() {
                                     <h4 className="text-lg font-black text-zinc-950 leading-none mb-1 italic tracking-tighter uppercase truncate underline decoration-zinc-50 underline-offset-4">Admin {cleanId(staff.user_id)}</h4>
                                     <div className="flex items-center gap-2 mt-2">
                                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
-                                        <span className="text-[9px] font-black text-zinc-300 uppercase tracking-widest italic group-hover:text-emerald-600 transition-colors">OPERATIONAL_STABLE</span>
+                                        <span className="text-[9px] font-black text-zinc-300 uppercase tracking-widest italic group-hover:text-emerald-600 transition-colors">STAFF_ONLINE</span>
                                     </div>
                                 </div>
                              </div>
@@ -151,12 +151,12 @@ export default function AdminPointsPage() {
              </div>
         </div>
 
-        {/* Right: Operational Audit (Col: 4) */}
+        {/* Right: Activity Audit (Col: 4) */}
         <div className="xl:col-span-4 flex flex-col gap-8 min-h-0">
              <div className="bg-white rounded-[2.5rem] border border-zinc-100 shadow-sm flex-1 flex flex-col overflow-visible">
                 <div className="p-8 border-b border-zinc-50 bg-zinc-50/20">
                     <h3 className="text-sm font-black text-zinc-950 uppercase italic tracking-tighter flex items-center gap-3">
-                        <History size={18} className="text-zinc-400" /> Operational Audit
+                        <History size={18} className="text-zinc-400" /> Activity Audit
                     </h3>
                 </div>
 
@@ -176,11 +176,11 @@ export default function AdminPointsPage() {
                                 <div className="flex justify-between items-center group-hover:bg-zinc-50/50 p-2 rounded-xl transition-all -ml-2">
                                     <div className="flex flex-col min-w-0 pr-4">
                                         <span className="text-[10px] font-black text-zinc-950 italic group-hover:underline underline-offset-4 decoration-zinc-100 uppercase tracking-tighter truncate">{cleanId(staff.user_id)}</span>
-                                        <span className="text-[8px] font-black text-zinc-300 mt-1 italic tracking-[0.1em] font-mono leading-none">NODE_AUDIT_STABLE</span>
+                                        <span className="text-[8px] font-black text-zinc-300 mt-1 italic tracking-[0.1em] font-mono leading-none">ACTIVITY_LOGGED</span>
                                     </div>
                                     <div className="text-right shrink-0">
                                         <div className="text-lg font-black text-zinc-950 italic leading-none">{staff.total}</div>
-                                        <div className="text-[7px] font-black text-zinc-300 uppercase italic leading-none mt-0.5 tracking-widest">ACTS</div>
+                                        <div className="text-[7px] font-black text-zinc-300 uppercase italic leading-none mt-0.5 tracking-widest">POINTS</div>
                                     </div>
                                 </div>
                             </motion.div>
@@ -190,7 +190,7 @@ export default function AdminPointsPage() {
                 
                 <div className="p-6 bg-zinc-50/50 border-t border-zinc-100">
                     <button className="w-full flex items-center justify-center gap-4 py-4 bg-zinc-50 text-zinc-400 font-black text-[9px] rounded-xl border border-zinc-100 hover:text-zinc-950 hover:border-zinc-200 transition-all uppercase tracking-[0.3em] italic underline decoration-zinc-100 underline-offset-4 decoration-2">
-                        Inspect Performance Logs <ArrowRight size={14} />
+                        View Activity Logs <ArrowRight size={14} />
                     </button>
                 </div>
              </div>
@@ -198,10 +198,10 @@ export default function AdminPointsPage() {
              <div className="p-8 bg-zinc-950 text-white rounded-[2.5rem] shadow-2xl relative overflow-visible group border border-zinc-900 shrink-0">
                 <div className="absolute right-0 bottom-0 p-4 opacity-10 group-hover:scale-125 transition-transform duration-1000 rotate-12 pointer-events-none"><Zap size={140} /></div>
                 <h4 className="text-sm font-black italic mb-2 tracking-tighter flex items-center gap-2">
-                   <Target size={16} className="text-zinc-400" /> Merit Mutation
+                   <Target size={16} className="text-zinc-400" /> Performance Bonus
                 </h4>
-                <p className="text-[10px] opacity-40 mb-6 font-bold leading-relaxed pr-6">Instantly grant bonus High Core Nodes to the top performer node of the current cycle.</p>
-                <button className="w-full py-4 bg-white text-zinc-950 rounded-xl font-black text-[9px] uppercase tracking-[0.3em] shadow-xl hover:scale-[1.02] active:scale-95 transition-all italic underline decoration-zinc-950/10 underline-offset-4">REWARD_ELITE_NODE</button>
+                <p className="text-[10px] opacity-40 mb-6 font-bold leading-relaxed pr-6">Instantly grant bonus points to the top performer node of the current cycle.</p>
+                <button className="w-full py-4 bg-white text-zinc-950 rounded-xl font-black text-[9px] uppercase tracking-[0.3em] shadow-xl hover:scale-[1.02] active:scale-95 transition-all italic underline decoration-zinc-950/10 underline-offset-4">REWARD_TOP_STAFF</button>
             </div>
         </div>
       </div>

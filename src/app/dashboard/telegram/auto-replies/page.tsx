@@ -273,7 +273,7 @@ export default function TelegramAutoRepliesPage() {
                         className="w-full py-6 bg-zinc-950 text-white font-black text-[10px] rounded-2xl shadow-xl hover:bg-black transition-all flex items-center justify-center gap-4 uppercase tracking-[0.4em] italic disabled:opacity-50"
                     >
                         {saving ? <Loader2 className="animate-spin" /> : <RefreshCcw size={20} />} 
-                        Broadcast Neural Sync
+                        Broadcast Save Settings
                     </button>
                 </div>
              </motion.div>

@@ -252,7 +252,7 @@ export default function TelegramTicketsPage() {
                     <div className="flex-1 flex flex-col items-center justify-center p-20 bg-zinc-950/20 rounded-[2.5rem] text-center border border-dashed border-white/5 opacity-40">
                         <Terminal size={60} className="mb-10 text-emerald-500 crt-glow animate-pulse" />
                         <h3 className="text-2xl font-black text-white tracking-widest uppercase italic font-mono max-w-sm">Select an active node to inspect operational logs</h3>
-                        <p className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.4em] mt-4">Authorization Confirmed // Highcore Relay</p>
+                        <p className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.4em] mt-4">Authorization Confirmed // Highcore Support System</p>
                     </div>
                 )}
              </AnimatePresence>

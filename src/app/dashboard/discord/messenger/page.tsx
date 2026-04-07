@@ -72,7 +72,7 @@ export default function MessengerPage() {
                 throw new Error(err.error || "Failed to communicate with bot server.");
             }
 
-            showToast(isBroadcast ? "Broadcast sequence started successfully!" : "Message sent successfully!");
+            showToast(isBroadcast ? "Broadcast started successfully!" : "Message sent successfully!");
             if (!isBroadcast) setMessage(""); 
             
         } catch (err: any) {
@@ -92,13 +92,13 @@ export default function MessengerPage() {
                         <div className="p-2 bg-emerald-500/10 rounded-xl border border-emerald-500/20 shadow-[0_0_20px_rgba(34,197,94,0.1)]">
                             <Send size={18} className="text-emerald-500 crt-glow" />
                         </div>
-                        <span className="text-[10px] font-black text-emerald-500/60 uppercase tracking-[0.3em] leading-none">Subsystem // Comms Relay</span>
+                        <span className="text-[10px] font-black text-emerald-500/60 uppercase tracking-[0.3em] leading-none">Management // Messaging System</span>
                     </div>
                     <h1 className="text-4xl font-black text-white tracking-tighter uppercase italic">
                         Protocol <span className="text-emerald-500 crt-glow">Messenger</span>
                     </h1>
                     <p className="text-sm font-medium text-zinc-500 max-w-2xl">
-                        Despatching custom encrypted messages or global broadcasts across the Highcore Neural Net.
+                        Despatching custom encrypted messages or global broadcasts across the Highcore Agency Network.
                     </p>
                 </div>
 
@@ -107,7 +107,7 @@ export default function MessengerPage() {
                         onClick={() => setIsBroadcast(false)}
                         className={`flex items-center justify-center gap-3 px-8 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 ${!isBroadcast ? 'bg-white text-black shadow-lg scale-105' : 'text-zinc-600 hover:text-zinc-300'}`}
                     >
-                        <MessageSquare size={16} /> Direct Link
+                        <MessageSquare size={16} /> Direct Message
                     </button>
                     <button 
                         onClick={() => setIsBroadcast(true)}
@@ -132,25 +132,25 @@ export default function MessengerPage() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-10 relative z-10 font-mono">
                         <div className="space-y-6">
                             <DiscordSelect 
-                                label={isBroadcast ? "Target Role (Optional Descriptor)" : "Target Sync Channel"}
+                                label={isBroadcast ? "Target Role (Optional)" : "Target Channel"}
                                 type={isBroadcast ? "role" : "channel"} 
                                 value={isBroadcast ? roleId : channelId}
                                 onChange={isBroadcast ? setRoleId : setChannelId}
-                                placeholder={isBroadcast ? "Public despatches to all units..." : "Establishing channel lock..."}
+                                placeholder={isBroadcast ? "Public despatches to all units..." : "Connecting to channel..."}
                             />
 
                             {isBroadcast && (
                                 <div className="flex items-start gap-4 p-5 bg-amber-500/5 rounded-2xl border border-amber-500/20">
                                     <AlertCircle size={18} className="text-amber-500 mt-1 shrink-0 animate-pulse" />
                                     <p className="text-[10px] font-black text-amber-500/80 leading-loose uppercase tracking-widest">
-                                        PROTOCOL_WARNING: Global broadcasts are metered at 7-second intervals to maintain bot fidelity. Node connection must remain active.
+                                        SYSTEM_WARNING: Global broadcasts are metered at 7-second intervals to maintain bot performance. Connection must remain active.
                                     </p>
                                 </div>
                             )}
                         </div>
 
                         <div className="space-y-6">
-                            <label className="text-[10px] font-black text-zinc-700 uppercase tracking-widest block pl-2">Attachment Telemetry (RAW_URL)</label>
+                            <label className="text-[10px] font-black text-zinc-700 uppercase tracking-widest block pl-2">Attachment URL</label>
                             <div className="space-y-3">
                                 {attachments.map((att, i) => (
                                     <div key={i} className="flex items-center gap-3 group/att">
@@ -179,7 +179,7 @@ export default function MessengerPage() {
                                         onClick={addAttachment}
                                         className="flex items-center gap-2 text-[9px] font-black text-zinc-600 uppercase tracking-[0.3em] hover:text-emerald-500 transition-colors pl-2 mt-4"
                                     >
-                                        <Plus size={14} /> Add Peripheral Link
+                                        <Plus size={14} /> Add Another Attachment
                                     </button>
                                 )}
                             </div>
@@ -187,7 +187,7 @@ export default function MessengerPage() {
                     </div>
 
                     <div className="space-y-4 relative z-10 font-mono">
-                        <label className="text-[10px] font-black text-zinc-700 uppercase tracking-widest block pl-2 italic underline decoration-white/5 underline-offset-8">Data Stream Payload</label>
+                        <label className="text-[10px] font-black text-zinc-700 uppercase tracking-widest block pl-2 italic underline decoration-white/5 underline-offset-8">Message Content</label>
                         <div className="relative group/msg">
                             <textarea 
                                 rows={8} 
@@ -198,10 +198,10 @@ export default function MessengerPage() {
                             />
                             <div className="absolute bottom-10 right-10 flex items-center gap-6 opacity-30 group-hover/msg:opacity-100 transition-opacity pointer-events-none">
                                 <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-emerald-500 font-mono">
-                                    <Zap size={14} className="crt-glow" /> Emoji_Sync_Enabled
+                                    <Zap size={14} className="crt-glow" /> Emoji_Support_Enabled
                                 </div>
                                 <div className="text-[9px] font-black uppercase tracking-[0.2em] flex items-center gap-2 text-zinc-500 font-mono">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 crt-glow animate-pulse" /> Live_Telemetry
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 crt-glow animate-pulse" /> Live_Status
                                 </div>
                             </div>
                         </div>
@@ -210,14 +210,14 @@ export default function MessengerPage() {
                     <div className="mt-12 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10 border-t border-white/5 pt-10">
                         <div className="flex items-center gap-10 font-mono">
                             <div className="flex flex-col">
-                                <span className="text-[9px] font-black text-zinc-700 uppercase leading-none mb-2 tracking-widest">Despatch Latency</span>
+                                <span className="text-[9px] font-black text-zinc-700 uppercase leading-none mb-2 tracking-widest">Delivery Delay</span>
                                 <span className={`text-sm font-black italic tracking-tighter ${isBroadcast ? 'text-amber-500' : 'text-emerald-500'}`}>
                                     {isBroadcast ? "7,000ms // Metered" : "Direct // Realtime"}
                                 </span>
                             </div>
                             <div className="w-[1px] h-8 bg-white/5" />
                             <div className="flex flex-col">
-                                <span className="text-[9px] font-black text-zinc-700 uppercase leading-none mb-2 tracking-widest">Protocol Mode</span>
+                                <span className="text-[9px] font-black text-zinc-700 uppercase leading-none mb-2 tracking-widest">Message Type</span>
                                 <span className="text-sm font-black text-white italic tracking-tighter">
                                     {isBroadcast ? "Global Outbound" : "Channel Lock"}
                                 </span>
@@ -230,7 +230,7 @@ export default function MessengerPage() {
                             className={`min-w-[280px] flex items-center justify-center gap-4 px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-2xl active:scale-95 disabled:opacity-20 ${isBroadcast ? 'bg-emerald-500 text-black hover:bg-emerald-400 shadow-emerald-500/20' : 'bg-white text-black hover:bg-emerald-500 hover:text-white'}`}
                         >
                             {loading ? <Loader2 className="animate-spin" size={20} /> : <Send size={18} />}
-                            {isBroadcast ? "Inactivate Broadcast" : "Confirm Despatch"}
+                            {isBroadcast ? "Inactivate Broadcast" : "Send Message"}
                         </button>
                     </div>
                 </motion.div>

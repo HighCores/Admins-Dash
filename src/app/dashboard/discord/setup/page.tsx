@@ -38,6 +38,14 @@ export default function SetupPage() {
   const [chUpdates, setChUpdates] = useState("");
   const [chTicket, setChTicket] = useState("");
   
+  // Specific Log Nodes
+  const [logJoin, setLogJoin] = useState("");
+  const [logMsg, setLogMsg] = useState("");
+  const [logTicket, setLogTicket] = useState("");
+  const [logCmd, setLogCmd] = useState("");
+  const [logMod, setLogMod] = useState("");
+  const [logWarn, setLogWarn] = useState("");
+  
   const [botPrefix, setBotPrefix] = useState("!");
 
   const GUILD_ID = "global";
@@ -68,6 +76,13 @@ export default function SetupPage() {
         setChOrder(find("CH_ORDER"));
         setChUpdates(find("CH_UPDATES"));
         setChTicket(find("CH_TICKET"));
+
+        setLogJoin(find("LOG_JOIN_LEFT"));
+        setLogMsg(find("LOG_MESSAGE"));
+        setLogTicket(find("LOG_TICKETS"));
+        setLogCmd(find("LOG_COMMANDS"));
+        setLogMod(find("LOG_MODS_CMD"));
+        setLogWarn(find("LOG_WARNING"));
         
         setBotPrefix(find("BOT_PREFIX") || "!");
     }
@@ -92,6 +107,13 @@ export default function SetupPage() {
             { guild_id: GUILD_ID, key: "CH_ORDER", value: chOrder },
             { guild_id: GUILD_ID, key: "CH_UPDATES", value: chUpdates },
             { guild_id: GUILD_ID, key: "CH_TICKET", value: chTicket },
+
+            { guild_id: GUILD_ID, key: "LOG_JOIN_LEFT", value: logJoin },
+            { guild_id: GUILD_ID, key: "LOG_MESSAGE", value: logMsg },
+            { guild_id: GUILD_ID, key: "LOG_TICKETS", value: logTicket },
+            { guild_id: GUILD_ID, key: "LOG_COMMANDS", value: logCmd },
+            { guild_id: GUILD_ID, key: "LOG_MODS_CMD", value: logMod },
+            { guild_id: GUILD_ID, key: "LOG_WARNING", value: logWarn },
             
             { guild_id: GUILD_ID, key: "BOT_PREFIX", value: botPrefix },
         ];
@@ -101,7 +123,7 @@ export default function SetupPage() {
         if (error) throw error;
 
         await fetchSettings();
-        showToast("Settings synchronized! ⚡");
+        showToast("Settings saved! ⚡");
     } catch (err: any) {
         showToast("Sync Failed: " + err.message, true);
     } finally {
@@ -120,7 +142,7 @@ export default function SetupPage() {
         const { error } = await supabase.from("dc_commands").upsert(defaultCommands, { onConflict: 'name' });
         if (error) throw error;
 
-        showToast("Logic defaults injected! ⚡");
+        showToast("Initial defaults loaded! ⚡");
     } catch (err: any) {
         showToast(`Error: ${err.message}`, true);
     } finally {
@@ -138,13 +160,13 @@ export default function SetupPage() {
              <div className="p-2 bg-emerald-500/10 rounded-xl shadow-lg border border-emerald-500/20">
                 <Settings size={18} className="text-emerald-500 crt-glow" />
              </div>
-             <span className="text-[10px] font-black text-emerald-500/60 uppercase tracking-widest leading-none">Subsystem // Global Configuration Hub</span>
+             <span className="text-[10px] font-black text-emerald-500/60 uppercase tracking-widest leading-none">Management // Global Configuration Hub</span>
           </div>
           <h1 className="text-3xl lg:text-4xl font-black text-white tracking-tighter uppercase italic">
             Bot <span className="text-emerald-500 crt-glow">Settings</span>
           </h1>
           <p className="text-sm font-medium text-zinc-500 max-w-xl font-mono">
-             Calibrating global architectural parameters, communication relays, and authority nodes for the Highcore Bot.
+             Configuring system parameters, communication channels, and staff roles for the Highcore Bot.
           </p>
         </div>
         
@@ -174,7 +196,7 @@ export default function SetupPage() {
              <div className="terminal-card flex-1 flex flex-col overflow-hidden bg-zinc-950/40 rounded-[2.5rem]">
                   <div className="p-8 border-b border-white/5 bg-white/5 flex items-center justify-between font-mono">
                      <h3 className="text-lg font-black text-white uppercase italic tracking-tighter flex items-center gap-3">
-                        <Terminal size={18} className="text-emerald-500" /> Config Layer
+                        <Terminal size={18} className="text-emerald-500" /> System Configuration
                      </h3>
                      <span className="p-1 px-4 bg-emerald-500/10 text-emerald-500 text-[9px] rounded-lg font-black tracking-widest border border-emerald-500/20 crt-glow">AUTHORIZED</span>
                   </div>
@@ -183,7 +205,7 @@ export default function SetupPage() {
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                         {/* Shard 1: Infrastructure */}
                         <div className="space-y-10">
-                            <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.4em] mb-4 italic font-mono border-b border-white/5 pb-2">Global Channels</h4>
+                            <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.4em] mb-4 italic font-mono border-b border-white/5 pb-2">Part 1: Primary Infrastructure</h4>
                             
                             <DiscordSelect 
                                 label="Log Category"
@@ -229,7 +251,7 @@ export default function SetupPage() {
 
                         {/* Shard 2: Authority & Operations */}
                         <div className="space-y-10">
-                             <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.4em] mb-4 italic font-mono border-b border-white/5 pb-2">Standard Roles</h4>
+                             <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.4em] mb-4 italic font-mono border-b border-white/5 pb-2">Part 2: Staff Roles</h4>
                              <DiscordSelect 
                                 label="Admin Role"
                                 type="role"
@@ -252,18 +274,56 @@ export default function SetupPage() {
                                 placeholder="SELECT_ROLE..."
                             />
                             
-                            <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.4em] mt-8 mb-4 italic font-mono border-b border-white/5 pb-2">Operational Relay</h4>
+                            <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.4em] mt-8 mb-4 italic font-mono border-b border-white/5 pb-2">Service Operations</h4>
                             <DiscordSelect 
-                                label="Startup Signal (CH_STARTUP)"
+                                label="Announcement Channel"
                                 type="channel"
                                 value={chStartup}
                                 onChange={setChStartup}
                             />
                             <DiscordSelect 
-                                label="Order Feed (CH_ORDER)"
+                                label="Orders Feed"
                                 type="channel"
                                 value={chOrder}
                                 onChange={setChOrder}
+                            />
+
+                            <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.4em] mt-8 mb-4 italic font-mono border-b border-white/5 pb-2">Event Logs</h4>
+                            <DiscordSelect 
+                                label="Member Activity (Join/Leave)"
+                                type="channel"
+                                value={logJoin}
+                                onChange={setLogJoin}
+                            />
+                            <DiscordSelect 
+                                label="Message Analysis"
+                                type="channel"
+                                value={logMsg}
+                                onChange={setLogMsg}
+                            />
+                            <DiscordSelect 
+                                label="Support History"
+                                type="channel"
+                                value={logTicket}
+                                onChange={setLogTicket}
+                            />
+                            <DiscordSelect 
+                                label="Command Usage"
+                                type="channel"
+                                value={logCmd}
+                                onChange={setLogCmd}
+                            />
+                            <DiscordSelect 
+                                label="Administrative Audit"
+                                type="channel"
+                                value={logMod}
+                                onChange={setLogMod}
+                            />
+                            <DiscordSelect 
+                                label="Security Events"
+                                type="channel"
+                                value={logWarn}
+                                onChange={setLogWarn}
                             />
                         </div>
                      </div>
@@ -282,13 +342,13 @@ export default function SetupPage() {
                 <div className="w-full space-y-6">
                     <div className="p-8 bg-black/40 rounded-[2.5rem] border border-white/5 space-y-5">
                         <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest italic">Node Link</span>
+                            <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest italic">Connection Link</span>
                             <span className={`px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest border ${welcomeChannel ? 'bg-emerald-500 text-black border-emerald-500 crt-glow' : 'bg-red-500/10 text-red-500 border-red-500/20'}`}>
-                                {welcomeChannel ? 'OPTIMAL' : 'SEVERED'}
+                                {welcomeChannel ? 'ONLINE' : 'OFFLINE'}
                             </span>
                         </div>
                         <div className="flex items-center justify-between">
-                             <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest italic">DB Latency</span>
+                             <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest italic">System Latency</span>
                              <span className="text-emerald-500 text-xs font-black tracking-tighter italic">24MS</span>
                         </div>
                     </div>
@@ -300,8 +360,8 @@ export default function SetupPage() {
                     >
                         <Database size={28} className={`text-zinc-800 ${seeding ? 'animate-spin' : 'group-hover:text-black group-hover:scale-110'} transition-all`} />
                         <div className="text-center">
-                            <span className="text-[11px] font-black italic tracking-widest text-zinc-600 group-hover:text-black uppercase block mb-1">Load System Defaults</span>
-                            <span className="text-[8px] font-black text-zinc-800 uppercase tracking-widest italic block">RESET_CMD_NODES</span>
+                            <span className="text-[11px] font-black italic tracking-widest text-zinc-600 group-hover:text-black uppercase block mb-1">Load Initial Defaults</span>
+                            <span className="text-[8px] font-black text-zinc-800 uppercase tracking-widest italic block">RESET_COMMANDS</span>
                         </div>
                     </button>
                 </div>
@@ -320,7 +380,7 @@ export default function SetupPage() {
                   }}
                   className="w-full py-5 bg-red-500/10 text-red-500 rounded-2xl font-black text-[10px] uppercase tracking-[0.4em] border border-red-500/20 hover:bg-red-500 hover:text-white transition-all italic shadow-[0_0_15px_rgba(239,68,68,0.1)]"
                 >
-                  TERMINATE SESSION
+                  LOGOUT SESSION
                 </button>
             </div>
         </div>
