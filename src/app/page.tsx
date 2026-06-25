@@ -38,21 +38,21 @@ export default function Home() {
       >
         <div className="w-full space-y-6">
           <div className="flex items-center gap-4 text-sunset-800">
-            <div className="w-10 h-10 rounded-full bg-sunset-200 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-sunset-200 flex items-center justify-center shadow-inner">
               <Shield size={20} className="text-sunset-600" />
             </div>
             <div>
-              <h3 className="font-semibold text-lg">Secure Access</h3>
-              <p className="text-sm opacity-80">RBAC validation via Discord Roles</p>
+              <h3 className="font-bold text-lg">AI-Powered Moderation</h3>
+              <p className="text-sm font-medium opacity-80">Intelligent language filtering & real-time telemetry</p>
             </div>
           </div>
           <div className="flex items-center gap-4 text-sunset-800">
-            <div className="w-10 h-10 rounded-full bg-sunset-200 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-sunset-200 flex items-center justify-center shadow-inner">
               <Zap size={20} className="text-sunset-600" />
             </div>
             <div>
-              <h3 className="font-semibold text-lg">Realtime Sync</h3>
-              <p className="text-sm opacity-80">Connected to N8N & Java Webhooks</p>
+              <h3 className="font-bold text-lg">Omnichannel Ecosystem</h3>
+              <p className="text-sm font-medium opacity-80">Synchronized logic across Discord & Telegram</p>
             </div>
           </div>
         </div>
@@ -67,10 +67,14 @@ export default function Home() {
           <span>Login with Discord</span>
         </button>
 
-        <p className="text-sm text-sunset-800/60 mt-6 text-center">
-          Only authorized guild members can access the dashboard.
+        <p className="text-sm text-sunset-800/60 mt-6 text-center font-medium">
+          Only authorized personnel can access the dashboard.
         </p>
       </motion.div>
+
+      <div className="absolute bottom-4 opacity-10 text-[10px] pointer-events-none select-none tracking-widest text-sunset-900">
+        Author : Omar Ayman
+      </div>
     </div>
   );
 }
