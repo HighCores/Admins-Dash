@@ -1,14 +1,26 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { supabase } from "@/lib/supabase";
-import { Activity, Clock, Search, Filter } from "lucide-react";
+import { Activity, Clock, Search, Filter, ChevronDown } from "lucide-react";
 
 export default function LogsPage() {
   const [logs, setLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [platformFilter, setPlatformFilter] = useState<"all" | "discord" | "telegram" | "system">("all");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     fetchLogs();
@@ -74,19 +86,45 @@ export default function LogsPage() {
             />
           </div>
           
-          <div className="flex items-center gap-2 w-full md:w-auto">
-            <Filter size={18} className="text-sunset-500" />
-            <select 
-              value={platformFilter}
-              onChange={(e) => setPlatformFilter(e.target.value as any)}
-              className="bg-white border border-sunset-200 text-sunset-800 font-bold py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-sunset-500/20 cursor-pointer"
-            >
-              <option value="all">All Platforms</option>
-              <option value="discord">Discord</option>
-              <option value="telegram">Telegram</option>
-              <option value="system">System</option>
-            </select>
-          </div>
+          <div className="flex items-center gap-2 w-full md:w-auto relative" ref={dropdownRef}>
+              <Filter size={18} className="text-sunset-500" />
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="bg-white border border-sunset-200 text-sunset-800 font-bold py-3 px-4 rounded-xl flex items-center gap-3 hover:bg-sunset-50 transition-colors"
+              >
+                {platformFilter === "all" ? "All Platforms" : platformFilter.charAt(0).toUpperCase() + platformFilter.slice(1)}
+                <ChevronDown size={16} className={`transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+              </button>
+              
+              {isDropdownOpen && (
+                <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-sunset-100 rounded-xl shadow-xl overflow-hidden z-20 py-2">
+                  <button
+                    onClick={() => { setPlatformFilter("all"); setIsDropdownOpen(false); }}
+                    className={`w-full text-left px-4 py-2 font-medium transition-colors ${platformFilter === "all" ? "bg-sunset-500 text-white" : "text-sunset-800 hover:bg-sunset-50"}`}
+                  >
+                    All Platforms
+                  </button>
+                  <button
+                    onClick={() => { setPlatformFilter("discord"); setIsDropdownOpen(false); }}
+                    className={`w-full text-left px-4 py-2 font-medium transition-colors ${platformFilter === "discord" ? "bg-sunset-500 text-white" : "text-sunset-800 hover:bg-sunset-50"}`}
+                  >
+                    Discord
+                  </button>
+                  <button
+                    onClick={() => { setPlatformFilter("telegram"); setIsDropdownOpen(false); }}
+                    className={`w-full text-left px-4 py-2 font-medium transition-colors ${platformFilter === "telegram" ? "bg-sunset-500 text-white" : "text-sunset-800 hover:bg-sunset-50"}`}
+                  >
+                    Telegram
+                  </button>
+                  <button
+                    onClick={() => { setPlatformFilter("system"); setIsDropdownOpen(false); }}
+                    className={`w-full text-left px-4 py-2 font-medium transition-colors ${platformFilter === "system" ? "bg-sunset-500 text-white" : "text-sunset-800 hover:bg-sunset-50"}`}
+                  >
+                    System
+                  </button>
+                </div>
+              )}
+            </div>
         </div>
 
         {/* Logs List */}
