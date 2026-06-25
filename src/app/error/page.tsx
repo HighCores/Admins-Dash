@@ -24,13 +24,13 @@ function ErrorContent() {
             : "An error occurred during authentication. Please check your credentials and try again."}
         </p>
 
-        <div className="w-full p-4 bg-red-50/50 rounded-2xl border border-red-100 mb-8 text-sm text-red-600 font-medium">
-          Note: Ensure you are logging in with the correct Discord account that holds the founder role in the High Core server.
-        </div>
+        <p className="text-sm text-sunset-800/60 mt-6 text-center font-medium max-w-sm">
+          Note: Ensure you are logging in with the correct Discord account that holds the founder role in the HighCores server.
+        </p>
 
         <Link 
           href="/"
-          className="w-full flex items-center justify-center gap-3 py-4 px-6 rounded-2xl bg-sunset-600 text-white font-semibold text-lg hover:bg-sunset-500 transition-all shadow-lg shadow-sunset-600/30 active:scale-95"
+          className="w-full flex items-center justify-center gap-3 py-4 px-6 rounded-2xl bg-sunset-600 text-white font-semibold text-lg hover:bg-sunset-500 transition-all shadow-lg shadow-sunset-600/30 active:scale-95 mt-8"
         >
           <Home size={22} />
           <span>Back to Home</span>

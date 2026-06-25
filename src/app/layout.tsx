@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "High Core Agency - Dashboard",
-  description: "Automated Control Center for High Core Agency Bots",
+  title: "HighCores Agency - Dashboard",
+  description: "Automated Control Center for HighCores Agency Bots",
 };
 
 export default function RootLayout({

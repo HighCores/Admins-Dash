@@ -23,7 +23,7 @@ export default function Home() {
           <Bot size={48} strokeWidth={1.5} />
         </div>
         <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-sunset-900 mb-4 drop-shadow-sm">
-          High Core Agency
+          HighCores Agency
         </h1>
         <p className="text-xl text-sunset-800/80 max-w-2xl mx-auto font-medium">
           The Automated Control Center for your Telegram and Discord Bots.
@@ -57,7 +57,11 @@ export default function Home() {
           </div>
         </div>
 
-        <hr className="w-full border-t border-sunset-400/20 my-8" />
+        <hr className="w-full border-t border-sunset-400/20 mt-8 mb-4" />
+
+        <div className="w-full text-center mb-4 opacity-20 text-[10px] pointer-events-none select-none tracking-widest text-sunset-900">
+          Author : Omar Ayman
+        </div>
 
         <button 
           onClick={handleLogin}
@@ -71,10 +75,6 @@ export default function Home() {
           Only authorized personnel can access the dashboard.
         </p>
       </motion.div>
-
-      <div className="absolute bottom-4 opacity-10 text-[10px] pointer-events-none select-none tracking-widest text-sunset-900">
-        Author : Omar Ayman
-      </div>
     </div>
   );
 }
