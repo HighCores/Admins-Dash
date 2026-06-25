@@ -48,7 +48,7 @@ export function Sidebar() {
             <Bot size={28} className="text-sunset-500" />
           </div>
           <h2 className="text-2xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-sunset-700 to-sunset-500">
-            High Cores
+            HighCores
           </h2>
         </div>
 
