@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-sunset-100: #fff0e5;
+  --color-sunset-200: #ffd1b3;
+  --color-sunset-300: #ffb180;
+  --color-sunset-400: #ff8e4d;
+  --color-sunset-500: #ff6a1a;
+  --color-sunset-600: #e65200;
+  --color-sunset-700: #b34000;
+  --color-sunset-800: #802e00;
+  --color-sunset-900: #4d1c00;
+
+  --color-sunset-glow: rgba(255, 106, 26, 0.4);
+
+  --font-sans: var(--font-outfit), sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+}
+
+:root {
+  --background: #fff8f5;
+  --foreground: #2a1105;
+}
+
+body {
+  background: linear-gradient(135deg, #fff0e5 0%, #ffe3d1 50%, #ffd6c2 100%);
+  color: var(--foreground);
+  min-height: 100vh;
+}
+
+/* Custom Scrollbar for Webkit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 240, 229, 0.5); 
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 106, 26, 0.4);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 106, 26, 0.7);
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 106, 26, 0.4) rgba(255, 240, 229, 0.5);
+}
+
+/* Glassmorphism Classes */
+.glass {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 10px 40px rgba(255, 106, 26, 0.08);
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 150, 100, 0.3);
+  backdrop-filter: blur(8px);
+}
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: var(--color-sunset-400);
+  box-shadow: 0 0 0 3px rgba(255, 106, 26, 0.2);
+  outline: none;
+}
+
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Custom Date Picker Styling */
+.date-input-custom::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(0.4) sepia(1) saturate(10) hue-rotate(340deg);
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+.date-input-custom::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
